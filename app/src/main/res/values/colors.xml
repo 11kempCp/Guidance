@@ -7,4 +7,14 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="femalePrimaryColour">#fadadd</color>
+    <color name="femalePrimaryDark">#e75480 </color>
+    <color name="femaleColourAccent">#087e41 </color>
+
+    <color name="malePrimaryColour">#89cff0</color>
+    <color name="malePrimaryDark">#4395e3 </color>
+    <color name="maleColourAccent">#cc6633 </color>
+
+
 </resources>

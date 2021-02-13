@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout_data_activity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".activity.DataActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/femalePrimaryColour"
+                android:elevation="4dp"
+                android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+            <Switch
+                android:id="@+id/switchSteps"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:onClick="updateDatabase"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:text="@string/steps"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/toolbar"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+            <Switch
+                android:id="@+id/switchDistanceTraveled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:onClick="updateDatabase"
+                android:text="@string/distance_traveled"
+                app:layout_constraintEnd_toEndOf="@+id/switchSteps"
+                app:layout_constraintStart_toStartOf="@+id/switchSteps"
+                app:layout_constraintTop_toBottomOf="@+id/switchSteps" />
+
+            <Switch
+                android:id="@+id/switchLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:onClick="updateDatabase"
+                android:text="@string/location"
+                app:layout_constraintEnd_toEndOf="@+id/switchDistanceTraveled"
+                app:layout_constraintHorizontal_bias="0.522"
+                app:layout_constraintStart_toStartOf="@+id/switchDistanceTraveled"
+                app:layout_constraintTop_toBottomOf="@+id/switchDistanceTraveled" />
+
+            <Switch
+                android:id="@+id/switchDeviceTemp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:onClick="updateDatabase"
+                android:text="@string/device_temp"
+                app:layout_constraintEnd_toEndOf="@+id/switchLocation"
+                app:layout_constraintHorizontal_bias="0.385"
+                app:layout_constraintStart_toStartOf="@+id/switchLocation"
+                app:layout_constraintTop_toBottomOf="@+id/switchLocation" />
+
+            <Switch
+                android:id="@+id/switchScreentime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:onClick="updateDatabase"
+                android:text="@string/screentime"
+                app:layout_constraintEnd_toEndOf="@+id/switchDeviceTemp"
+                app:layout_constraintHorizontal_bias="0.535"
+                app:layout_constraintStart_toStartOf="@+id/switchDeviceTemp"
+                app:layout_constraintTop_toBottomOf="@+id/switchDeviceTemp" />
+
+            <Switch
+                android:id="@+id/switchWeather"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:onClick="updateDatabase"
+                android:text="@string/weather"
+                app:layout_constraintEnd_toEndOf="@+id/switchScreentime"
+                app:layout_constraintHorizontal_bias="0.421"
+                app:layout_constraintStart_toStartOf="@+id/switchScreentime"
+                app:layout_constraintTop_toBottomOf="@+id/switchSleepTracking" />
+
+            <Switch
+                android:id="@+id/switchExternalTemp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:onClick="updateDatabase"
+                android:text="@string/external_temp"
+                app:layout_constraintEnd_toEndOf="@+id/switchWeather"
+                app:layout_constraintStart_toStartOf="@+id/switchWeather"
+                app:layout_constraintTop_toBottomOf="@+id/switchWeather" />
+
+            <Switch
+                android:id="@+id/switchSleepTracking"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:onClick="updateDatabase"
+                android:text="@string/sleep_tracking"
+                app:layout_constraintEnd_toEndOf="@+id/switchScreentime"
+                app:layout_constraintStart_toStartOf="@+id/switchScreentime"
+                app:layout_constraintTop_toBottomOf="@+id/switchScreentime" />
+
+            <Switch
+                android:id="@+id/switchSun"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:onClick="updateDatabase"
+                android:text="@string/sun"
+                app:layout_constraintEnd_toEndOf="@+id/switchExternalTemp"
+                app:layout_constraintStart_toStartOf="@+id/switchExternalTemp"
+                app:layout_constraintTop_toBottomOf="@+id/switchExternalTemp" />
+
+            <Switch
+                android:id="@+id/switchSocialness"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:onClick="updateDatabase"
+                android:text="@string/socialness"
+                app:layout_constraintEnd_toEndOf="@+id/switchSun"
+                app:layout_constraintStart_toStartOf="@+id/switchSun"
+                app:layout_constraintTop_toBottomOf="@+id/switchSun" />
+
+            <Switch
+                android:id="@+id/switchMood"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:onClick="updateDatabase"
+                android:text="@string/mood"
+                app:layout_constraintEnd_toEndOf="@+id/switchSocialness"
+                app:layout_constraintStart_toStartOf="@+id/switchSocialness"
+                app:layout_constraintTop_toBottomOf="@+id/switchSocialness" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <FrameLayout
+            android:id="@+id/fragement_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/drawer_menu" />
+
+
+</androidx.drawerlayout.widget.DrawerLayout>

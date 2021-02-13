@@ -1,3 +1,53 @@
 <resources>
+    <!--Start of Core Strings-->
     <string name="app_name">Guidance</string>
+    <string name="contact">TODO contact email</string>
+    <!--End of Core Strings-->
+
+
+
+    <!--Start of Navigation Strings-->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <!--End of Navigation Strings-->
+
+
+
+    <!--Start of Testing Strings-->
+    <string name="create">Create</string>
+    <string name="display">Display</string>
+    <!--End of Testing Strings-->
+
+
+    <!--Start of Application Strings-->
+    <string name="current_advice">Current Advice</string>
+    <string name="past_advice">Past Advice</string>
+    <string name="graph">Graph</string>
+
+    <string name="passcode">Passcode</string>
+    <string name="questionaire">Questionaire</string>
+    <string name="answer">Answer</string>
+
+    <string name="steps">Steps</string>
+    <string name="distance_traveled">Distance Traveled</string>
+    <string name="location">Location</string>
+    <string name="device_temp">Device Temperature</string>
+    <string name="screentime">Screentime</string>
+    <string name="sleep_tracking">Sleep Tracking</string>
+    <string name="weather">Weather</string>
+    <string name="external_temp">External Temperature</string>
+    <string name="sun">Sun</string>
+    <string name="socialness">Socialness</string>
+    <string name="mood">Mood</string>
+    <!--End of Application Strings-->
+
+
+    <!--Start of Activity Name Strings-->
+    <string name="main_menu">Main Menu</string>
+    <string name="advice">Advice</string>
+    <string name="data">Data Used</string>
+    <string name="justification">Justification</string>
+    <!--End of Activity Name Strings-->
+
+
 </resources>
