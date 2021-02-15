@@ -2,6 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.guidance">
 
+
+    <!--    Permission likely not needed remove after testing-->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/>
+
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,22 +16,25 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Guidance">
 
-        <activity android:name=".activity.AdviceActivity"
-            android:theme="@style/femaleAppTheme.NoActionBar"
-            android:label="@string/advice"/>
+        <activity
+            android:name=".activity.AdviceActivity"
+            android:label="@string/advice"
+            android:theme="@style/femaleAppTheme.NoActionBar" />
 
 
-        <activity android:name=".activity.JustificationActivity"
-            android:theme="@style/femaleAppTheme.NoActionBar"
-            android:label="@string/justification"/>
+        <activity
+            android:name=".activity.JustificationActivity"
+            android:label="@string/justification"
+            android:theme="@style/femaleAppTheme.NoActionBar" />
 
-        <activity android:name=".activity.DataActivity"
-            android:theme="@style/femaleAppTheme.NoActionBar"
-            android:label="@string/data"/>
+        <activity
+            android:name=".activity.DataActivity"
+            android:label="@string/data"
+            android:theme="@style/femaleAppTheme.NoActionBar" />
 
-        <activity android:name=".activity.MainActivity"
-            android:theme="@style/femaleAppTheme.NoActionBar"
-            >
+        <activity
+            android:name=".activity.MainActivity"
+            android:theme="@style/femaleAppTheme.NoActionBar">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,6 +42,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service android:name=".sensorservices.StepsJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
+
+        <service android:name=".sensorservices.DeviceTempJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
+
+
     </application>
 
 </manifest>

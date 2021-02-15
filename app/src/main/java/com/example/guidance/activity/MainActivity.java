@@ -8,7 +8,13 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -16,15 +22,23 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.guidance.model.Ambient_Temperature;
 import com.example.guidance.model.Data_Storing;
 import com.example.guidance.R;
+import com.example.guidance.sensorservices.DeviceTempJobService;
+import com.example.guidance.sensorservices.StepsJobService;
 import com.google.android.material.navigation.NavigationView;
 
 import org.bson.types.ObjectId;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmQuery;
+import io.realm.RealmResults;
 import io.realm.mongodb.User;
 import io.realm.mongodb.sync.SyncConfiguration;
 
@@ -37,8 +51,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //Tag
     private static final String TAG = "MainActivity";
 
-//    private NavigationView navController;
-//    private AppBarConfiguration appBarConfiguration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +61,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
 
-
         realm = Realm.getDefaultInstance();
+
 
 
         currentAdvice = findViewById(R.id.textViewCurrentAdvice);
@@ -92,9 +104,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startActivity(myIntent);
     }
 
-
-    public void firstStartUp(View view) {
-
+    public void implementData_Storing(View view) {
         realm.executeTransactionAsync(r -> {
             // Instantiate the class using the factory function.
             Data_Storing init = r.createObject(Data_Storing.class, new ObjectId());
@@ -117,29 +127,67 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //            TurtleEnthusiast turtleEnthusiast = r.createObject(TurtleEnthusiast.class, primaryKeyValue);
         });
         Toast.makeText(this, "Inserted", Toast.LENGTH_SHORT).show();
+    }
+
+    public void readData_Storing(View view) {
+
+//        RealmQuery<Data_Storing> tasksQuery = realm.where(Data_Storing.class);
+//
+//        Data_Storing test = tasksQuery.findFirst();
+//
+//        assert test != null;
+//
+//        Log.i(TAG, "isSteps " + test.isSteps());
+//        Log.i(TAG, "isMood " + test.isMood());
+//        Log.i(TAG, "isSocialness " + test.isSocialness());
+//        Log.i(TAG, "isDevice_temp " + test.isDevice_temp());
+//        Log.i(TAG, "isLocation " + test.isLocation());
+
+
+    }
+
+    public void deleteAmbient(View view) {
+        realm.executeTransactionAsync(r -> {
+            Log.d(TAG, "deleteAmbient: deleted Ambient_Temperature");
+            r.delete(Ambient_Temperature.class);
+        });
+    }
+
+    public void displayAmbient(View view) {
+        RealmQuery<Ambient_Temperature> tasksQuery = realm.where(Ambient_Temperature.class);
+
+        RealmResults<Ambient_Temperature> test = tasksQuery.findAll();
+        Log.d(TAG, "displayAmbient " + test.size() + " ambient Temp full list: " + test);
+
+    }
+
+
+    public void firstStartUp(View view) {
+
+
+        ComponentName componentName = new ComponentName(this, DeviceTempJobService.class);
+        JobInfo info = new JobInfo.Builder(123, componentName)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+                .setPersisted(true)
+                .setPeriodic(16 * 60 * 1000)
+                .build();
+
+        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        int resultCode = scheduler.schedule(info);
+        Date currentTime = Calendar.getInstance().getTime();
+
+        if (resultCode == 123) {
+            Log.d(TAG, "Job Scheduled " + currentTime);
+        } else {
+            Log.d(TAG, "Job Scheduling Failed " + currentTime);
+        }
 
     }
 
     public void firstRead(View view) {
-
-        RealmQuery<Data_Storing> tasksQuery = realm.where(Data_Storing.class);
-
-        Data_Storing test = tasksQuery.findFirst();
-
-        assert test != null;
-
-        Log.i(TAG, "isSteps " + test.isSteps());
-        Log.i(TAG, "isMood " + test.isMood());
-        Log.i(TAG, "isSocialness " + test.isSocialness());
-        Log.i(TAG, "isDevice_temp " + test.isDevice_temp());
-        Log.i(TAG, "isLocation " + test.isLocation());
-
-
-//        currentAdvice.setText((CharSequence) tasksQuery.findFirst());
-
-//        Data_Storing task = realm.where(Data_Storing.class).equalTo("_id", PRIMARY_KEY_VALUE.get()).findFirst();
-
-
+        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        scheduler.cancel(123);
+        Log.d(TAG, "Job Cancelled");
     }
 
     @Override
@@ -150,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(myIntent);
                 break;
             case R.id.nav_advice:
-                 myIntent = new Intent(this, AdviceActivity.class);
+                myIntent = new Intent(this, AdviceActivity.class);
                 startActivity(myIntent);
                 break;
             case R.id.nav_data:
@@ -166,4 +214,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         return true;
     }
+
+
 }
