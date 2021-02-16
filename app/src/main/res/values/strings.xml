@@ -18,6 +18,10 @@
     <string name="display">Display</string>
     <string name="delete_ambient_temp">Delete All Ambient Temp</string>
     <string name="display_ambient_temp">Display All Ambient Temp</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="isJobRunning">Is Job Running</string>
+
 
     <!--End of Testing Strings-->
 

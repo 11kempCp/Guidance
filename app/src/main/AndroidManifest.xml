@@ -5,7 +5,9 @@
 
     <!--    Permission likely not needed remove after testing-->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/>
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+    <permission android:name="android.permission.BIND_JOB_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
 
     <application
@@ -15,6 +17,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Guidance">
+
+
+        <receiver android:name=".ServiceReciver.AmbientTempServiceReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
 
         <activity
             android:name=".activity.AdviceActivity"
@@ -43,11 +53,15 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".sensorservices.StepsJobService"
-            android:permission="android.permission.BIND_JOB_SERVICE"/>
+        <service
+            android:name=".sensorservices.StepsJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
-        <service android:name=".sensorservices.DeviceTempJobService"
-            android:permission="android.permission.BIND_JOB_SERVICE"/>
+        <service
+            android:name=".sensorservices.AmbientTempJobService"
+            android:label="AmbientTemp Service"
+            android:enabled="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
 
     </application>

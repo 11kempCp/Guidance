@@ -1,20 +1,20 @@
 package com.example.guidance.activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.navigation.NavController;
 
+import android.app.ActivityManager;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -25,22 +25,20 @@ import android.widget.Toast;
 import com.example.guidance.model.Ambient_Temperature;
 import com.example.guidance.model.Data_Storing;
 import com.example.guidance.R;
-import com.example.guidance.sensorservices.DeviceTempJobService;
-import com.example.guidance.sensorservices.StepsJobService;
+import com.example.guidance.ServiceReciver.AmbientTempServiceReceiver;
+import com.example.guidance.scheduler.Util;
+import com.example.guidance.sensorservices.AmbientTempJobService;
 import com.google.android.material.navigation.NavigationView;
 
 import org.bson.types.ObjectId;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
-import io.realm.mongodb.User;
-import io.realm.mongodb.sync.SyncConfiguration;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     static Realm realm;
@@ -62,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Realm.setDefaultConfiguration(realmConfiguration);
 
         realm = Realm.getDefaultInstance();
-
 
 
         currentAdvice = findViewById(R.id.textViewCurrentAdvice);
@@ -161,35 +158,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-
-    public void firstStartUp(View view) {
-
-
-        ComponentName componentName = new ComponentName(this, DeviceTempJobService.class);
-        JobInfo info = new JobInfo.Builder(123, componentName)
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
-                .setPersisted(true)
-                .setPeriodic(16 * 60 * 1000)
-                .build();
-
-        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-        int resultCode = scheduler.schedule(info);
-        Date currentTime = Calendar.getInstance().getTime();
-
-        if (resultCode == 123) {
-            Log.d(TAG, "Job Scheduled " + currentTime);
-        } else {
-            Log.d(TAG, "Job Scheduling Failed " + currentTime);
-        }
-
-    }
-
-    public void firstRead(View view) {
-        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-        scheduler.cancel(123);
-        Log.d(TAG, "Job Cancelled");
-    }
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
@@ -215,5 +183,69 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    public void jobRunning(View view) {
+        boolean test = isJobIdRunning(this, 123);
+        Toast.makeText(this, "Result " + test, Toast.LENGTH_SHORT).show();
+    }
 
+    public static boolean isJobIdRunning(Context context, int JobId) {
+        final JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        for (JobInfo jobInfo : jobScheduler.getAllPendingJobs()) {
+            if (jobInfo.getId() == JobId) {
+                Log.d(TAG, "isJobIdRunning: " + JobId + true);
+                return true;
+            }
+        }
+        Log.d(TAG, "isJobIdRunning: " + JobId + false);
+        return false;
+    }
+
+    Intent mServiceIntent;
+    private AmbientTempJobService mYourService;
+
+    public void start(View view) {
+
+//        mYourService = new DeviceTempJobService();
+//        mServiceIntent = new Intent(this, mYourService.getClass());
+//        if (!isMyServiceRunning(mYourService.getClass())) {
+//            startService(mServiceIntent);
+//        }
+
+        Util.scheduleJob(this);
+//
+
+
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                Log.i("Service status", "Running");
+                return true;
+            }
+        }
+        Log.i("Service status", "Not running");
+        return false;
+    }
+
+
+    public void stop(View view) {
+        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        scheduler.cancel(123);
+        Log.d(TAG, "Job Cancelled");
+    }
+
+
+    @Override
+    protected void onDestroy() {
+//        stopService(mServiceIntent);
+        Log.d(TAG, "onDestroy:");
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction(".ServiceReciver.AmbientTempServiceReceiver");
+        broadcastIntent.setClass(this, AmbientTempServiceReceiver.class);
+        this.sendBroadcast(broadcastIntent);
+
+        super.onDestroy();
+    }
 }

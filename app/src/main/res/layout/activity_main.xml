@@ -38,9 +38,9 @@
                 android:id="@+id/button2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="248dp"
-                android:onClick="firstStartUp"
-                android:text="@string/create"
+                android:layout_marginTop="32dp"
+                android:onClick="start"
+                android:text="@string/start"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textViewCurrentGraph" />
@@ -65,10 +65,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:onClick="firstRead"
-                android:text="@string/display"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
+                android:onClick="stop"
+                android:text="@string/stop"
+                app:layout_constraintEnd_toEndOf="@+id/button2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/button2" />
 
@@ -95,7 +94,7 @@
                 android:layout_marginTop="16dp"
                 android:onClick="displayAmbient"
                 android:text="@string/display_ambient_temp"
-                app:layout_constraintEnd_toEndOf="@+id/button"
+                app:layout_constraintEnd_toEndOf="@+id/button3"
                 app:layout_constraintStart_toStartOf="@+id/button"
                 app:layout_constraintTop_toBottomOf="@+id/button" />
 
@@ -110,6 +109,18 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/deleteAmbientTemp"
                 app:layout_constraintTop_toBottomOf="@+id/deleteAmbientTemp" />
+
+            <Button
+                android:id="@+id/button3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/isJobRunning"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.504"
+                app:layout_constraintStart_toStartOf="@+id/button2"
+                app:layout_constraintTop_toBottomOf="@+id/button2"
+                android:onClick="jobRunning"/>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
