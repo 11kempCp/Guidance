@@ -9,9 +9,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.app.ActivityManager;
-import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -22,23 +20,24 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.guidance.foregroundservices.AmbientTempService;
 import com.example.guidance.model.Ambient_Temperature;
 import com.example.guidance.model.Data_Storing;
 import com.example.guidance.R;
-import com.example.guidance.ServiceReciver.AmbientTempServiceReceiver;
+import com.example.guidance.ServiceReceiver.AmbientTempServiceReceiver;
 import com.example.guidance.scheduler.Util;
 import com.example.guidance.sensorservices.AmbientTempJobService;
 import com.google.android.material.navigation.NavigationView;
 
 import org.bson.types.ObjectId;
 
-import java.util.Calendar;
-import java.util.Date;
-
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
+
+import static com.example.guidance.scheduler.Util.AMBIENT_TEMP;
+import static com.example.guidance.scheduler.Util.isJobScheduled;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     static Realm realm;
@@ -77,8 +76,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
-
     }
 
     @Override
@@ -117,11 +114,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             init.setSun(true);
             init.setSocialness(true);
             init.setMood(true);
-
-
-            // Create a TurtleEnthusiast with a primary key.
-//            ObjectId primaryKeyValue = new ObjectId();
-//            TurtleEnthusiast turtleEnthusiast = r.createObject(TurtleEnthusiast.class, primaryKeyValue);
         });
         Toast.makeText(this, "Inserted", Toast.LENGTH_SHORT).show();
     }
@@ -152,7 +144,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void displayAmbient(View view) {
         RealmQuery<Ambient_Temperature> tasksQuery = realm.where(Ambient_Temperature.class);
-
         RealmResults<Ambient_Temperature> test = tasksQuery.findAll();
         Log.d(TAG, "displayAmbient " + test.size() + " ambient Temp full list: " + test);
 
@@ -184,37 +175,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void jobRunning(View view) {
-        boolean test = isJobIdRunning(this, 123);
+        boolean test = isJobScheduled(this, AMBIENT_TEMP);
         Toast.makeText(this, "Result " + test, Toast.LENGTH_SHORT).show();
     }
 
-    public static boolean isJobIdRunning(Context context, int JobId) {
-        final JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-        for (JobInfo jobInfo : jobScheduler.getAllPendingJobs()) {
-            if (jobInfo.getId() == JobId) {
-                Log.d(TAG, "isJobIdRunning: " + JobId + true);
-                return true;
-            }
-        }
-        Log.d(TAG, "isJobIdRunning: " + JobId + false);
-        return false;
-    }
 
-    Intent mServiceIntent;
-    private AmbientTempJobService mYourService;
 
     public void start(View view) {
 
-//        mYourService = new DeviceTempJobService();
-//        mServiceIntent = new Intent(this, mYourService.getClass());
-//        if (!isMyServiceRunning(mYourService.getClass())) {
-//            startService(mServiceIntent);
-//        }
-
-        Util.scheduleJob(this);
-//
-
-
+        Util.scheduleJob(this, AmbientTempJobService.class, AMBIENT_TEMP, 15);
+//        Util.scheduleJob(this);
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
@@ -232,19 +202,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void stop(View view) {
         JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-        scheduler.cancel(123);
+        scheduler.cancel(AMBIENT_TEMP);
         Log.d(TAG, "Job Cancelled");
     }
 
 
     @Override
-    protected void onDestroy() {
-//        stopService(mServiceIntent);
-        Log.d(TAG, "onDestroy:");
+    protected void onPause() {
+        Log.d(TAG, "onPause:");
         Intent broadcastIntent = new Intent();
-        broadcastIntent.setAction(".ServiceReciver.AmbientTempServiceReceiver");
+        broadcastIntent.setAction("AmbientTempService");
         broadcastIntent.setClass(this, AmbientTempServiceReceiver.class);
         this.sendBroadcast(broadcastIntent);
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+//        Log.d(TAG, "onDestroy:");
+//        Intent broadcastIntent = new Intent();
+//        broadcastIntent.setAction(".ServiceReciver.AmbientTempServiceReceiver");
+//        broadcastIntent.setClass(this, AmbientTempServiceReceiver.class);
+//        this.sendBroadcast(broadcastIntent);
 
         super.onDestroy();
     }

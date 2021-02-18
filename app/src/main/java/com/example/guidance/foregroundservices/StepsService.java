@@ -23,31 +23,22 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Created by Conor K on 16/02/2021.
+ * Created by Conor K on 18/02/2021.
  */
-public class AmbientTempService extends Service implements SensorEventListener {
+public class StepsService extends Service implements SensorEventListener {
 
-    private static final String TAG = "AmbientTempService";
+    public static final String TAG = "StepsService";
 
     private SensorManager mSensorManager = null;
 
     private int sID;
 
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+        Log.d(TAG, "onStartCommand: ");
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        Sensor sensor = mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
+        Sensor sensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
         mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_FASTEST);
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
@@ -63,7 +54,14 @@ public class AmbientTempService extends Service implements SensorEventListener {
         Log.d(TAG, "onStartCommand: startingForeground");
         startForeground(1, notification);
         sID = startId;
-        return START_NOT_STICKY ;
+        return START_NOT_STICKY;
+
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 
     @Override
@@ -83,14 +81,6 @@ public class AmbientTempService extends Service implements SensorEventListener {
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        // do nothing
+
     }
-
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
-
-
 }

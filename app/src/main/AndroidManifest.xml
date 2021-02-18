@@ -6,11 +6,13 @@
     <!--    Permission likely not needed remove after testing-->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
-    <permission android:name="android.permission.BIND_JOB_SERVICE"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+
+    <permission android:name="android.permission.BIND_JOB_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
 
     <application
+        android:name=".app.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -19,7 +21,7 @@
         android:theme="@style/Theme.Guidance">
 
 
-        <receiver android:name=".ServiceReciver.AmbientTempServiceReceiver" >
+        <receiver android:name=".ServiceReceiver.AmbientTempServiceReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
@@ -59,10 +61,12 @@
 
         <service
             android:name=".sensorservices.AmbientTempJobService"
-            android:label="AmbientTemp Service"
             android:enabled="true"
+            android:label="AmbientTemp Service"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
+        <service android:name=".foregroundservices.AmbientTempService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
     </application>
 
