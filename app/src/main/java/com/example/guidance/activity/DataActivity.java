@@ -1,18 +1,18 @@
 package com.example.guidance.activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Switch;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.guidance.R;
 import com.example.guidance.model.Data_Storing;
@@ -47,7 +47,6 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-
         steps = findViewById(R.id.switchSteps);
         distance_traveled = findViewById(R.id.switchDistanceTraveled);
         location = findViewById(R.id.switchLocation);
@@ -69,7 +68,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         steps.setChecked(test.isSteps());
         distance_traveled.setChecked(test.isDistance_traveled());
         location.setChecked(test.isLocation());
-        device_temp.setChecked(test.isDevice_temp());
+        device_temp.setChecked(test.isAmbient_temp());
         screentime.setChecked(test.isScreentime());
         sleep_tracking.setChecked(test.isSleep_tracking());
         weather.setChecked(test.isWeather());
@@ -106,6 +105,10 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_justification:
                 myIntent = new Intent(this, JustificationActivity.class);
+                startActivity(myIntent);
+                break;
+            case R.id.nav_debug:
+                myIntent = new Intent(this, DebugActivity.class);
                 startActivity(myIntent);
                 break;
         }
@@ -151,7 +154,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 Data_Storing data = r.where(Data_Storing.class).findFirst();
                 // Update properties on the instance.
                 // This change is saved to the realm.
-                data.setDevice_temp(device_temp.isChecked());
+                data.setAmbient_temp(device_temp.isChecked());
                 Log.i(TAG, "Updated Data_Storing: device_temp " + device_temp.isChecked());
 
             });

@@ -9,23 +9,23 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 /**
- * Created by Conor K on 14/02/2021.
+ * Created by Conor K on 19/02/2021.
  */
-public class Ambient_Temperature extends RealmObject {
+public class Step extends RealmObject {
 
     @PrimaryKey
     private ObjectId _id;
     private Date dateTime;
-    private float ambientTemp;
+    private float stepCount;
 
-    public Ambient_Temperature(){
+    public Step(){
 
     }
 
-    public Ambient_Temperature(ObjectId _id, Date dateTime, int ambientTemp) {
+    public Step(ObjectId _id, Date dateTime, float stepCount) {
         this._id = _id;
         this.dateTime = dateTime;
-        this.ambientTemp = ambientTemp;
+        this.stepCount = stepCount;
     }
 
     public ObjectId get_id() {
@@ -44,11 +44,11 @@ public class Ambient_Temperature extends RealmObject {
         this.dateTime = dateTime;
     }
 
-    public float getAmbientTemp() {
-        return ambientTemp;
+    public float getStepCount() {
+        return stepCount;
     }
 
-    public void setAmbientTemp(float ambientTemp) {
-        this.ambientTemp = ambientTemp;
+    public void setStepCount(float stepCount) {
+        this.stepCount = stepCount;
     }
 }

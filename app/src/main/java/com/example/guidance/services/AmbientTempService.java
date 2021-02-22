@@ -1,4 +1,4 @@
-package com.example.guidance.foregroundservices;
+package com.example.guidance.services;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -29,10 +29,9 @@ public class AmbientTempService extends Service implements SensorEventListener {
 
     private static final String TAG = "AmbientTempService";
 
-    private SensorManager mSensorManager = null;
+    private SensorManager mSensorManager;
 
     private int sID;
-
 
     @Override
     public void onCreate() {
@@ -49,18 +48,17 @@ public class AmbientTempService extends Service implements SensorEventListener {
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         Sensor sensor = mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
         mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_FASTEST);
+
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-
         //TODO Make better notification
         Notification notification = new NotificationCompat.Builder(this, App.CHANNEL_ID)
-                .setContentTitle("Example Service")
-                .setContentText("Guidance")
+                .setContentTitle(getString(R.string.ambient_temp))
+                .setContentText(getString(R.string.notification_ambient_temp))
                 .setSmallIcon(R.drawable.ic_data)
                 .setContentIntent(pendingIntent)
                 .build();
 
-        Log.d(TAG, "onStartCommand: startingForeground");
         startForeground(1, notification);
         sID = startId;
         return START_NOT_STICKY ;
@@ -70,10 +68,8 @@ public class AmbientTempService extends Service implements SensorEventListener {
     public void onSensorChanged(SensorEvent event) {
         float sensorValue = event.values[0];
         Date currentTime = Calendar.getInstance().getTime();
-        Log.d(TAG, "onSensorChanged: " + sensorValue + " currentTime " + currentTime);
-        //TODO change current time to event.gettime
+        Log.d(TAG, "Temp Sensor Changed: " + sensorValue + " currentTime " + currentTime);
         DatabaseFunctions.saveAmbientTempToDatabase(getApplicationContext(), sensorValue, currentTime);
-        Log.d(TAG, "Unregistering Sensor & Service");
         // stop the sensor and service
         mSensorManager.unregisterListener(this);
         stopForeground(true);

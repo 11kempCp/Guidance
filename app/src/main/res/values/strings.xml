@@ -5,17 +5,24 @@
     <!--End of Core Strings-->
 
 
-
     <!--Start of Navigation Strings-->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <!--End of Navigation Strings-->
 
 
+    <!--Start of Storage Strings-->
+    <string name="notification_ambient_temp">Waiting For Ambient Temperature Change</string>
+    <string name="notification_steps">Step Counter</string>
+
+
+    <!--End of Storage Strings-->
+
 
     <!--Start of Testing Strings-->
     <string name="create">Create</string>
     <string name="display">Display</string>
+    <string name="delete">Delete</string>
     <string name="delete_ambient_temp">Delete All Ambient Temp</string>
     <string name="display_ambient_temp">Display All Ambient Temp</string>
     <string name="start">Start</string>
@@ -42,7 +49,7 @@
     <string name="screentime">Screentime</string>
     <string name="sleep_tracking">Sleep Tracking</string>
     <string name="weather">Weather</string>
-    <string name="external_temp">External Temperature</string>
+    <string name="ambient_temp">Ambient Temperature</string>
     <string name="sun">Sun</string>
     <string name="socialness">Socialness</string>
     <string name="mood">Mood</string>
@@ -54,6 +61,9 @@
     <string name="advice">Advice</string>
     <string name="data">Data Used</string>
     <string name="justification">Justification</string>
+    <string name="getsteps">getSteps</string>
+    <string name="resetsensor">resetSensor</string>
+    <string name="debug">Debug</string>
     <!--End of Activity Name Strings-->
 
 

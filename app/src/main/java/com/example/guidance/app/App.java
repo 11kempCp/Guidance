@@ -13,7 +13,7 @@ import androidx.annotation.RequiresApi;
  */
 public class App extends Application {
 
-    public static final String CHANNEL_ID = "exampleServiceChannel";
+    public static final String CHANNEL_ID = "Storing Data";
 
     @Override
     public void onCreate() {
@@ -24,14 +24,10 @@ public class App extends Application {
 
     private void createNotificationChannel() {
 
-
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationManager manager = getSystemService(NotificationManager.class);
-
-            NotificationChannel serviceChannel = new NotificationChannel(CHANNEL_ID,"Example Service Channel", NotificationManager.IMPORTANCE_DEFAULT);
-
-
+            NotificationChannel serviceChannel = new NotificationChannel(CHANNEL_ID,"Storing Data", NotificationManager.IMPORTANCE_LOW);
+//            serviceChannel.setSound(null,null);
             manager.createNotificationChannel(serviceChannel);
         }
 

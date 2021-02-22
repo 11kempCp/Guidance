@@ -73,6 +73,10 @@ public class JustificationActivity extends AppCompatActivity implements Navigati
                 myIntent = new Intent(this, JustificationActivity.class);
                 startActivity(myIntent);
                 break;
+            case R.id.nav_debug:
+                myIntent = new Intent(this, DebugActivity.class);
+                startActivity(myIntent);
+                break;
         }
         return true;
     }

@@ -1,53 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.guidance">
-
-
-    <!--    Permission likely not needed remove after testing-->
+    <!-- <uses-feature -->
+    <!-- android:name="android.hardware.sensor.stepcounter" -->
+    <!-- android:required="true" /> -->
+    <!-- Permission likely not needed remove after testing -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
 
     <permission android:name="android.permission.BIND_JOB_SERVICE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name=".app.App"
-        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Guidance">
+        <activity
+            android:name=".activity.DebugActivity"
+            android:label="@string/debug"
+            android:theme="@style/femaleAppTheme.NoActionBar" />
 
-
-        <receiver android:name=".ServiceReceiver.AmbientTempServiceReceiver">
+        <receiver android:name=".ServiceReceiver.onPauseServiceReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
-
         <activity
             android:name=".activity.AdviceActivity"
             android:label="@string/advice"
             android:theme="@style/femaleAppTheme.NoActionBar" />
-
-
         <activity
             android:name=".activity.JustificationActivity"
             android:label="@string/justification"
             android:theme="@style/femaleAppTheme.NoActionBar" />
-
         <activity
             android:name=".activity.DataActivity"
             android:label="@string/data"
             android:theme="@style/femaleAppTheme.NoActionBar" />
-
         <activity
             android:name=".activity.MainActivity"
             android:theme="@style/femaleAppTheme.NoActionBar">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -56,18 +53,19 @@
         </activity>
 
         <service
-            android:name=".sensorservices.StepsJobService"
+            android:name=".jobServices.StepsJobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-
         <service
-            android:name=".sensorservices.AmbientTempJobService"
+            android:name=".services.StepsService"
+            android:permission="android.permission.ACTIVITY_RECOGNITION" />
+        <service
+            android:name=".jobServices.AmbientTempJobService"
             android:enabled="true"
             android:label="AmbientTemp Service"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-
-        <service android:name=".foregroundservices.AmbientTempService"
+        <service
+            android:name=".services.AmbientTempService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-
     </application>
 
 </manifest>

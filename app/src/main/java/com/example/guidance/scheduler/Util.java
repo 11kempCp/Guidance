@@ -1,15 +1,33 @@
 package com.example.guidance.scheduler;
 
+import android.app.Activity;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
-import com.example.guidance.sensorservices.AmbientTempJobService;
+import androidx.core.content.ContextCompat;
 
+import com.example.guidance.jobServices.AmbientTempJobService;
+import com.example.guidance.jobServices.StepsJobService;
+import com.example.guidance.model.Ambient_Temperature;
+import com.example.guidance.model.Data_Storing;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+
+import static android.Manifest.permission.ACTIVITY_RECOGNITION;
+import static androidx.core.app.ActivityCompat.requestPermissions;
+import static androidx.core.content.ContextCompat.checkSelfPermission;
+import static com.example.guidance.realm.DatabaseFunctions.getDataStoring;
+
 
 /**
  * Created by Conor K on 15/02/2021.
@@ -20,14 +38,13 @@ public class Util {
 
     public static final int AMBIENT_TEMP = 1;
     public static final int STEPS = 2;
+    public static final int LOCATION = 3;
+
+
+    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION);
 
 
     public static boolean scheduleJob(Context context, Class<?> serviceClass, int jobId, int minutes) {
-
-//        if(isJobScheduled(context,jobId)){
-//            Log.d(TAG, "Job Already Scheduled");
-//            return true;
-//        }
 
         Date currentTime = Calendar.getInstance().getTime();
 
@@ -44,14 +61,154 @@ public class Util {
             Log.d(TAG, "Job " + jobId + "  Scheduled " + currentTime);
             return true;
         } else {
-            Log.d(TAG, "Job "+ jobId + " Scheduling Failed " + " resultCode: " + currentTime);
+            Log.d(TAG, "Job " + jobId + " Scheduling Failed " + " resultCode: " + currentTime);
             return false;
         }
     }
 
 
+    public static void requestPerms(Context context, Activity activity) {
+//        ACTIVITY_RECOGNITION Request, needed for Step Counter
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (ContextCompat.checkSelfPermission(context, ACTIVITY_RECOGNITION)
+                    == PackageManager.PERMISSION_DENIED) {
+                //ask for permission
+                requestPermissions(activity, new String[]{ACTIVITY_RECOGNITION}, STEPS);
+            }
+        }
 
-    //TODO ensure that this is redundant
+
+    }
+
+    public static void scheduledUnscheduledJobs(Context context) {
+
+        List<Integer> unscheduledJobs = unscheduledJobs(context);
+
+        Data_Storing data = getDataStoring(context);
+        assert data != null;
+        PackageManager packageManager = context.getPackageManager();
+
+
+
+        for (int job : unscheduledJobs) {
+            //TODO add more Jobs that are completed to the switch statement here
+            switch (job) {
+                case AMBIENT_TEMP:
+
+                    //TODO change minutes to a call from the strings file
+                    if (data.isAmbient_temp()) {
+                        checkPermissionsAndSchedule(context,
+                                AMBIENT_TEMP,
+                                AmbientTempJobService.class,
+                                15,
+                                packageManager,
+                                "none",
+                                PackageManager.FEATURE_SENSOR_AMBIENT_TEMPERATURE);
+                    }
+
+
+//                    text = "AMBIENT_TEMP ";
+//                    // change from 15 minutes to another time schedule
+//
+//                    if (packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_AMBIENT_TEMPERATURE) & data.isAmbient_temp()) {
+//                        boolean scheduled = Util.scheduleJob(context, AmbientTempJobService.class, AMBIENT_TEMP, 15);
+//                        Log.d(TAG, "Scheduled " + text + scheduled);
+//                    } else {
+//                        Log.d(TAG, "FEATURE_SENSOR_AMBIENT_TEMPERATURE = false");
+//                    }
+
+
+                    break;
+                case STEPS:
+//                    text = "STEPS ";
+//                    permission = ACTIVITY_RECOGNITION;
+//                    tfs = PackageManager.FEATURE_SENSOR_STEP_COUNTER;
+//
+//                    if (packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_COUNTER) & data.isSteps()) {
+//                        Log.d(TAG, "FEATURE_SENSOR_STEP_COUNTER " + true);
+//                        if (checkSelfPermission(context, ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED) {
+//                            Log.d(TAG, "Permission " + permission + true);
+//                            // change from 15 minutes to once per day
+//                            boolean scheduled = Util.scheduleJob(context, StepsJobService.class, STEPS, 15);
+//                            Log.d(TAG, "Scheduled " + text + scheduled);
+//                        }
+//                    } else {
+//                        Log.d(TAG, tfs + false);
+//                    }
+
+                    //TODO change minutes to a call from the strings file
+                    if (data.isSteps()) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            checkPermissionsAndSchedule(context,
+                                    STEPS,
+                                    StepsJobService.class,
+                                    15,
+                                    packageManager,
+                                    ACTIVITY_RECOGNITION,
+                                    PackageManager.FEATURE_SENSOR_STEP_COUNTER);
+                        }
+                    }
+
+
+                    break;
+                case LOCATION:
+
+
+
+
+                    break;
+            }
+
+
+        }
+
+    }
+
+    public static void checkPermissionsAndSchedule(Context context, int utilInt, Class<?> t, int minutes, PackageManager packageManager, String permission, String fa) {
+        if (packageManager.hasSystemFeature(fa)) {
+            Log.d(TAG, fa + true);
+
+            if (permission.equals("none")) {
+                boolean scheduled = Util.scheduleJob(context, t, utilInt, minutes);
+                Log.d(TAG, "Scheduled " + utilInt + " " + scheduled);
+
+            } else if (checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED) {
+                Log.d(TAG, "Permission " + permission + true);
+                boolean scheduled = Util.scheduleJob(context, t, utilInt, minutes);
+                Log.d(TAG, "Scheduled " + utilInt + " " + scheduled);
+            }
+        } else {
+            Log.d(TAG, permission + false);
+        }
+    }
+
+    public static List<Integer> unscheduledJobs(Context context) {
+        final JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+
+//        Log.d(TAG, "scheduleUnscheduledJobs: ");
+        List<Integer> temp = new ArrayList<>();
+        List<Integer> testing = new ArrayList<>();
+
+        for (JobInfo jobInfo : jobScheduler.getAllPendingJobs()) {
+            testing.add(jobInfo.getId());
+        }
+
+
+        for (int something : utilList) {
+
+            if (jobScheduler.getPendingJob(something) == null) {
+                if (!testing.contains(something)) {
+                    temp.add(something);
+                }
+            }
+
+
+        }
+
+        return temp;
+    }
+
+
     public static boolean isJobScheduled(Context context, int JobId) {
         final JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         for (JobInfo jobInfo : jobScheduler.getAllPendingJobs()) {
@@ -60,22 +217,7 @@ public class Util {
                 return true;
             }
         }
-        Log.d(TAG, "isJobScheduled: " + JobId + " " +  false);
+        Log.d(TAG, "isJobScheduled: " + JobId + " " + false);
         return false;
     }
-
-
-//    private boolean isMyServiceRunning(Class<?> serviceClass) {
-//        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-//        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-//            if (serviceClass.getName().equals(service.service.getClassName())) {
-//                Log.d("Service status", "Running");
-//                return true;
-//            }
-//        }
-//        Log.d("Service status", "Not running");
-//        return false;
-//    }
-
-
 }

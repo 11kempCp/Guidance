@@ -1,4 +1,4 @@
-package com.example.guidance.sensorservices;
+package com.example.guidance.jobServices;
 
 import android.app.job.JobParameters;
 import android.app.job.JobService;
@@ -9,8 +9,9 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
-import com.example.guidance.foregroundservices.AmbientTempService;
+import com.example.guidance.services.AmbientTempService;
 import com.example.guidance.realm.DatabaseFunctions;
 
 import java.util.Calendar;
@@ -24,13 +25,11 @@ public class AmbientTempJobService extends JobService
 
 
     private static final String TAG = "AmbientTempJobService";
-    private SensorManager mSensorManager = null;
+    private SensorManager mSensorManager;
 
 
     @Override
     public boolean onStartJob(JobParameters params) {
-        Log.d(TAG, "onStartJob");
-
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Intent serviceIntent = new Intent(this, AmbientTempService.class);
@@ -64,8 +63,8 @@ public class AmbientTempJobService extends JobService
         float sensorValue = event.values[0];
         Date currentTime = Calendar.getInstance().getTime();
         Log.d(TAG, "onSensorChanged: " + sensorValue);
+//        Toast.makeText(this, "Ambient Temp Sensor Changed " + sensorValue, Toast.LENGTH_SHORT).show();
         DatabaseFunctions.saveAmbientTempToDatabase(getApplicationContext(), sensorValue, currentTime);
-        Log.d(TAG, "unregistering sensor and stopping service ");
         // stop the sensor and service
         mSensorManager.unregisterListener(this);
         stopSelf();

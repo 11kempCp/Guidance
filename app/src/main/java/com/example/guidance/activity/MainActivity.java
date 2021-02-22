@@ -1,43 +1,29 @@
 package com.example.guidance.activity;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import android.app.ActivityManager;
-import android.app.job.JobScheduler;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.example.guidance.foregroundservices.AmbientTempService;
-import com.example.guidance.model.Ambient_Temperature;
-import com.example.guidance.model.Data_Storing;
 import com.example.guidance.R;
-import com.example.guidance.ServiceReceiver.AmbientTempServiceReceiver;
-import com.example.guidance.scheduler.Util;
-import com.example.guidance.sensorservices.AmbientTempJobService;
+import com.example.guidance.ServiceReceiver.onPauseServiceReceiver;
+import com.example.guidance.realm.DatabaseFunctions;
 import com.google.android.material.navigation.NavigationView;
-
-import org.bson.types.ObjectId;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
-import io.realm.RealmQuery;
-import io.realm.RealmResults;
 
-import static com.example.guidance.scheduler.Util.AMBIENT_TEMP;
-import static com.example.guidance.scheduler.Util.isJobScheduled;
+import static com.example.guidance.realm.DatabaseFunctions.implementData_Storing;
+import static com.example.guidance.scheduler.Util.requestPerms;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     static Realm realm;
@@ -54,13 +40,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //TODO remove this implementation in favour of passcode implementation
+        if (!DatabaseFunctions.isDataStoringInitialised(this)) {
+            implementData_Storing(this);
+        }
+
         Realm.init(this);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
 
+
+        requestPerms(this, this);
+
         realm = Realm.getDefaultInstance();
-
-
         currentAdvice = findViewById(R.id.textViewCurrentAdvice);
         currentGraph = findViewById(R.id.textViewCurrentGraph);
         drawer = findViewById(R.id.drawer_layout_main_activity);
@@ -98,55 +90,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startActivity(myIntent);
     }
 
-    public void implementData_Storing(View view) {
-        realm.executeTransactionAsync(r -> {
-            // Instantiate the class using the factory function.
-            Data_Storing init = r.createObject(Data_Storing.class, new ObjectId());
-            // Configure the instance.
-            init.setSteps(true);
-            init.setDistance_traveled(true);
-            init.setLocation(true);
-            init.setDevice_temp(true);
-            init.setScreentime(true);
-            init.setSleep_tracking(true);
-            init.setWeather(true);
-            init.setExternal_temp(true);
-            init.setSun(true);
-            init.setSocialness(true);
-            init.setMood(true);
-        });
-        Toast.makeText(this, "Inserted", Toast.LENGTH_SHORT).show();
+    @Override
+    protected void onPause() {
+        Log.d(TAG, "onPause:");
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction("onPauseServiceReceiver");
+        broadcastIntent.setClass(this, onPauseServiceReceiver.class);
+        this.sendBroadcast(broadcastIntent);
+        super.onPause();
     }
 
-    public void readData_Storing(View view) {
-
-//        RealmQuery<Data_Storing> tasksQuery = realm.where(Data_Storing.class);
-//
-//        Data_Storing test = tasksQuery.findFirst();
-//
-//        assert test != null;
-//
-//        Log.i(TAG, "isSteps " + test.isSteps());
-//        Log.i(TAG, "isMood " + test.isMood());
-//        Log.i(TAG, "isSocialness " + test.isSocialness());
-//        Log.i(TAG, "isDevice_temp " + test.isDevice_temp());
-//        Log.i(TAG, "isLocation " + test.isLocation());
-
-
-    }
-
-    public void deleteAmbient(View view) {
-        realm.executeTransactionAsync(r -> {
-            Log.d(TAG, "deleteAmbient: deleted Ambient_Temperature");
-            r.delete(Ambient_Temperature.class);
-        });
-    }
-
-    public void displayAmbient(View view) {
-        RealmQuery<Ambient_Temperature> tasksQuery = realm.where(Ambient_Temperature.class);
-        RealmResults<Ambient_Temperature> test = tasksQuery.findAll();
-        Log.d(TAG, "displayAmbient " + test.size() + " ambient Temp full list: " + test);
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     @Override
@@ -168,63 +124,83 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 myIntent = new Intent(this, JustificationActivity.class);
                 startActivity(myIntent);
                 break;
+            case R.id.nav_debug:
+                myIntent = new Intent(this, DebugActivity.class);
+                startActivity(myIntent);
+                break;
         }
-
 
         return true;
     }
 
-    public void jobRunning(View view) {
-        boolean test = isJobScheduled(this, AMBIENT_TEMP);
-        Toast.makeText(this, "Result " + test, Toast.LENGTH_SHORT).show();
-    }
+//    public void delete(View view) {
+//        realm.executeTransactionAsync(r -> {
+//            Log.d(TAG, "deleteAmbient: deleted Ambient_Temperature");
+//            r.delete(Ambient_Temperature.class);
+//        });
+//
+//        realm.executeTransactionAsync(r -> {
+//            Log.d(TAG, "deleteAmbient: deleted Step");
+//            r.delete(Step.class);
+//        });
+//
+//        Toast.makeText(this, "Deleted Everything In Realm", Toast.LENGTH_SHORT).show();
+//    }
+
+//    public void display(View view) {
+//        RealmQuery<Ambient_Temperature> ambient_temperatureRealmQuery = realm.where(Ambient_Temperature.class);
+//        RealmResults<Ambient_Temperature> ambient_temp = ambient_temperatureRealmQuery.findAll();
+//        Log.d(TAG, "displayAmbient " + ambient_temp.size() + " ambient Temp full list: " + ambient_temp);
+//
+//
+//        RealmQuery<Step> stepRealmQuery = realm.where(Step.class);
+//        RealmResults<Step> step = stepRealmQuery.findAll();
+//        Log.d(TAG, "displaySteps " + step.size() + " steps full list: " + step);
+//
+//        RealmQuery<Data_Storing> dataStoringQuery = realm.where(Data_Storing.class);
+//        RealmResults<Data_Storing> data = dataStoringQuery.findAll();
+//        Log.d(TAG, "displayData " + data.size() + " data full list: " + data);
+//
+//
+////        Toast.makeText(this, "displayAmbient " + ambient_temp.size() + " ambient Temp full list: " + ambient_temp, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "displaySteps " + step.size() + " steps full list: " + step, Toast.LENGTH_SHORT).show();
+//    }
 
 
 
-    public void start(View view) {
-
-        Util.scheduleJob(this, AmbientTempJobService.class, AMBIENT_TEMP, 15);
-//        Util.scheduleJob(this);
-    }
-
-    private boolean isMyServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                Log.i("Service status", "Running");
-                return true;
-            }
-        }
-        Log.i("Service status", "Not running");
-        return false;
-    }
-
-
-    public void stop(View view) {
-        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-        scheduler.cancel(AMBIENT_TEMP);
-        Log.d(TAG, "Job Cancelled");
-    }
+//    public void jobRunning(View view) {
+//
+//        List<Integer> test = unscheduledJobs(this);
+//        Toast.makeText(this, "Jobs " + test + " Not scheduled", Toast.LENGTH_SHORT).show();
+//        Log.d(TAG, "Jobs " + test + " Not scheduled");
+//    }
+//
+//
+//    public void start(View view) {
+//        scheduledUnscheduledJobs(this);
+//    }
+//
+//
+//    public void stop(View view) {
+//        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+//        for (int t : utilList) {
+//            scheduler.cancel(t);
+//        }
+//
+//        Log.d(TAG, "All Jobs Cancelled");
+//        Toast.makeText(this, "All Jobs Cancelled", Toast.LENGTH_SHORT).show();
+//    }
 
 
-    @Override
-    protected void onPause() {
-        Log.d(TAG, "onPause:");
-        Intent broadcastIntent = new Intent();
-        broadcastIntent.setAction("AmbientTempService");
-        broadcastIntent.setClass(this, AmbientTempServiceReceiver.class);
-        this.sendBroadcast(broadcastIntent);
-        super.onPause();
-    }
 
-    @Override
-    protected void onDestroy() {
-//        Log.d(TAG, "onDestroy:");
-//        Intent broadcastIntent = new Intent();
-//        broadcastIntent.setAction(".ServiceReciver.AmbientTempServiceReceiver");
-//        broadcastIntent.setClass(this, AmbientTempServiceReceiver.class);
-//        this.sendBroadcast(broadcastIntent);
 
-        super.onDestroy();
-    }
+
+//    public void getSteps(View view) {
+//        Toast.makeText(this, "Steps " + StepsService.getmSteps(), Toast.LENGTH_SHORT).show();
+//    }
+//
+//    public void resetSteps(View view) {
+//
+//        StepsService.resetSensor();
+//    }
 }

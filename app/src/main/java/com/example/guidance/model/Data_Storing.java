@@ -17,7 +17,7 @@ public class Data_Storing extends RealmObject {
     private boolean steps;
     private boolean distance_traveled;
     private boolean location;
-    private boolean device_temp;
+    private boolean ambient_temp;
     private boolean screentime;
     private boolean sleep_tracking;
     private boolean weather;
@@ -30,12 +30,12 @@ public class Data_Storing extends RealmObject {
 
     }
 
-    public Data_Storing(ObjectId _id, boolean steps, boolean distance_traveled, boolean location, boolean device_temp, boolean screentime, boolean sleep_tracking, boolean weather, boolean external_temp, boolean sun, boolean socialness, boolean mood) {
+    public Data_Storing(ObjectId _id, boolean steps, boolean distance_traveled, boolean location, boolean ambient_temp, boolean screentime, boolean sleep_tracking, boolean weather, boolean external_temp, boolean sun, boolean socialness, boolean mood) {
         this._id = _id;
         this.steps = steps;
         this.distance_traveled = distance_traveled;
         this.location = location;
-        this.device_temp = device_temp;
+        this.ambient_temp = ambient_temp;
         this.screentime = screentime;
         this.sleep_tracking = sleep_tracking;
         this.weather = weather;
@@ -77,12 +77,12 @@ public class Data_Storing extends RealmObject {
         this.location = location;
     }
 
-    public boolean isDevice_temp() {
-        return device_temp;
+    public boolean isAmbient_temp() {
+        return ambient_temp;
     }
 
-    public void setDevice_temp(boolean device_temp) {
-        this.device_temp = device_temp;
+    public void setAmbient_temp(boolean ambient_temp) {
+        this.ambient_temp = ambient_temp;
     }
 
     public boolean isScreentime() {
