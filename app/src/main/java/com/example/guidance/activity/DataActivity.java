@@ -111,6 +111,10 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 myIntent = new Intent(this, DebugActivity.class);
                 startActivity(myIntent);
                 break;
+            case R.id.nav_daily_question:
+                myIntent = new Intent(this, DailyQuestionActivity.class);
+                startActivity(myIntent);
+                break;
         }
 
 

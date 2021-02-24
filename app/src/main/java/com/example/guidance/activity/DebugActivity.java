@@ -68,13 +68,18 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
 
     public void delete(View view) {
         realm.executeTransactionAsync(r -> {
-            Log.d(TAG, "deleteAmbient: deleted Ambient_Temperature");
+            Log.d(TAG, "deleted Ambient_Temperature");
             r.delete(Ambient_Temperature.class);
         });
 
         realm.executeTransactionAsync(r -> {
-            Log.d(TAG, "deleteAmbient: deleted Step");
+            Log.d(TAG, "deleted Step");
             r.delete(Step.class);
+        });
+
+        realm.executeTransactionAsync(r -> {
+            Log.d(TAG, "deleted Data_Storing");
+            r.delete(Data_Storing.class);
         });
 
         Toast.makeText(this, "Deleted Everything In Realm", Toast.LENGTH_SHORT).show();
@@ -162,6 +167,10 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
                 break;
             case R.id.nav_debug:
                 myIntent = new Intent(this, DebugActivity.class);
+                startActivity(myIntent);
+                break;
+            case R.id.nav_daily_question:
+                myIntent = new Intent(this, DailyQuestionActivity.class);
                 startActivity(myIntent);
                 break;
         }

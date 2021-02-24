@@ -8,13 +8,12 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 
+import com.example.guidance.R;
 import com.example.guidance.jobServices.AmbientTempJobService;
 import com.example.guidance.jobServices.StepsJobService;
-import com.example.guidance.model.Ambient_Temperature;
 import com.example.guidance.model.Data_Storing;
 
 import java.util.ArrayList;
@@ -27,6 +26,8 @@ import static android.Manifest.permission.ACTIVITY_RECOGNITION;
 import static androidx.core.app.ActivityCompat.requestPermissions;
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 import static com.example.guidance.realm.DatabaseFunctions.getDataStoring;
+import static com.example.guidance.realm.DatabaseFunctions.initialiseDataStoring;
+import static com.example.guidance.realm.DatabaseFunctions.isDataStoringInitialised;
 
 
 /**
@@ -39,9 +40,11 @@ public class Util {
     public static final int AMBIENT_TEMP = 1;
     public static final int STEPS = 2;
     public static final int LOCATION = 3;
+    public static final int SOCIALNESS = 4;
+    public static final int MOOD = 5;
 
 
-    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION);
+    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, SOCIALNESS, MOOD);
 
 
     public static boolean scheduleJob(Context context, Class<?> serviceClass, int jobId, int minutes) {
@@ -84,27 +87,32 @@ public class Util {
 
         List<Integer> unscheduledJobs = unscheduledJobs(context);
 
-        Data_Storing data = getDataStoring(context);
-        assert data != null;
-        PackageManager packageManager = context.getPackageManager();
+        //TODO remove this implementation in favour of passcode implementation
+        Data_Storing data;
+        if (!isDataStoringInitialised(context)) {
+            initialiseDataStoring(context);
+        }
 
+        data = getDataStoring(context);
 
+        if(data != null){
 
-        for (int job : unscheduledJobs) {
-            //TODO add more Jobs that are completed to the switch statement here
-            switch (job) {
-                case AMBIENT_TEMP:
+            PackageManager packageManager = context.getPackageManager();
+            for (int job : unscheduledJobs) {
+                //TODO add more Jobs that are completed to the switch statement here
+                switch (job) {
+                    case AMBIENT_TEMP:
 
-                    //TODO change minutes to a call from the strings file
-                    if (data.isAmbient_temp()) {
-                        checkPermissionsAndSchedule(context,
-                                AMBIENT_TEMP,
-                                AmbientTempJobService.class,
-                                15,
-                                packageManager,
-                                "none",
-                                PackageManager.FEATURE_SENSOR_AMBIENT_TEMPERATURE);
-                    }
+                        //TODO change minutes to a call from the strings file
+                        if (data.isAmbient_temp()) {
+                            checkPermissionsAndSchedule(context,
+                                    AMBIENT_TEMP,
+                                    AmbientTempJobService.class,
+                                    context.getResources().getInteger(R.integer.ambient_temp),
+                                    packageManager,
+                                    "none",
+                                    PackageManager.FEATURE_SENSOR_AMBIENT_TEMPERATURE);
+                        }
 
 
 //                    text = "AMBIENT_TEMP ";
@@ -118,8 +126,8 @@ public class Util {
 //                    }
 
 
-                    break;
-                case STEPS:
+                        break;
+                    case STEPS:
 //                    text = "STEPS ";
 //                    permission = ACTIVITY_RECOGNITION;
 //                    tfs = PackageManager.FEATURE_SENSOR_STEP_COUNTER;
@@ -136,31 +144,46 @@ public class Util {
 //                        Log.d(TAG, tfs + false);
 //                    }
 
-                    //TODO change minutes to a call from the strings file
-                    if (data.isSteps()) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                            checkPermissionsAndSchedule(context,
-                                    STEPS,
-                                    StepsJobService.class,
-                                    15,
-                                    packageManager,
-                                    ACTIVITY_RECOGNITION,
-                                    PackageManager.FEATURE_SENSOR_STEP_COUNTER);
+                        //TODO change minutes to a call from the strings file
+                        if (data.isSteps()) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                checkPermissionsAndSchedule(context,
+                                        STEPS,
+                                        StepsJobService.class,
+                                        context.getResources().getInteger(R.integer.steps),
+                                        packageManager,
+                                        ACTIVITY_RECOGNITION,
+                                        PackageManager.FEATURE_SENSOR_STEP_COUNTER);
+                            }
                         }
-                    }
 
 
-                    break;
-                case LOCATION:
+                        break;
+                    case LOCATION:
+                        if (data.isLocation()) {
+                            Log.d(TAG, "scheduledUnscheduledJobs: " + LOCATION);
+                        }
+                        break;
 
+                    case SOCIALNESS:
+                        if (data.isSocialness()) {
+                            Log.d(TAG, "scheduledUnscheduledJobs: " + SOCIALNESS);
+                        }
+                        break;
 
+                    case MOOD:
 
-
-                    break;
+                        if (data.isMood()) {
+                            Log.d(TAG, "scheduledUnscheduledJobs: " + MOOD);
+                        }
+                        break;
+                }
             }
 
-
+        }else{
+            Log.d(TAG, "scheduledUnscheduledJobs: data == null");
         }
+
 
     }
 

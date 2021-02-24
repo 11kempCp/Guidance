@@ -22,6 +22,8 @@ import com.example.guidance.realm.DatabaseFunctions;
 import java.util.Calendar;
 import java.util.Date;
 
+import static com.example.guidance.scheduler.Util.AMBIENT_TEMP;
+
 /**
  * Created by Conor K on 16/02/2021.
  */
@@ -59,7 +61,7 @@ public class AmbientTempService extends Service implements SensorEventListener {
                 .setContentIntent(pendingIntent)
                 .build();
 
-        startForeground(1, notification);
+        startForeground(AMBIENT_TEMP, notification);
         sID = startId;
         return START_NOT_STICKY ;
     }

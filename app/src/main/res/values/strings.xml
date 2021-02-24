@@ -15,7 +15,6 @@
     <string name="notification_ambient_temp">Waiting For Ambient Temperature Change</string>
     <string name="notification_steps">Step Counter</string>
 
-
     <!--End of Storage Strings-->
 
 
@@ -64,7 +63,15 @@
     <string name="getsteps">getSteps</string>
     <string name="resetsensor">resetSensor</string>
     <string name="debug">Debug</string>
+    <string name="daily_question">Daily Questions</string>
     <!--End of Activity Name Strings-->
+
+    <!--Start of Periodic Job Times-->
+    <integer name="default_time">15</integer>
+    <integer name="ambient_temp">60</integer>
+    <integer name="steps">120</integer>
+    <integer name="location">60</integer>
+    <!--End of Periodic Job Times-->
 
 
 </resources>

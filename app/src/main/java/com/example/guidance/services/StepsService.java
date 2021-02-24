@@ -25,6 +25,7 @@ import com.example.guidance.app.App;
 import java.util.Calendar;
 
 import static com.example.guidance.realm.DatabaseFunctions.*;
+import static com.example.guidance.scheduler.Util.STEPS;
 
 /**
  * Created by Conor K on 18/02/2021.
@@ -56,7 +57,7 @@ public class StepsService extends Service {
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .build();
 
-        startForeground(2, notification);
+        startForeground(STEPS, notification);
          sID = startId;
         SensorManager mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         Sensor sensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);

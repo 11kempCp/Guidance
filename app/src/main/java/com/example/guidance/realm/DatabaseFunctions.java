@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.example.guidance.model.Ambient_Temperature;
 import com.example.guidance.model.Data_Storing;
+import com.example.guidance.model.Socialness;
 import com.example.guidance.model.Step;
 
 import org.bson.types.ObjectId;
@@ -13,6 +14,7 @@ import java.util.Date;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmModel;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -37,7 +39,21 @@ public class DatabaseFunctions {
             Ambient_Temperature init = r.createObject(Ambient_Temperature.class, new ObjectId());
             init.setAmbientTemp(sensorValue);
             init.setDateTime(currentTime);
-            Log.d(TAG, "executed transaction : saveAmbientTempToDatabase " + currentTime);
+//            Log.d(TAG, "executed transaction : saveAmbientTempToDatabase " + currentTime);
+        }, new Realm.Transaction.OnSuccess(){
+            @Override
+            public void onSuccess() {
+//                Log.d(TAG, "AmbientTemp onSuccess:");
+                Log.d(TAG, "executed transaction : saveAmbientTempToDatabase" + currentTime);
+
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                // Transaction failed and was automatically canceled.
+                Log.e(TAG, "saveAmbientTempToDatabase transaction failed: ",error );
+
+            }
         });
         realm.close();
 
@@ -50,17 +66,11 @@ public class DatabaseFunctions {
         Realm realm = Realm.getDefaultInstance();
 
         realm.executeTransactionAsync(r -> {
-
-//            RealmQuery<Step> projectsQuery = realm.where(Step.class);
-
-
             // Sort chronologically? because realm is lazily searched there is no
             // guarantee that it will return the last entry inputted
             // TODO Check that this returns the correct result
             RealmQuery<Step> query = r.where(Step.class).lessThan("dateTime", currentTime);
             Step result = query.sort("dateTime", Sort.DESCENDING).findFirst();
-
-
 
             if (result == null) {
                 Log.d(TAG, "isThereAnEntryToday: ERROR");
@@ -70,9 +80,48 @@ public class DatabaseFunctions {
                 result.setStepCount(currentSensorValue);
                 r.insertOrUpdate(result);
             }
+        }, new Realm.Transaction.OnSuccess(){
+            @Override
+            public void onSuccess() {
+//                Log.d(TAG, "updateSteps onSuccess:");
+                Log.d(TAG, "executed transaction : updateStepToday" + currentTime);
+
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                // Transaction failed and was automatically canceled.
+                Log.e(TAG, "updateStepToday transaction failed: ",error );
+
+            }
         });
+
+
+
+        realm.close();
+
     }
 
+
+    public static boolean isSocialnessEntryToday(Context context, Date currentTime) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+//        Socialness task = realm.where(Socialness.class).lessThan("dateTime", currentTime).findFirst();
+
+        RealmQuery<Socialness> query = realm.where(Socialness.class).lessThan("dateTime", currentTime);
+        Socialness task = query.sort("dateTime", Sort.DESCENDING).findFirst();
+
+
+        if (task == null) {
+            Log.d(TAG, "isThereAnEntryToday: false");
+            return false;
+        } else
+            return task.getDateTime().getDate() == currentTime.getDate() && task.getDateTime().getMonth() == currentTime.getMonth() &&
+                    task.getDateTime().getYear() == currentTime.getYear();
+    }
 
     public static boolean isStepEntryToday(Context context, Date currentTime) {
         Realm.init(context);
@@ -80,10 +129,15 @@ public class DatabaseFunctions {
         Realm.setDefaultConfiguration(realmConfiguration);
         Realm realm = Realm.getDefaultInstance();
 
-        Step task = realm.where(Step.class).lessThan("dateTime", currentTime).findFirst();
+//        Step task = realm.where(Step.class).lessThan("dateTime", currentTime).findFirst();
+
+        RealmQuery<Step> query = realm.where(Step.class).lessThan("dateTime", currentTime);
+        Step task = query.sort("dateTime", Sort.DESCENDING).findFirst();
+
+
 
         if (task == null) {
-            Log.d(TAG, "isThereAnEntryToday: ERROR");
+            Log.d(TAG, "isThereAnEntryToday: false");
             return false;
         } else
             return task.getDateTime().getDate() == currentTime.getDate() && task.getDateTime().getMonth() == currentTime.getMonth() &&
@@ -101,7 +155,18 @@ public class DatabaseFunctions {
             Step init = r.createObject(Step.class, new ObjectId());
             init.setStepCount(currentSensorValue);
             init.setDateTime(currentTime);
-            Log.d(TAG, "executed transaction : saveStepsCounterToDatabase" + currentTime);
+        }, new Realm.Transaction.OnSuccess(){
+            @Override
+            public void onSuccess() {
+                Log.d(TAG, "executed transaction : saveStepsCounterToDatabase" + currentTime);
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                // Transaction failed and was automatically canceled.
+                Log.e(TAG, "saveStepsCounterToDatabase transaction failed: ",error );
+
+            }
         });
         realm.close();
 
@@ -113,11 +178,12 @@ public class DatabaseFunctions {
         Realm.setDefaultConfiguration(realmConfiguration);
         Realm realm = Realm.getDefaultInstance();
         RealmQuery<Data_Storing> tasksQuery = realm.where(Data_Storing.class);
+//        realm.close();
+
         return tasksQuery.findFirst();
     }
 
-    public static void implementData_Storing(Context context) {
-
+    public static void initialiseDataStoring(Context context) {
         Realm.init(context);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
@@ -138,16 +204,31 @@ public class DatabaseFunctions {
             init.setSun(true);
             init.setSocialness(true);
             init.setMood(true);
+        }, new Realm.Transaction.OnSuccess(){
+            @Override
+            public void onSuccess() {
+                Log.d(TAG, "DataStoring onSuccess:");
+
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                // Transaction failed and was automatically canceled.
+                Log.e(TAG, "onError: ",error );
+            }
         });
-        Log.d(TAG, "implementData_Storing: ");
+        realm.close();
     }
 
-    public static boolean isDataStoringInitialised(Context  context){
+    public static boolean isDataStoringInitialised(Context context){
         Realm.init(context);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
         Realm realm = Realm.getDefaultInstance();
         Data_Storing tasksQuery = realm.where(Data_Storing.class).findFirst();
+
+//        realm.close();
+
         boolean t = tasksQuery != null;
         Log.d(TAG, "isDataStoringInitialised: " + t);
         return tasksQuery != null;

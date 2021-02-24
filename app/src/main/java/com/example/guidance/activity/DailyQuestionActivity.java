@@ -14,10 +14,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.guidance.R;
 import com.google.android.material.navigation.NavigationView;
 
-public class AdviceActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-
-    //Tag
-    private static final String TAG = "AdviceActivity";
+public class DailyQuestionActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private DrawerLayout drawer;
 
@@ -25,19 +22,20 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_advice);
-        drawer = findViewById(R.id.drawer_layout_advice_activity);
+        setContentView(R.layout.activity_daily_question);
+
+
+        drawer = findViewById(R.id.drawer_layout_daily_question_activity);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
         setSupportActionBar(toolbar);
-
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_open);
-
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
     }
 
     @Override
@@ -81,4 +79,6 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
 
         return true;
     }
+
+
 }

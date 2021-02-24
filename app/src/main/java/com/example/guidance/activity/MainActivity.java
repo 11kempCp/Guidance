@@ -22,7 +22,7 @@ import com.google.android.material.navigation.NavigationView;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
-import static com.example.guidance.realm.DatabaseFunctions.implementData_Storing;
+import static com.example.guidance.realm.DatabaseFunctions.initialiseDataStoring;
 import static com.example.guidance.scheduler.Util.requestPerms;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -42,7 +42,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //TODO remove this implementation in favour of passcode implementation
         if (!DatabaseFunctions.isDataStoringInitialised(this)) {
-            implementData_Storing(this);
+             initialiseDataStoring(this);
+
         }
 
         Realm.init(this);
@@ -126,6 +127,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_debug:
                 myIntent = new Intent(this, DebugActivity.class);
+                startActivity(myIntent);
+                break;
+            case R.id.nav_daily_question:
+                myIntent = new Intent(this, DailyQuestionActivity.class);
                 startActivity(myIntent);
                 break;
         }

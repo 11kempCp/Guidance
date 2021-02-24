@@ -27,6 +27,11 @@
             android:title="@string/data" />
 
         <item
+            android:id="@+id/nav_daily_question"
+            android:icon="@drawable/ic_daily_question"
+            android:title="@string/daily_question" />
+
+        <item
             android:id="@+id/nav_debug"
             android:icon="@drawable/ic_debug"
             android:title="@string/debug" />
