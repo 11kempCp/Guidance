@@ -26,11 +26,6 @@
             android:label="@string/daily_question"
             android:theme="@style/femaleAppTheme.NoActionBar"
             android:parentActivityName=".activity.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <activity
@@ -77,9 +72,18 @@
             android:enabled="true"
             android:label="AmbientTemp Service"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+
         <service
             android:name=".services.AmbientTempService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+
+
+        <service
+            android:name=".jobServices.DailyQuestionJobService"
+            android:enabled="true"
+            android:label="Daily Question Service"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
     </application>
 
 </manifest>

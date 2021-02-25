@@ -5,8 +5,10 @@ import android.util.Log;
 
 import com.example.guidance.model.Ambient_Temperature;
 import com.example.guidance.model.Data_Storing;
+import com.example.guidance.model.Mood;
 import com.example.guidance.model.Socialness;
 import com.example.guidance.model.Step;
+import com.example.guidance.services.StepsService;
 
 import org.bson.types.ObjectId;
 
@@ -102,6 +104,194 @@ public class DatabaseFunctions {
 
     }
 
+    public static void moodEntry(Context context, Date currentTime, int value){
+        if(isMoodEntryToday(context, currentTime)){
+            updateMoodToday(context, value, currentTime);
+        }else {
+            saveMoodToDatabase(context,value, currentTime);
+        }
+    }
+
+    public static int getTodaysMoodEntry(Context context, Date currentTime){
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+
+        RealmQuery<Mood> query = realm.where(Mood.class).lessThan("dateTime", currentTime);
+        Mood task = query.sort("dateTime", Sort.DESCENDING).findFirst();
+
+        realm.close();
+        return task.getRating();
+    }
+
+    public static boolean isMoodEntryToday(Context context, Date currentTime) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+
+        RealmQuery<Mood> query = realm.where(Mood.class).lessThan("dateTime", currentTime);
+        Mood task = query.sort("dateTime", Sort.DESCENDING).findFirst();
+
+
+        if (task == null) {
+            Log.d(TAG, "isThereAnEntryToday: false");
+            return false;
+        } else
+            return task.getDateTime().getDate() == currentTime.getDate() && task.getDateTime().getMonth() == currentTime.getMonth() &&
+                    task.getDateTime().getYear() == currentTime.getYear();
+    }
+
+    private static void saveMoodToDatabase(Context context, int value, Date currentTime) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+        realm.executeTransactionAsync(r -> {
+            Mood init = r.createObject(Mood.class, new ObjectId());
+            init.setRating(value);
+            init.setDateTime(currentTime);
+        }, new Realm.Transaction.OnSuccess(){
+            @Override
+            public void onSuccess() {
+                Log.d(TAG, "executed transaction : saveMoodToDatabase" + currentTime);
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                // Transaction failed and was automatically canceled.
+                Log.e(TAG, "saveMoodToDatabase transaction failed: ",error );
+
+            }
+        });
+        realm.close();
+
+    }
+
+    private static void updateMoodToday(Context context, int value, Date currentTime) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+        realm.executeTransactionAsync(r -> {
+            // Sort chronologically? because realm is lazily searched there is no
+            // guarantee that it will return the last entry inputted
+            // TODO Check that this returns the correct result
+            RealmQuery<Mood> query = r.where(Mood.class).lessThan("dateTime", currentTime);
+            Mood result = query.sort("dateTime", Sort.DESCENDING).findFirst();
+
+            if (result == null) {
+                Log.d(TAG, "isThereAnEntryToday: ERROR");
+            } else {
+                result.setDateTime(currentTime);
+                result.setRating(value);
+                r.insertOrUpdate(result);
+            }
+        }, new Realm.Transaction.OnSuccess(){
+            @Override
+            public void onSuccess() {
+//                Log.d(TAG, "updateSteps onSuccess:");
+                Log.d(TAG, "executed transaction : updateMoodToday" + currentTime);
+
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                // Transaction failed and was automatically canceled.
+                Log.e(TAG, "updateMoodToday transaction failed: ",error );
+
+            }
+        });
+
+
+
+        realm.close();
+
+    }
+
+    public static void socialnessEntry(Context context, Date currentTime, int value){
+        if(isSocialnessEntryToday(context, currentTime)){
+            updateSocialnessToday(context, value, currentTime);
+        }else {
+            saveSocialnessToDatabase(context,value, currentTime);
+        }
+    }
+
+    private static void saveSocialnessToDatabase(Context context, int value, Date currentTime) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+        realm.executeTransactionAsync(r -> {
+            Socialness init = r.createObject(Socialness.class, new ObjectId());
+            init.setRating(value);
+            init.setDateTime(currentTime);
+        }, new Realm.Transaction.OnSuccess(){
+            @Override
+            public void onSuccess() {
+                Log.d(TAG, "executed transaction : saveStepsCounterToDatabase" + currentTime);
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                // Transaction failed and was automatically canceled.
+                Log.e(TAG, "saveStepsCounterToDatabase transaction failed: ",error );
+
+            }
+        });
+        realm.close();
+
+    }
+
+    private static void updateSocialnessToday(Context context, int value, Date currentTime) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+        realm.executeTransactionAsync(r -> {
+            // Sort chronologically? because realm is lazily searched there is no
+            // guarantee that it will return the last entry inputted
+            // TODO Check that this returns the correct result
+            RealmQuery<Socialness> query = r.where(Socialness.class).lessThan("dateTime", currentTime);
+            Socialness result = query.sort("dateTime", Sort.DESCENDING).findFirst();
+
+            if (result == null) {
+                Log.d(TAG, "isThereAnEntryToday: ERROR");
+            } else {
+                Log.d(TAG, "settingStepCount");
+                result.setDateTime(currentTime);
+                result.setRating(value);
+                r.insertOrUpdate(result);
+            }
+        }, new Realm.Transaction.OnSuccess(){
+            @Override
+            public void onSuccess() {
+//                Log.d(TAG, "updateSteps onSuccess:");
+                Log.d(TAG, "executed transaction : updateSocialnessToday" + currentTime);
+
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                // Transaction failed and was automatically canceled.
+                Log.e(TAG, "updateSocialnessToday transaction failed: ",error );
+
+            }
+        });
+
+
+
+        realm.close();
+
+    }
+
 
     public static boolean isSocialnessEntryToday(Context context, Date currentTime) {
         Realm.init(context);
@@ -121,6 +311,17 @@ public class DatabaseFunctions {
         } else
             return task.getDateTime().getDate() == currentTime.getDate() && task.getDateTime().getMonth() == currentTime.getMonth() &&
                     task.getDateTime().getYear() == currentTime.getYear();
+    }
+
+    public static int getTodaysSocialnessEntry(Context context, Date currentTime){
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+        RealmQuery<Socialness> query = realm.where(Socialness.class).lessThan("dateTime", currentTime);
+        Socialness task = query.sort("dateTime", Sort.DESCENDING).findFirst();
+        realm.close();
+        return task.getRating();
     }
 
     public static boolean isStepEntryToday(Context context, Date currentTime) {

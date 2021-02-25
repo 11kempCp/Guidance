@@ -14,7 +14,7 @@
     <!--Start of Storage Strings-->
     <string name="notification_ambient_temp">Waiting For Ambient Temperature Change</string>
     <string name="notification_steps">Step Counter</string>
-
+    <string name="notification_daily_question">Please Answer Daily Questions</string>
     <!--End of Storage Strings-->
 
 
@@ -71,7 +71,23 @@
     <integer name="ambient_temp">60</integer>
     <integer name="steps">120</integer>
     <integer name="location">60</integer>
+    <integer name="daily_question">660</integer>
     <!--End of Periodic Job Times-->
+
+    <!--Start of Daily Questions-->
+    <string name="daily_question_one">What would you rate your socialness today?</string>
+    <string name="daily_question_one_clarification">(1 being low and 4 being high)</string>
+    <string name="daily_question_two">What would you rate your mood today?</string>
+    <string name="daily_question_two_clarification">(1 being bad and 4 being good)</string>
+    <string name="clarification">Clarification</string>
+
+    <string name="q_one">1</string>
+    <string name="q_two">2</string>
+    <string name="q_three">3</string>
+    <string name="q_four">4</string>
+
+    <!--End of Daily Questions-->
+
 
 
 </resources>

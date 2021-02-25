@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat;
 
 import com.example.guidance.R;
 import com.example.guidance.jobServices.AmbientTempJobService;
+import com.example.guidance.jobServices.DailyQuestionJobService;
 import com.example.guidance.jobServices.StepsJobService;
 import com.example.guidance.model.Data_Storing;
 
@@ -28,6 +29,8 @@ import static androidx.core.content.ContextCompat.checkSelfPermission;
 import static com.example.guidance.realm.DatabaseFunctions.getDataStoring;
 import static com.example.guidance.realm.DatabaseFunctions.initialiseDataStoring;
 import static com.example.guidance.realm.DatabaseFunctions.isDataStoringInitialised;
+import static com.example.guidance.realm.DatabaseFunctions.isMoodEntryToday;
+import static com.example.guidance.realm.DatabaseFunctions.isSocialnessEntryToday;
 
 
 /**
@@ -40,11 +43,12 @@ public class Util {
     public static final int AMBIENT_TEMP = 1;
     public static final int STEPS = 2;
     public static final int LOCATION = 3;
-    public static final int SOCIALNESS = 4;
-    public static final int MOOD = 5;
+    public static final int DAILY_QUESTION = 4;
+    public static final int WEATHER = 5;
 
 
-    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, SOCIALNESS, MOOD);
+
+    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION,WEATHER);
 
 
     public static boolean scheduleJob(Context context, Class<?> serviceClass, int jobId, int minutes) {
@@ -94,6 +98,8 @@ public class Util {
         }
 
         data = getDataStoring(context);
+
+        Date currentTime = Calendar.getInstance().getTime();
 
         if(data != null){
 
@@ -165,16 +171,25 @@ public class Util {
                         }
                         break;
 
-                    case SOCIALNESS:
-                        if (data.isSocialness()) {
-                            Log.d(TAG, "scheduledUnscheduledJobs: " + SOCIALNESS);
+                    case DAILY_QUESTION:
+                        if ((data.isSocialness() || data.isMood()) && (!isMoodEntryToday(context,currentTime) || !isSocialnessEntryToday(context,currentTime) )) {
+                            Log.d(TAG, "scheduledUnscheduledJobs: " + DAILY_QUESTION);
+
+                            checkPermissionsAndSchedule(context,
+                                    DAILY_QUESTION,
+                                    DailyQuestionJobService.class,
+                                    context.getResources().getInteger(R.integer.daily_question),
+                                    packageManager,
+                                    "none",
+                                    "none");
+
                         }
                         break;
 
-                    case MOOD:
+                    case WEATHER:
 
-                        if (data.isMood()) {
-                            Log.d(TAG, "scheduledUnscheduledJobs: " + MOOD);
+                        if (data.isWeather() || data.isSun()) {
+                            Log.d(TAG, "scheduledUnscheduledJobs: " + WEATHER);
                         }
                         break;
                 }
@@ -187,17 +202,17 @@ public class Util {
 
     }
 
-    public static void checkPermissionsAndSchedule(Context context, int utilInt, Class<?> t, int minutes, PackageManager packageManager, String permission, String fa) {
-        if (packageManager.hasSystemFeature(fa)) {
-            Log.d(TAG, fa + true);
+    public static void checkPermissionsAndSchedule(Context context, int utilInt, Class<?> cls, int minutes, PackageManager packageManager, String permission, String feature) {
+        if (packageManager.hasSystemFeature(feature) || feature.equals("none")) {
+            Log.d(TAG, feature + " " + true);
 
             if (permission.equals("none")) {
-                boolean scheduled = Util.scheduleJob(context, t, utilInt, minutes);
+                boolean scheduled = Util.scheduleJob(context, cls, utilInt, minutes);
                 Log.d(TAG, "Scheduled " + utilInt + " " + scheduled);
 
             } else if (checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED) {
                 Log.d(TAG, "Permission " + permission + true);
-                boolean scheduled = Util.scheduleJob(context, t, utilInt, minutes);
+                boolean scheduled = Util.scheduleJob(context, cls, utilInt, minutes);
                 Log.d(TAG, "Scheduled " + utilInt + " " + scheduled);
             }
         } else {

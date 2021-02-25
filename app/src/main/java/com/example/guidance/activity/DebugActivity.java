@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.annotation.SuppressLint;
 import android.app.job.JobScheduler;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +19,8 @@ import android.widget.Toast;
 import com.example.guidance.R;
 import com.example.guidance.model.Ambient_Temperature;
 import com.example.guidance.model.Data_Storing;
+import com.example.guidance.model.Mood;
+import com.example.guidance.model.Socialness;
 import com.example.guidance.model.Step;
 import com.example.guidance.services.StepsService;
 import com.google.android.material.navigation.NavigationView;
@@ -99,9 +102,19 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
         RealmResults<Data_Storing> data = dataStoringQuery.findAll();
         Log.d(TAG, "displayData " + data.size() + " data full list: " + data);
 
+        RealmQuery<Mood> moodRealmQuery = realm.where(Mood.class);
+        RealmResults<Mood> mood = moodRealmQuery.findAll();
+        Log.d(TAG, "displayMood " + mood.size() + " mood full list: " + mood);
+
+        RealmQuery<Socialness> socialnessRealmQuery = realm.where(Socialness.class);
+        RealmResults<Socialness> socialness = socialnessRealmQuery.findAll();
+        Log.d(TAG, "displaySocialness " + socialness.size() + " socialness full list: " + socialness);
+
 
 //        Toast.makeText(this, "displayAmbient " + ambient_temp.size() + " ambient Temp full list: " + ambient_temp, Toast.LENGTH_SHORT).show();
         Toast.makeText(this, "displaySteps " + step.size() + " steps full list: " + step, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "displayMood " + mood.size() + " mood full list: " + mood, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "displaySocialness " + socialness.size() + " socialness full list: " + socialness, Toast.LENGTH_SHORT).show();
     }
 
 
@@ -146,6 +159,7 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
         }
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {

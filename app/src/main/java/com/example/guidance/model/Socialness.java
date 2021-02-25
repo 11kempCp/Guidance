@@ -15,14 +15,14 @@ public class Socialness extends RealmObject {
     @PrimaryKey
     private ObjectId _id;
     private Date dateTime;
-    private float rating;
+    private int rating;
 
 
     public Socialness(){
 
     }
 
-    public Socialness(ObjectId _id, Date dateTime, float rating) {
+    public Socialness(ObjectId _id, Date dateTime, int rating) {
         this._id = _id;
         this.dateTime = dateTime;
         this.rating = rating;
@@ -44,11 +44,11 @@ public class Socialness extends RealmObject {
         this.dateTime = dateTime;
     }
 
-    public float getRating() {
+    public int getRating() {
         return rating;
     }
 
-    public void setRating(float rating) {
+    public void setRating(int rating) {
         this.rating = rating;
     }
 }
