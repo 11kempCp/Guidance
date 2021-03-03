@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.job.JobScheduler;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -25,6 +24,7 @@ import com.example.guidance.R;
 import com.example.guidance.jobServices.LocationJobService;
 import com.example.guidance.model.Ambient_Temperature;
 import com.example.guidance.model.Data_Storing;
+import com.example.guidance.model.Location;
 import com.example.guidance.model.Mood;
 import com.example.guidance.model.Socialness;
 import com.example.guidance.model.Step;
@@ -100,6 +100,11 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
         realm.executeTransactionAsync(r -> {
             Log.d(TAG, "deleted Data_Storing");
             r.delete(Data_Storing.class);
+        });
+
+        realm.executeTransactionAsync(r -> {
+            Log.d(TAG, "deleted Data_Storing");
+            r.delete(Location.class);
         });
 
         Toast.makeText(this, "Deleted Everything In Realm", Toast.LENGTH_SHORT).show();
@@ -209,19 +214,20 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
         return true;
     }
 
-    public  void getLocation(View view) {
+    public  void displayLocation(View view) {
 
 
-        Location loc = null;
-//        Location loc = LocationService.getmLocation();
+        RealmQuery<Location> locationRealmQuery = realm.where(Location.class);
+        RealmResults<Location> temp = locationRealmQuery.sort("dateTime", Sort.DESCENDING).findAll();
 
-        if(loc!=null){
-            Toast.makeText(this, "Location " + loc.getLatitude() + " " + loc.getLongitude(), Toast.LENGTH_SHORT).show();
-            Log.d(TAG, "Location " + loc.getLatitude() + " " + loc.getLongitude());
-        }else {
-            Toast.makeText(this, "mLocation = null", Toast.LENGTH_SHORT).show();
-            Log.d(TAG, "mLocation = null");
+        Log.d(TAG, "displayAmbient " + temp.size() + " ambient Temp full list: " + temp);
+
+        displayTextView.setText("");
+        StringBuilder displayString = new StringBuilder();
+        for(Location t : temp){
+            displayString.append(" ").append(t).append("\n");
         }
+        displayTextView.setText(displayString);
 
 
     }

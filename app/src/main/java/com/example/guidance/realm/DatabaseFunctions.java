@@ -5,10 +5,10 @@ import android.util.Log;
 
 import com.example.guidance.model.Ambient_Temperature;
 import com.example.guidance.model.Data_Storing;
+import com.example.guidance.model.Location;
 import com.example.guidance.model.Mood;
 import com.example.guidance.model.Socialness;
 import com.example.guidance.model.Step;
-import com.example.guidance.services.StepsService;
 
 import org.bson.types.ObjectId;
 
@@ -16,9 +16,7 @@ import java.util.Date;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
-import io.realm.RealmModel;
 import io.realm.RealmQuery;
-import io.realm.RealmResults;
 import io.realm.Sort;
 
 /**
@@ -29,7 +27,7 @@ public class DatabaseFunctions {
 
     private static final String TAG = "DatabaseFunctions";
 
-    public static void saveAmbientTempToDatabase(Context context, float sensorValue, Date currentTime) {
+    public static void insertAmbientTemp(Context context, float sensorValue, Date currentTime) {
 
         Realm.init(context);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
@@ -42,7 +40,7 @@ public class DatabaseFunctions {
             init.setAmbientTemp(sensorValue);
             init.setDateTime(currentTime);
 //            Log.d(TAG, "executed transaction : saveAmbientTempToDatabase " + currentTime);
-        }, new Realm.Transaction.OnSuccess(){
+        }, new Realm.Transaction.OnSuccess() {
             @Override
             public void onSuccess() {
 //                Log.d(TAG, "AmbientTemp onSuccess:");
@@ -53,7 +51,7 @@ public class DatabaseFunctions {
             @Override
             public void onError(Throwable error) {
                 // Transaction failed and was automatically canceled.
-                Log.e(TAG, "saveAmbientTempToDatabase transaction failed: ",error );
+                Log.e(TAG, "saveAmbientTempToDatabase transaction failed: ", error);
 
             }
         });
@@ -82,7 +80,7 @@ public class DatabaseFunctions {
                 result.setStepCount(currentSensorValue);
                 r.insertOrUpdate(result);
             }
-        }, new Realm.Transaction.OnSuccess(){
+        }, new Realm.Transaction.OnSuccess() {
             @Override
             public void onSuccess() {
 //                Log.d(TAG, "updateSteps onSuccess:");
@@ -93,26 +91,25 @@ public class DatabaseFunctions {
             @Override
             public void onError(Throwable error) {
                 // Transaction failed and was automatically canceled.
-                Log.e(TAG, "updateStepToday transaction failed: ",error );
+                Log.e(TAG, "updateStepToday transaction failed: ", error);
 
             }
         });
-
 
 
         realm.close();
 
     }
 
-    public static void moodEntry(Context context, Date currentTime, int value){
-        if(isMoodEntryToday(context, currentTime)){
+    public static void moodEntry(Context context, Date currentTime, int value) {
+        if (isMoodEntryToday(context, currentTime)) {
             updateMoodToday(context, value, currentTime);
-        }else {
-            saveMoodToDatabase(context,value, currentTime);
+        } else {
+            insertMood(context, value, currentTime);
         }
     }
 
-    public static int getTodaysMoodEntry(Context context, Date currentTime){
+    public static int getTodaysMoodEntry(Context context, Date currentTime) {
         Realm.init(context);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
@@ -145,7 +142,7 @@ public class DatabaseFunctions {
                     task.getDateTime().getYear() == currentTime.getYear();
     }
 
-    private static void saveMoodToDatabase(Context context, int value, Date currentTime) {
+    private static void insertMood(Context context, int value, Date currentTime) {
         Realm.init(context);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
@@ -155,7 +152,7 @@ public class DatabaseFunctions {
             Mood init = r.createObject(Mood.class, new ObjectId());
             init.setRating(value);
             init.setDateTime(currentTime);
-        }, new Realm.Transaction.OnSuccess(){
+        }, new Realm.Transaction.OnSuccess() {
             @Override
             public void onSuccess() {
                 Log.d(TAG, "executed transaction : saveMoodToDatabase" + currentTime);
@@ -164,7 +161,7 @@ public class DatabaseFunctions {
             @Override
             public void onError(Throwable error) {
                 // Transaction failed and was automatically canceled.
-                Log.e(TAG, "saveMoodToDatabase transaction failed: ",error );
+                Log.e(TAG, "saveMoodToDatabase transaction failed: ", error);
 
             }
         });
@@ -192,7 +189,7 @@ public class DatabaseFunctions {
                 result.setRating(value);
                 r.insertOrUpdate(result);
             }
-        }, new Realm.Transaction.OnSuccess(){
+        }, new Realm.Transaction.OnSuccess() {
             @Override
             public void onSuccess() {
 //                Log.d(TAG, "updateSteps onSuccess:");
@@ -203,22 +200,21 @@ public class DatabaseFunctions {
             @Override
             public void onError(Throwable error) {
                 // Transaction failed and was automatically canceled.
-                Log.e(TAG, "updateMoodToday transaction failed: ",error );
+                Log.e(TAG, "updateMoodToday transaction failed: ", error);
 
             }
         });
-
 
 
         realm.close();
 
     }
 
-    public static void socialnessEntry(Context context, Date currentTime, int value){
-        if(isSocialnessEntryToday(context, currentTime)){
+    public static void socialnessEntry(Context context, Date currentTime, int value) {
+        if (isSocialnessEntryToday(context, currentTime)) {
             updateSocialnessToday(context, value, currentTime);
-        }else {
-            saveSocialnessToDatabase(context,value, currentTime);
+        } else {
+            saveSocialnessToDatabase(context, value, currentTime);
         }
     }
 
@@ -232,7 +228,7 @@ public class DatabaseFunctions {
             Socialness init = r.createObject(Socialness.class, new ObjectId());
             init.setRating(value);
             init.setDateTime(currentTime);
-        }, new Realm.Transaction.OnSuccess(){
+        }, new Realm.Transaction.OnSuccess() {
             @Override
             public void onSuccess() {
                 Log.d(TAG, "executed transaction : saveStepsCounterToDatabase" + currentTime);
@@ -241,7 +237,7 @@ public class DatabaseFunctions {
             @Override
             public void onError(Throwable error) {
                 // Transaction failed and was automatically canceled.
-                Log.e(TAG, "saveStepsCounterToDatabase transaction failed: ",error );
+                Log.e(TAG, "saveStepsCounterToDatabase transaction failed: ", error);
 
             }
         });
@@ -270,7 +266,7 @@ public class DatabaseFunctions {
                 result.setRating(value);
                 r.insertOrUpdate(result);
             }
-        }, new Realm.Transaction.OnSuccess(){
+        }, new Realm.Transaction.OnSuccess() {
             @Override
             public void onSuccess() {
 //                Log.d(TAG, "updateSteps onSuccess:");
@@ -281,11 +277,10 @@ public class DatabaseFunctions {
             @Override
             public void onError(Throwable error) {
                 // Transaction failed and was automatically canceled.
-                Log.e(TAG, "updateSocialnessToday transaction failed: ",error );
+                Log.e(TAG, "updateSocialnessToday transaction failed: ", error);
 
             }
         });
-
 
 
         realm.close();
@@ -313,7 +308,7 @@ public class DatabaseFunctions {
                     task.getDateTime().getYear() == currentTime.getYear();
     }
 
-    public static int getTodaysSocialnessEntry(Context context, Date currentTime){
+    public static int getTodaysSocialnessEntry(Context context, Date currentTime) {
         Realm.init(context);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
@@ -336,7 +331,6 @@ public class DatabaseFunctions {
         Step task = query.sort("dateTime", Sort.DESCENDING).findFirst();
 
 
-
         if (task == null) {
             Log.d(TAG, "isThereAnEntryToday: false");
             return false;
@@ -345,7 +339,7 @@ public class DatabaseFunctions {
                     task.getDateTime().getYear() == currentTime.getYear();
     }
 
-    public static void saveStepsCounterToDatabase(Context context, float currentSensorValue, Date currentTime) {
+    public static void insertStepsCounter(Context context, float currentSensorValue, Date currentTime) {
 
         Realm.init(context);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
@@ -356,7 +350,7 @@ public class DatabaseFunctions {
             Step init = r.createObject(Step.class, new ObjectId());
             init.setStepCount(currentSensorValue);
             init.setDateTime(currentTime);
-        }, new Realm.Transaction.OnSuccess(){
+        }, new Realm.Transaction.OnSuccess() {
             @Override
             public void onSuccess() {
                 Log.d(TAG, "executed transaction : saveStepsCounterToDatabase" + currentTime);
@@ -365,7 +359,7 @@ public class DatabaseFunctions {
             @Override
             public void onError(Throwable error) {
                 // Transaction failed and was automatically canceled.
-                Log.e(TAG, "saveStepsCounterToDatabase transaction failed: ",error );
+                Log.e(TAG, "saveStepsCounterToDatabase transaction failed: ", error);
 
             }
         });
@@ -405,7 +399,7 @@ public class DatabaseFunctions {
             init.setSun(true);
             init.setSocialness(true);
             init.setMood(true);
-        }, new Realm.Transaction.OnSuccess(){
+        }, new Realm.Transaction.OnSuccess() {
             @Override
             public void onSuccess() {
                 Log.d(TAG, "DataStoring onSuccess:");
@@ -415,13 +409,13 @@ public class DatabaseFunctions {
             @Override
             public void onError(Throwable error) {
                 // Transaction failed and was automatically canceled.
-                Log.e(TAG, "onError: ",error );
+                Log.e(TAG, "onError: ", error);
             }
         });
         realm.close();
     }
 
-    public static boolean isDataStoringInitialised(Context context){
+    public static boolean isDataStoringInitialised(Context context) {
         Realm.init(context);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
@@ -435,5 +429,65 @@ public class DatabaseFunctions {
         return tasksQuery != null;
     }
 
+    public static void insertLocation(Context context, Date currentTime, double latitude, double longitude) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+        realm.executeTransactionAsync(r -> {
+            Location init = r.createObject(Location.class, new ObjectId());
+            init.setDateTime(currentTime);
+            init.setLatitude(latitude);
+            init.setLongitude(longitude);
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                Log.d(TAG, "executed transaction : insertLocation " + currentTime);
+
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                // Transaction failed and was automatically canceled.
+                Log.e(TAG, "insertLocation transaction failed: ", error);
+
+            }
+        });
+
+
+        realm.close();
+    }
+
+
+    public static void locationEntry(Context context, Date currentTime, double latitude, double longitude) {
+
+        if (!isLocationStoredAlready(context, currentTime, latitude, longitude)) {
+            insertLocation(context, currentTime, latitude, longitude);
+        } else {
+            Log.d(TAG, "locationEntry: entry already entered");
+        }
+    }
+
+    public static boolean isLocationStoredAlready(Context context, Date currentTime, double latitude, double longitude) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+
+        RealmQuery<Location> query = realm.where(Location.class).equalTo("latitude", latitude).equalTo("longitude", longitude);
+        Location task = query.sort("dateTime", Sort.DESCENDING).findFirst();
+
+
+        if (task == null) {
+            Log.d(TAG, "isThereAnEntryToday: false");
+            return false;
+        } else
+            //TODO assess if the date is correct or not
+            return task.getDateTime().getDate() == currentTime.getDate() && task.getDateTime().getMonth() == currentTime.getMonth() &&
+                    task.getDateTime().getYear() == currentTime.getYear() && task.getDateTime().getHours() == currentTime.getHours();
+
+    }
 
 }

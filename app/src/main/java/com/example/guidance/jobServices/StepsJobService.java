@@ -13,7 +13,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import static com.example.guidance.realm.DatabaseFunctions.isStepEntryToday;
-import static com.example.guidance.realm.DatabaseFunctions.saveStepsCounterToDatabase;
+import static com.example.guidance.realm.DatabaseFunctions.insertStepsCounter;
 import static com.example.guidance.realm.DatabaseFunctions.updateStepToday;
 
 /**
@@ -36,7 +36,7 @@ public class StepsJobService extends JobService {
             StepsService.resetSensor();
             Log.d(TAG, "New Entry Saved into Database");
             Toast.makeText(this, "New Entry Saved into Database", Toast.LENGTH_SHORT).show();
-            saveStepsCounterToDatabase(this, StepsService.getmSteps(), currentTime);
+            insertStepsCounter(this, StepsService.getmSteps(), currentTime);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

@@ -114,12 +114,6 @@
             android:foregroundServiceType="location"
             tools:node="merge"/>
 
-        <service
-            android:name=".services.LocationService"
-            android:enabled="true"
-            android:exported="true"
-            android:foregroundServiceType="location"
-            tools:node="merge"/>
 
     </application>
 

@@ -9,7 +9,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.guidance.services.AmbientTempService;
 import com.example.guidance.realm.DatabaseFunctions;
@@ -64,7 +63,7 @@ public class AmbientTempJobService extends JobService
         Date currentTime = Calendar.getInstance().getTime();
         Log.d(TAG, "onSensorChanged: " + sensorValue);
 //        Toast.makeText(this, "Ambient Temp Sensor Changed " + sensorValue, Toast.LENGTH_SHORT).show();
-        DatabaseFunctions.saveAmbientTempToDatabase(getApplicationContext(), sensorValue, currentTime);
+        DatabaseFunctions.insertAmbientTemp(getApplicationContext(), sensorValue, currentTime);
         // stop the sensor and service
         mSensorManager.unregisterListener(this);
         stopSelf();

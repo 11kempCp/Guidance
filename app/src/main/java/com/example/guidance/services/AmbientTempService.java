@@ -71,7 +71,7 @@ public class AmbientTempService extends Service implements SensorEventListener {
         float sensorValue = event.values[0];
         Date currentTime = Calendar.getInstance().getTime();
         Log.d(TAG, "Temp Sensor Changed: " + sensorValue + " currentTime " + currentTime);
-        DatabaseFunctions.saveAmbientTempToDatabase(getApplicationContext(), sensorValue, currentTime);
+        DatabaseFunctions.insertAmbientTemp(getApplicationContext(), sensorValue, currentTime);
         // stop the sensor and service
         mSensorManager.unregisterListener(this);
         stopForeground(true);
