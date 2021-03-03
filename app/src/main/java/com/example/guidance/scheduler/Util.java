@@ -6,7 +6,9 @@ import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import androidx.core.content.ContextCompat;
@@ -14,15 +16,18 @@ import androidx.core.content.ContextCompat;
 import com.example.guidance.R;
 import com.example.guidance.jobServices.AmbientTempJobService;
 import com.example.guidance.jobServices.DailyQuestionJobService;
+import com.example.guidance.jobServices.LocationJobService;
 import com.example.guidance.jobServices.StepsJobService;
 import com.example.guidance.model.Data_Storing;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACTIVITY_RECOGNITION;
 import static androidx.core.app.ActivityCompat.requestPermissions;
 import static androidx.core.content.ContextCompat.checkSelfPermission;
@@ -47,8 +52,7 @@ public class Util {
     public static final int WEATHER = 5;
 
 
-
-    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION,WEATHER);
+    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, WEATHER);
 
 
     public static boolean scheduleJob(Context context, Class<?> serviceClass, int jobId, int minutes) {
@@ -84,8 +88,16 @@ public class Util {
             }
         }
 
+        //TODO improve, refer to LocationUpdatesForegroundService github repo,
+        // specifically MainActivity requestPermissions function
+        if (ContextCompat.checkSelfPermission(context, ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_DENIED) {
+            //ask for permission
+            requestPermissions(activity, new String[]{ACCESS_COARSE_LOCATION}, LOCATION);
+        }
 
     }
+
 
     public static void scheduledUnscheduledJobs(Context context) {
 
@@ -101,7 +113,7 @@ public class Util {
 
         Date currentTime = Calendar.getInstance().getTime();
 
-        if(data != null){
+        if (data != null) {
 
             PackageManager packageManager = context.getPackageManager();
             for (int job : unscheduledJobs) {
@@ -150,7 +162,6 @@ public class Util {
 //                        Log.d(TAG, tfs + false);
 //                    }
 
-                        //TODO change minutes to a call from the strings file
                         if (data.isSteps()) {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 checkPermissionsAndSchedule(context,
@@ -166,13 +177,23 @@ public class Util {
 
                         break;
                     case LOCATION:
+                        //todo change from default time
+                        //todo likely change permission and feature
                         if (data.isLocation()) {
                             Log.d(TAG, "scheduledUnscheduledJobs: " + LOCATION);
+                            checkPermissionsAndSchedule(context,
+                                    LOCATION,
+                                    LocationJobService.class,
+                                    context.getResources().getInteger(R.integer.default_time),
+                                    packageManager,
+                                    ACCESS_COARSE_LOCATION,
+                                    "none");
+
                         }
                         break;
 
                     case DAILY_QUESTION:
-                        if ((data.isSocialness() || data.isMood()) && (!isMoodEntryToday(context,currentTime) || !isSocialnessEntryToday(context,currentTime) )) {
+                        if ((data.isSocialness() || data.isMood()) && (!isMoodEntryToday(context, currentTime) || !isSocialnessEntryToday(context, currentTime))) {
                             Log.d(TAG, "scheduledUnscheduledJobs: " + DAILY_QUESTION);
 
                             checkPermissionsAndSchedule(context,
@@ -195,7 +216,7 @@ public class Util {
                 }
             }
 
-        }else{
+        } else {
             Log.d(TAG, "scheduledUnscheduledJobs: data == null");
         }
 
@@ -204,7 +225,7 @@ public class Util {
 
     public static void checkPermissionsAndSchedule(Context context, int utilInt, Class<?> cls, int minutes, PackageManager packageManager, String permission, String feature) {
         if (packageManager.hasSystemFeature(feature) || feature.equals("none")) {
-            Log.d(TAG, feature + " " + true);
+            Log.d(TAG, feature + " feature " + true);
 
             if (permission.equals("none")) {
                 boolean scheduled = Util.scheduleJob(context, cls, utilInt, minutes);
@@ -214,9 +235,12 @@ public class Util {
                 Log.d(TAG, "Permission " + permission + true);
                 boolean scheduled = Util.scheduleJob(context, cls, utilInt, minutes);
                 Log.d(TAG, "Scheduled " + utilInt + " " + scheduled);
+            } else {
+                Log.d(TAG, "Permission " + permission + " " + false);
+
             }
         } else {
-            Log.d(TAG, permission + false);
+            Log.d(TAG, permission + " permission " + false);
         }
     }
 
@@ -258,4 +282,11 @@ public class Util {
         Log.d(TAG, "isJobScheduled: " + JobId + " " + false);
         return false;
     }
+
+
+    static final String KEY_REQUESTING_LOCATION_UPDATES = "requesting_locaction_updates";
+
+
+
+
 }

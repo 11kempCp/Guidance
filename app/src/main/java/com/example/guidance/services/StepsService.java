@@ -44,6 +44,8 @@ public class StepsService extends Service {
 
     int sID;
 
+
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Intent notificationIntent = new Intent(this, MainActivity.class);

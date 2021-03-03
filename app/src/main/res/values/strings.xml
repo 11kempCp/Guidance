@@ -1,4 +1,6 @@
 <resources>
+
+    <!--todo Reorganise strings.xml file-->
     <!--Start of Core Strings-->
     <string name="app_name">Guidance</string>
     <string name="contact">TODO contact email</string>
@@ -11,25 +13,36 @@
     <!--End of Navigation Strings-->
 
 
-    <!--Start of Storage Strings-->
+    <!--Start of Notification Strings-->
     <string name="notification_ambient_temp">Waiting For Ambient Temperature Change</string>
     <string name="notification_steps">Step Counter</string>
     <string name="notification_daily_question">Please Answer Daily Questions</string>
-    <!--End of Storage Strings-->
+    <string name="notification_location">Storing Location</string>
+    <!--End of Notification Strings-->
 
 
-    <!--Start of Testing Strings-->
+    <!--Start of Debug Strings-->
     <string name="create">Create</string>
     <string name="display">Display</string>
     <string name="delete">Delete</string>
     <string name="delete_ambient_temp">Delete All Ambient Temp</string>
     <string name="display_ambient_temp">Display All Ambient Temp</string>
+    <string name="display_mood">Display All Mood</string>
+    <string name="display_socialness">Display All Socialness</string>
+    <string name="display_location">Display All Location</string>
+    <string name="display_steps">Display All Steps</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
     <string name="isJobRunning">Is Job Running</string>
+    <string name="scheduleLocationJobService">schedule LocationJobService</string>
+    <string name="startLocationService">start LocationService</string>
+    <string name="getsteps">get Steps</string>
+    <string name="resetsensor">Reset Steps Sensor</string>
+    <string name="debug">Debug</string>
+    <string name="get_location">Get Location</string>
+    <string name="clearText">Clear Text</string>
 
-
-    <!--End of Testing Strings-->
+    <!--End of Debug Strings-->
 
 
     <!--Start of Application Strings-->
@@ -54,16 +67,11 @@
     <string name="mood">Mood</string>
     <!--End of Application Strings-->
 
-
     <!--Start of Activity Name Strings-->
     <string name="main_menu">Main Menu</string>
     <string name="advice">Advice</string>
     <string name="data">Data Used</string>
     <string name="justification">Justification</string>
-    <string name="getsteps">getSteps</string>
-    <string name="resetsensor">resetSensor</string>
-    <string name="debug">Debug</string>
-    <string name="daily_question">Daily Questions</string>
     <!--End of Activity Name Strings-->
 
     <!--Start of Periodic Job Times-->
@@ -75,6 +83,8 @@
     <!--End of Periodic Job Times-->
 
     <!--Start of Daily Questions-->
+    <string name="daily_question">Daily Questions</string>
+
     <string name="daily_question_one">What would you rate your socialness today?</string>
     <string name="daily_question_one_clarification">(1 being low and 4 being high)</string>
     <string name="daily_question_two">What would you rate your mood today?</string>
@@ -85,9 +95,28 @@
     <string name="q_two">2</string>
     <string name="q_three">3</string>
     <string name="q_four">4</string>
-
+    <string name="title_activity_testing_location">TestingLocation</string>
     <!--End of Daily Questions-->
 
+
+    <!--Location Testing Strings MUST DELETE-->
+    <string name="latitude_label">Latitude</string>
+    <string name="longitude_label">Longitude</string>
+    <string name="last_update_time_label">Last location update time</string>
+
+    <string name="start_updates">Start updates</string>
+    <string name="stop_updates">Stop updates</string>
+
+    <string name="location_settings_inadequate_warning">The location settings on the device are not
+        adequate to run this sample. Fix in Settings.</string>
+
+    <string name="permission_rationale">Location permission is needed for core functionality</string>
+    <string name="permission_denied_explanation">Permission was denied, but is needed for core
+        functionality.</string>
+    <string name="settings">Settings</string>
+    <string name="location_updated">Location Updated: %1$s</string>
+
+    <!--Location Testing Strings MUST DELETE-->
 
 
 </resources>

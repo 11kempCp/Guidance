@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //TODO remove this implementation in favour of passcode implementation
         if (!DatabaseFunctions.isDataStoringInitialised(this)) {
-             initialiseDataStoring(this);
+            initialiseDataStoring(this);
 
         }
 
@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         requestPerms(this, this);
+
 
         realm = Realm.getDefaultInstance();
         currentAdvice = findViewById(R.id.textViewCurrentAdvice);
@@ -130,7 +131,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(myIntent);
                 break;
             case R.id.nav_daily_question:
-                myIntent = new Intent(this, DailyQuestionActivity.class);
+                //TODO change back to DailyQuestionActivity
+                myIntent = new Intent(this, LocationTestingActivity.class);
                 startActivity(myIntent);
                 break;
         }
@@ -172,7 +174,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //    }
 
 
-
 //    public void jobRunning(View view) {
 //
 //        List<Integer> test = unscheduledJobs(this);
@@ -195,9 +196,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        Log.d(TAG, "All Jobs Cancelled");
 //        Toast.makeText(this, "All Jobs Cancelled", Toast.LENGTH_SHORT).show();
 //    }
-
-
-
 
 
 //    public void getSteps(View view) {

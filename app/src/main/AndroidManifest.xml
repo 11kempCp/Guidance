@@ -1,17 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.guidance">
 
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <!-- android:name="android.hardware.sensor.stepcounter" -->
-    <!-- android:required="true" /> -->
-    <!-- Permission likely not needed remove after testing -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- Permission likely not needed remove after testing -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
-
+    <!--
+ Required only when requesting background location access on
+           Android 10 (API level 29) and higher.
+    -->
+    <!-- <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> -->
+    <!-- Required for all JobServices -->
     <permission android:name="android.permission.BIND_JOB_SERVICE" />
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!-- Provides location accuracy to within a city block. -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <!-- REMOVE ACCESS_FINE_LOCATION-->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+
 
     <application
         android:name=".app.App"
@@ -21,17 +32,29 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Guidance">
 
+
+        <activity
+            android:name=".activity.LocationTestingActivity"
+            android:parentActivityName=".activity.MainActivity" />
+
+
         <activity
             android:name=".activity.DailyQuestionActivity"
             android:label="@string/daily_question"
-            android:theme="@style/femaleAppTheme.NoActionBar"
-            android:parentActivityName=".activity.MainActivity">
-        </activity>
-
+            android:parentActivityName=".activity.MainActivity"
+            android:theme="@style/femaleAppTheme.NoActionBar" />
         <activity
             android:name=".activity.DebugActivity"
             android:label="@string/debug"
-            android:theme="@style/femaleAppTheme.NoActionBar" />
+            android:theme="@style/femaleAppTheme.NoActionBar" >
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+    </activity>
+
+
 
         <receiver android:name=".ServiceReceiver.onPauseServiceReceiver">
             <intent-filter>
@@ -63,6 +86,7 @@
 
         <service
             android:name=".jobServices.StepsJobService"
+            android:label="Steps JobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
             android:name=".services.StepsService"
@@ -70,19 +94,32 @@
         <service
             android:name=".jobServices.AmbientTempJobService"
             android:enabled="true"
-            android:label="AmbientTemp Service"
+            android:label="AmbientTemp JobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-
-        <service
-            android:name=".services.AmbientTempService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
-
-
+        <service android:name=".services.AmbientTempService" />
         <service
             android:name=".jobServices.DailyQuestionJobService"
             android:enabled="true"
-            android:label="Daily Question Service"
+            android:label="Daily Question JobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
+            android:name=".jobServices.LocationJobService"
+            android:enabled="true"
+            android:label="Location Service"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
+            android:name=".services.LocationService"
+            android:enabled="true"
+            android:exported="true"
+            android:foregroundServiceType="location"
+            tools:node="merge"/>
+
+        <service
+            android:name=".services.LocationService"
+            android:enabled="true"
+            android:exported="true"
+            android:foregroundServiceType="location"
+            tools:node="merge"/>
 
     </application>
 
