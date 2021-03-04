@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.guidance">
 
-    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- Permission likely not needed remove after testing -->
+    <!-- Permission likely not needed remove after testing -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
     <!--

@@ -477,6 +477,8 @@ public class DatabaseFunctions {
 
 
         RealmQuery<Location> query = realm.where(Location.class).equalTo("latitude", latitude).equalTo("longitude", longitude);
+        //TODO currently works bececause of FINE_LOCATION,
+        // COARSE_LOCATION might result in there being multiple long/lat being the same in the database? loop over those to find one within the last hour?
         Location task = query.sort("dateTime", Sort.DESCENDING).findFirst();
 
 
