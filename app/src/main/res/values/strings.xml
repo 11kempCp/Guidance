@@ -18,6 +18,7 @@
     <string name="notification_steps">Step Counter</string>
     <string name="notification_daily_question">Please Answer Daily Questions</string>
     <string name="notification_location">Storing Location</string>
+    <string name="notification_weather">Storing Weather</string>
     <!--End of Notification Strings-->
 
 
@@ -31,11 +32,14 @@
     <string name="display_socialness">Display All Socialness</string>
     <string name="display_location">Display All Location</string>
     <string name="display_steps">Display All Steps</string>
+    <string name="display_weather">Display All Weather</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
     <string name="isJobRunning">Is Job Running</string>
     <string name="scheduleLocationJobService">schedule LocationJobService</string>
     <string name="startLocationService">start LocationService</string>
+    <string name="startWeatherJobService">start WeatherJobService</string>
+    <string name="startWeatherService">start WeatherService</string>
     <string name="getsteps">get Steps</string>
     <string name="resetsensor">Reset Steps Sensor</string>
     <string name="debug">Debug</string>
@@ -78,8 +82,9 @@
     <integer name="default_time">15</integer>
     <integer name="ambient_temp">60</integer>
     <integer name="steps">120</integer>
-    <integer name="location">60</integer>
-    <integer name="daily_question">660</integer>
+    <integer name="location">30</integer>
+    <integer name="daily_question">120</integer>
+    <integer name="weather">1440</integer>
     <!--End of Periodic Job Times-->
 
     <!--Start of Daily Questions-->

@@ -6,9 +6,7 @@ import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import androidx.core.content.ContextCompat;
@@ -18,9 +16,9 @@ import com.example.guidance.jobServices.AmbientTempJobService;
 import com.example.guidance.jobServices.DailyQuestionJobService;
 import com.example.guidance.jobServices.LocationJobService;
 import com.example.guidance.jobServices.StepsJobService;
+import com.example.guidance.jobServices.WeatherJobService;
 import com.example.guidance.model.Data_Storing;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -28,6 +26,7 @@ import java.util.Date;
 import java.util.List;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.ACTIVITY_RECOGNITION;
 import static androidx.core.app.ActivityCompat.requestPermissions;
 import static androidx.core.content.ContextCompat.checkSelfPermission;
@@ -52,11 +51,14 @@ public class Util {
     public static final int WEATHER = 5;
 
 
+//    public static final List<Integer> utilList = Arrays.asList(DAILY_QUESTION);
     public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, WEATHER);
 
 
     public static boolean scheduleJob(Context context, Class<?> serviceClass, int jobId, int minutes) {
 
+
+        //todo requires internet connectivity
         Date currentTime = Calendar.getInstance().getTime();
 
         ComponentName componentName = new ComponentName(context, serviceClass);
@@ -121,50 +123,22 @@ public class Util {
                 switch (job) {
                     case AMBIENT_TEMP:
 
-                        //TODO change minutes to a call from the strings file
                         if (data.isAmbient_temp()) {
-                            checkPermissionsAndSchedule(context,
+                            checkPermissionsAndSchedule2(context,
                                     AMBIENT_TEMP,
                                     AmbientTempJobService.class,
                                     context.getResources().getInteger(R.integer.ambient_temp),
                                     packageManager,
-                                    "none",
+                                    null,
                                     PackageManager.FEATURE_SENSOR_AMBIENT_TEMPERATURE);
                         }
 
-
-//                    text = "AMBIENT_TEMP ";
-//                    // change from 15 minutes to another time schedule
-//
-//                    if (packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_AMBIENT_TEMPERATURE) & data.isAmbient_temp()) {
-//                        boolean scheduled = Util.scheduleJob(context, AmbientTempJobService.class, AMBIENT_TEMP, 15);
-//                        Log.d(TAG, "Scheduled " + text + scheduled);
-//                    } else {
-//                        Log.d(TAG, "FEATURE_SENSOR_AMBIENT_TEMPERATURE = false");
-//                    }
-
-
                         break;
                     case STEPS:
-//                    text = "STEPS ";
-//                    permission = ACTIVITY_RECOGNITION;
-//                    tfs = PackageManager.FEATURE_SENSOR_STEP_COUNTER;
-//
-//                    if (packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_COUNTER) & data.isSteps()) {
-//                        Log.d(TAG, "FEATURE_SENSOR_STEP_COUNTER " + true);
-//                        if (checkSelfPermission(context, ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED) {
-//                            Log.d(TAG, "Permission " + permission + true);
-//                            // change from 15 minutes to once per day
-//                            boolean scheduled = Util.scheduleJob(context, StepsJobService.class, STEPS, 15);
-//                            Log.d(TAG, "Scheduled " + text + scheduled);
-//                        }
-//                    } else {
-//                        Log.d(TAG, tfs + false);
-//                    }
 
                         if (data.isSteps()) {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                checkPermissionsAndSchedule(context,
+                                checkPermissionsAndSchedule2(context,
                                         STEPS,
                                         StepsJobService.class,
                                         context.getResources().getInteger(R.integer.steps),
@@ -179,30 +153,32 @@ public class Util {
                     case LOCATION:
                         //todo change from default time
                         //todo likely change permission and feature
+                        // change ACCESS_FINE_LOCATION to ACCESS_COARSE_LOCATION
                         if (data.isLocation()) {
                             Log.d(TAG, "scheduledUnscheduledJobs: " + LOCATION);
-                            checkPermissionsAndSchedule(context,
+                            checkPermissionsAndSchedule2(context,
                                     LOCATION,
                                     LocationJobService.class,
-                                    context.getResources().getInteger(R.integer.default_time),
+                                    context.getResources().getInteger(R.integer.location),
                                     packageManager,
-                                    ACCESS_COARSE_LOCATION,
-                                    "none");
+                                    ACCESS_FINE_LOCATION,
+                                    null);
 
                         }
                         break;
 
                     case DAILY_QUESTION:
+                        //TODO DAILY_QUESTION not working
                         if ((data.isSocialness() || data.isMood()) && (!isMoodEntryToday(context, currentTime) || !isSocialnessEntryToday(context, currentTime))) {
                             Log.d(TAG, "scheduledUnscheduledJobs: " + DAILY_QUESTION);
 
-                            checkPermissionsAndSchedule(context,
+                            checkPermissionsAndSchedule2(context,
                                     DAILY_QUESTION,
                                     DailyQuestionJobService.class,
                                     context.getResources().getInteger(R.integer.daily_question),
                                     packageManager,
-                                    "none",
-                                    "none");
+                                    null,
+                                    null);
 
                         }
                         break;
@@ -211,7 +187,20 @@ public class Util {
 
                         if (data.isWeather() || data.isSun()) {
                             Log.d(TAG, "scheduledUnscheduledJobs: " + WEATHER);
+                            checkPermissionsAndSchedule2(context,
+                                    WEATHER,
+                                    WeatherJobService.class,
+                                    context.getResources().getInteger(R.integer.weather),
+                                    packageManager,
+                                    null,
+                                    null);
+
+
                         }
+
+
+
+
                         break;
                 }
             }
@@ -223,18 +212,18 @@ public class Util {
 
     }
 
-    public static void checkPermissionsAndSchedule(Context context, int utilInt, Class<?> cls, int minutes, PackageManager packageManager, String permission, String feature) {
-        if (packageManager.hasSystemFeature(feature) || feature.equals("none")) {
+    public static void checkPermissionsAndSchedule2(Context context, int jobID, Class<?> cls, int minutes, PackageManager packageManager, String permission, String feature) {
+        if (packageManager.hasSystemFeature(feature) || feature == null) {
             Log.d(TAG, feature + " feature " + true);
 
-            if (permission.equals("none")) {
-                boolean scheduled = Util.scheduleJob(context, cls, utilInt, minutes);
-                Log.d(TAG, "Scheduled " + utilInt + " " + scheduled);
+            if (permission == null) {
+                boolean scheduled = Util.scheduleJob(context, cls, jobID, minutes);
+                Log.d(TAG, "Scheduled " + jobID + " " + scheduled);
 
             } else if (checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED) {
                 Log.d(TAG, "Permission " + permission + true);
-                boolean scheduled = Util.scheduleJob(context, cls, utilInt, minutes);
-                Log.d(TAG, "Scheduled " + utilInt + " " + scheduled);
+                boolean scheduled = Util.scheduleJob(context, cls, jobID, minutes);
+                Log.d(TAG, "Scheduled " + jobID + " " + scheduled);
             } else {
                 Log.d(TAG, "Permission " + permission + " " + false);
 
@@ -243,6 +232,7 @@ public class Util {
             Log.d(TAG, permission + " permission " + false);
         }
     }
+
 
     public static List<Integer> unscheduledJobs(Context context) {
         final JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
@@ -284,8 +274,12 @@ public class Util {
     }
 
 
-    static final String KEY_REQUESTING_LOCATION_UPDATES = "requesting_locaction_updates";
-
+    public static Date convert(long t){
+        Date test = new Date();
+        t = t*1000;
+        test.setTime(t);
+        return test;
+    }
 
 
 

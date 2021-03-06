@@ -9,9 +9,11 @@ import com.example.guidance.model.Location;
 import com.example.guidance.model.Mood;
 import com.example.guidance.model.Socialness;
 import com.example.guidance.model.Step;
+import com.example.guidance.model.Weather;
 
 import org.bson.types.ObjectId;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import io.realm.Realm;
@@ -490,6 +492,156 @@ public class DatabaseFunctions {
             return task.getDateTime().getDate() == currentTime.getDate() && task.getDateTime().getMonth() == currentTime.getMonth() &&
                     task.getDateTime().getYear() == currentTime.getYear() && task.getDateTime().getHours() == currentTime.getHours();
 
+    }
+
+
+    public static Location getMostRecentLocation(Context context, Date currentTime) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+
+        RealmQuery<Location> query = realm.where(Location.class).lessThan("dateTime", currentTime);
+        Location task = query.sort("dateTime", Sort.DESCENDING).findFirst();
+
+        return task;
+    }
+
+    public static void weatherEntry(Context context, Date currentTime, String weather, Date sunrise,
+                                    Date sunset, double feels_like_morn, double feels_like_day,
+                                    double feels_like_eve, double feels_like_night, double temp_max,
+                                    double temp_min) {
+
+        if (!isExistingWeather(context, currentTime)) {
+            insertWeather(context, currentTime, weather, sunrise, sunset,
+                    feels_like_morn, feels_like_day, feels_like_eve,
+                    feels_like_night, temp_max, temp_min);
+        } else {
+            updateWeather(context, currentTime, weather, sunrise, sunset,
+                    feels_like_morn, feels_like_day, feels_like_eve,
+                    feels_like_night, temp_max, temp_min);
+        }
+
+    }
+
+    public static boolean isExistingWeather(Context context, Date currentTime) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+
+        RealmQuery<Weather> query = realm.where(Weather.class).equalTo("dateTime", currentTime);
+        Weather task = query.sort("dateTime", Sort.DESCENDING).findFirst();
+
+
+        if (task == null) {
+            Log.d(TAG, "isThereAnEntryToday: false");
+            return false;
+        } else
+            return task.getDateTime().getDate() == currentTime.getDate() && task.getDateTime().getMonth() == currentTime.getMonth() &&
+                    task.getDateTime().getYear() == currentTime.getYear();
+    }
+
+
+    public static void insertWeather(Context context, Date currentTime, String weather, Date sunrise,
+                                     Date sunset, double feels_like_morn, double feels_like_day,
+                                     double feels_like_eve, double feels_like_night, double temp_max,
+                                     double temp_min) {
+
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+
+        realm.executeTransactionAsync(r -> {
+            Weather init = r.createObject(Weather.class, new ObjectId());
+
+            init.setDateTime(currentTime);
+            init.setWeather(weather);
+            init.setSunRise(sunrise);
+            init.setSunSet(sunset);
+            init.setFeels_like_morn(feels_like_morn);
+            init.setFeels_like_day(feels_like_day);
+            init.setFeels_like_eve(feels_like_eve);
+            init.setFeels_like_night(feels_like_night);
+            init.setTemp_max(temp_max);
+            init.setTemp_min(temp_min);
+
+//            Log.d(TAG, "executed transaction : saveAmbientTempToDatabase " + currentTime);
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+//                Log.d(TAG, "AmbientTemp onSuccess:");
+                Log.d(TAG, "executed transaction : insertWeather" + currentTime);
+
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                // Transaction failed and was automatically canceled.
+                Log.e(TAG, "insertWeather transaction failed: ", error);
+
+            }
+        });
+        realm.close();
+
+    }
+
+    public static void updateWeather(Context context, Date currentTime, String weather, Date sunrise,
+                                     Date sunset, double feels_like_morn, double feels_like_day,
+                                     double feels_like_eve, double feels_like_night, double temp_max,
+                                     double temp_min){
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+        realm.executeTransactionAsync(r -> {
+            // Sort chronologically? because realm is lazily searched there is no
+            // guarantee that it will return the last entry inputted
+            // TODO Check that this returns the correct result
+            RealmQuery<Weather> query = r.where(Weather.class).equalTo("dateTime", currentTime);
+            Weather result = query.sort("dateTime", Sort.DESCENDING).findFirst();
+
+            if (result == null) {
+                Log.d(TAG, "isThereAnEntryToday: ERROR");
+            } else {
+                Log.d(TAG, "updatingWeather");
+                result.setDateTime(currentTime);
+                result.setWeather(weather);
+                result.setSunRise(sunrise);
+                result.setSunSet(sunset);
+                result.setFeels_like_morn(feels_like_morn);
+                result.setFeels_like_day(feels_like_day);
+                result.setFeels_like_eve(feels_like_eve);
+                result.setFeels_like_night(feels_like_night);
+                result.setTemp_max(temp_max);
+                result.setTemp_min(temp_min);
+
+                r.insertOrUpdate(result);
+            }
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+//                Log.d(TAG, "updateSteps onSuccess:");
+                Date ct = Calendar.getInstance().getTime();
+                Log.d(TAG, "executed transaction : updateWeather " + ct);
+
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                // Transaction failed and was automatically canceled.
+                Log.e(TAG, "updateStepToday transaction failed: ", error);
+
+            }
+        });
+
+
+        realm.close();
     }
 
 }

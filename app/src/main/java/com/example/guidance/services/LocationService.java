@@ -36,7 +36,7 @@ import static com.example.guidance.scheduler.Util.LOCATION;
 public class LocationService extends Service {
 
 
-    public static final String TAG = "LocationService2";
+    public static final String TAG = "LocationService";
     static int sID;
     private static FusedLocationProviderClient mFusedLocationClient;
     private static LocationCallback mLocationCallback;
@@ -49,16 +49,17 @@ public class LocationService extends Service {
     private static Date currentTime;
     private static boolean receivingUpdates;
 
-
     @Override
     public void onCreate() {
         Log.d(TAG, "onCreate: ");
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
         mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 if (locationResult == null) {
                     Log.d(TAG, "onLocationResult: null");
+                    removeLocationUpdates();
                     return;
                 }
                 removeLocationUpdates();
@@ -68,14 +69,12 @@ public class LocationService extends Service {
 
 //        createLocationRequest();
 //        getLastLocation(this);
-
-
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        Log.d(TAG, "onStartCommand: ");
+//        Log.d(TAG, "onStartCommand: ");
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
@@ -103,7 +102,7 @@ public class LocationService extends Service {
     }
 
     private void startLocationUpdates() {
-        Log.d(TAG, "startLocationUpdates: ");
+//        Log.d(TAG, "startLocationUpdates: ");
         receivingUpdates = true;
         try {
 
@@ -115,8 +114,6 @@ public class LocationService extends Service {
             receivingUpdates = false;
             Log.d(TAG, "Lost location permission. Could not request updates. " + unlikely);
         }
-
-
 //        removeLocationUpdates();
     }
 
@@ -160,9 +157,11 @@ public class LocationService extends Service {
                                 stopSelfResult(sID);
                             }
 
-                            Log.d(TAG, "getLastLocation: " + mLocation.getLatitude() + " " + mLocation.getLongitude() + " " + currentTime);
+//                            Log.d(TAG, "getLastLocation: " + mLocation.getLatitude() + " " + mLocation.getLongitude() + " " + currentTime);
                         } else {
                             Log.w(TAG, "Failed to get location.");
+                            stopForeground(true);
+                            stopSelfResult(sID);
                         }
                     });
 
@@ -174,7 +173,7 @@ public class LocationService extends Service {
     private void onNewLocation(Context context, LocationResult location) {
         mLocation = location.getLastLocation();
         currentTime = Calendar.getInstance().getTime();
-        Log.d(TAG, "New location: " + mLocation.getLatitude() + " " + mLocation.getLongitude() + " " + currentTime);
+//        Log.d(TAG, "New location: " + mLocation.getLatitude() + " " + mLocation.getLongitude() + " " + currentTime);
         locationEntry(context, currentTime, mLocation.getLatitude(), mLocation.getLongitude());
 
         stopForeground(true);

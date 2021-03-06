@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.job.JobScheduler;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -21,14 +20,14 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.guidance.R;
-import com.example.guidance.jobServices.LocationJobService;
+import com.example.guidance.jobServices.WeatherJobService;
 import com.example.guidance.model.Ambient_Temperature;
 import com.example.guidance.model.Data_Storing;
 import com.example.guidance.model.Location;
 import com.example.guidance.model.Mood;
 import com.example.guidance.model.Socialness;
 import com.example.guidance.model.Step;
-import com.example.guidance.services.LocationService;
+import com.example.guidance.model.Weather;
 import com.example.guidance.services.StepsService;
 import com.google.android.material.navigation.NavigationView;
 
@@ -40,9 +39,9 @@ import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
-import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
-import static com.example.guidance.scheduler.Util.LOCATION;
-import static com.example.guidance.scheduler.Util.checkPermissionsAndSchedule;
+import static com.example.guidance.scheduler.Util.WEATHER;
+
+import static com.example.guidance.scheduler.Util.checkPermissionsAndSchedule2;
 import static com.example.guidance.scheduler.Util.scheduledUnscheduledJobs;
 import static com.example.guidance.scheduler.Util.unscheduledJobs;
 import static com.example.guidance.scheduler.Util.utilList;
@@ -105,6 +104,11 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
         realm.executeTransactionAsync(r -> {
             Log.d(TAG, "deleted Data_Storing");
             r.delete(Location.class);
+        });
+
+        realm.executeTransactionAsync(r -> {
+            Log.d(TAG, "deleted Data_Storing");
+            r.delete(Weather.class);
         });
 
         Toast.makeText(this, "Deleted Everything In Realm", Toast.LENGTH_SHORT).show();
@@ -220,49 +224,61 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
         RealmQuery<Location> locationRealmQuery = realm.where(Location.class);
         RealmResults<Location> temp = locationRealmQuery.sort("dateTime", Sort.DESCENDING).findAll();
 
-        Log.d(TAG, "displayAmbient " + temp.size() + " ambient Temp full list: " + temp);
+        Log.d(TAG, "displayLocation " + temp.size() + " location full list: " + temp);
 
         displayTextView.setText("");
         StringBuilder displayString = new StringBuilder();
+        StringBuilder displayString2 = new StringBuilder();
         for(Location t : temp){
             displayString.append(" ").append(t).append("\n");
+            displayString2.append(t.getDateTime()).append(" ").append(t.getLatitude()).append(" , ").append(t.getLongitude()).append("\n");
+            displayString.append(" ").append("\n");
         }
+        Log.d(TAG, "displayLocation: " + displayString2);
         displayTextView.setText(displayString);
 
 
     }
 
-    public void startLocationJobService(View view) {
+    public void startWeatherJobService(View view) {
 
         PackageManager packageManager = this.getPackageManager();
 
 
-//        if (data.isLocation()) {
-            Log.d(TAG, "scheduledUnscheduledJobs: " + LOCATION);
-            checkPermissionsAndSchedule(this,
-                    LOCATION,
-                    LocationJobService.class,
+            Log.d(TAG, "scheduledUnscheduledJobs: " + WEATHER);
+            checkPermissionsAndSchedule2(this,
+                    WEATHER,
+                    WeatherJobService.class,
                     this.getResources().getInteger(R.integer.default_time),
                     packageManager,
-                    ACCESS_COARSE_LOCATION,
-                    "none");
+                    null,
+                    null);
+        }
 
+
+
+
+
+
+    public void startWeatherService(View view) {
+
+//        Intent notificationIntent = new Intent(this, LocationService.class);
+//        Intent notificationIntent = new Intent(this, WeatherService.class);
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//
+//            startForegroundService(notificationIntent);
+//        }else {
+//            Log.d(TAG, "startWeatherService: error");
 //        }
 
 
-    }
+//        Date Mon Jan 19 17:35:45 GMT 1970 1614945600
 
-    public void startLocationService(View view) {
+//        Fri Mar 05 2021 12:00:00 GMT+0000
 
-//        Intent notificationIntent = new Intent(this, LocationService.class);
-        Intent notificationIntent = new Intent(this, LocationService.class);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
-            startForegroundService(notificationIntent);
-        }else {
-            Log.d(TAG, "startLocationService: error");
-        }
     }
 
 
@@ -275,7 +291,7 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
         StringBuilder displayString = new StringBuilder();
         for(Socialness t : socialness){
             displayString.append(" ").append(t).append("\n");
-
+            displayString.append(" ").append("\n");
         }
         displayTextView.setText(displayString);
 
@@ -293,7 +309,7 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
         StringBuilder displayString = new StringBuilder();
         for(Mood t : mood){
             displayString.append(" ").append(t).append("\n");
-
+            displayString.append(" ").append("\n");
 
         }
         displayTextView.setText(displayString);
@@ -311,6 +327,7 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
         StringBuilder displayString = new StringBuilder();
         for(Ambient_Temperature t : temp){
             displayString.append(" ").append(t).append("\n");
+            displayString.append(" ").append("\n");
         }
         displayTextView.setText(displayString);
 
@@ -327,6 +344,24 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
         StringBuilder displayString = new StringBuilder();
         for(Step t : step){
             displayString.append(" ").append(t).append("\n");
+            displayString.append(" ").append("\n");
+
+        }
+        displayTextView.setText(displayString.toString());
+    }
+
+    public void displayWeather(View view) {
+        RealmQuery<Weather> weatherDayRealmQuery = realm.where(Weather.class);
+//        RealmResults<Step> step = stepRealmQuery.findAll();
+        RealmResults<Weather> weather = weatherDayRealmQuery.sort("dateTime", Sort.DESCENDING).findAll();
+
+        Log.d(TAG, "displayWeather " + weather.size() + " weather full list: " + weather);
+
+        displayTextView.setText("");
+        StringBuilder displayString = new StringBuilder();
+        for(Weather t : weather){
+            displayString.append(" ").append(t).append("\n");
+            displayString.append(" ").append("\n");
         }
         displayTextView.setText(displayString.toString());
     }
