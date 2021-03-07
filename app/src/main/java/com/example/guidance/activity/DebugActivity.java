@@ -20,6 +20,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.guidance.R;
+import com.example.guidance.jobServices.LocationJobService;
 import com.example.guidance.jobServices.WeatherJobService;
 import com.example.guidance.model.Ambient_Temperature;
 import com.example.guidance.model.Data_Storing;
@@ -39,6 +40,7 @@ import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
+import static com.example.guidance.scheduler.Util.LOCATION;
 import static com.example.guidance.scheduler.Util.WEATHER;
 
 import static com.example.guidance.scheduler.Util.checkPermissionsAndSchedule2;
@@ -244,15 +246,24 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
 
         PackageManager packageManager = this.getPackageManager();
 
+        Log.d(TAG, "scheduledUnscheduledJobs: " + LOCATION);
+        checkPermissionsAndSchedule2(this,
+                LOCATION,
+                LocationJobService.class,
+                this.getResources().getInteger(R.integer.default_time),
+                packageManager,
+                null,
+                null);
 
-            Log.d(TAG, "scheduledUnscheduledJobs: " + WEATHER);
-            checkPermissionsAndSchedule2(this,
-                    WEATHER,
-                    WeatherJobService.class,
-                    this.getResources().getInteger(R.integer.default_time),
-                    packageManager,
-                    null,
-                    null);
+
+//            Log.d(TAG, "scheduledUnscheduledJobs: " + WEATHER);
+//            checkPermissionsAndSchedule2(this,
+//                    WEATHER,
+//                    WeatherJobService.class,
+//                    this.getResources().getInteger(R.integer.default_time),
+//                    packageManager,
+//                    null,
+//                    null);
         }
 
 

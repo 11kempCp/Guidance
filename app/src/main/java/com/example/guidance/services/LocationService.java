@@ -23,7 +23,8 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
-import java.text.DateFormat;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -63,7 +64,7 @@ public class LocationService extends Service {
                     return;
                 }
                 removeLocationUpdates();
-                onNewLocation(LocationService.this ,locationResult);
+                onNewLocation(LocationService.this, locationResult);
             }
         };
 
@@ -149,10 +150,19 @@ public class LocationService extends Service {
                         if (task.isSuccessful() && task.getResult() != null) {
                             mLocation = task.getResult();
                             currentTime = Calendar.getInstance().getTime();
-                            locationEntry(context, currentTime, mLocation.getLatitude(), mLocation.getLongitude());
+
+
+                            //TODO sort out truncation/triming down to 4dp
+                            double lon = truncate(mLocation.getLongitude());
+                            double lat = truncate(mLocation.getLatitude());
+
+                            locationEntry(context, currentTime, lat, lon);
+
+
+//                            locationEntry(context, currentTime, mLocation.getLatitude(), mLocation.getLongitude());
 //                            removeLocationUpdates(context);
 
-                            if(!receivingUpdates){
+                            if (!receivingUpdates) {
                                 stopForeground(true);
                                 stopSelfResult(sID);
                             }
@@ -174,7 +184,14 @@ public class LocationService extends Service {
         mLocation = location.getLastLocation();
         currentTime = Calendar.getInstance().getTime();
 //        Log.d(TAG, "New location: " + mLocation.getLatitude() + " " + mLocation.getLongitude() + " " + currentTime);
-        locationEntry(context, currentTime, mLocation.getLatitude(), mLocation.getLongitude());
+
+        //TODO sort out truncation/triming down to 4dp
+
+        double lon = truncate(mLocation.getLongitude());
+        double lat = truncate(mLocation.getLatitude());
+
+
+        locationEntry(context, currentTime, lat, lon);
 
         stopForeground(true);
         stopSelfResult(sID);
@@ -187,4 +204,14 @@ public class LocationService extends Service {
         stopSelfResult(sID);
         removeLocationUpdates();
     }
+
+
+    private double truncate(double coordinate) {
+//        Log.d(TAG, "trim: input " + coordinate);
+        DecimalFormat df;
+        df = new DecimalFormat("##.####");
+        df.setRoundingMode(RoundingMode.DOWN);
+        return Double.parseDouble(df.format(coordinate));
+    }
+
 }
