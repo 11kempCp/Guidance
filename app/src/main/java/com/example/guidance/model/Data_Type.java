@@ -8,9 +8,7 @@ import io.realm.annotations.PrimaryKey;
 /**
  * Created by Conor K on 10/02/2021.
  */
-//todo rename class
-    // Realm schema version 2
-public class Data_Storing extends RealmObject {
+public class Data_Type extends RealmObject {
 
     @PrimaryKey
     private ObjectId _id;
@@ -26,11 +24,11 @@ public class Data_Storing extends RealmObject {
     private boolean socialness;
     private boolean mood;
 
-    public Data_Storing(){
+    public Data_Type(){
 
     }
 
-    public Data_Storing(ObjectId _id, boolean steps, boolean distance_traveled, boolean location, boolean ambient_temp, boolean screentime, boolean sleep_tracking, boolean weather, boolean external_temp, boolean sun, boolean socialness, boolean mood) {
+    public Data_Type(ObjectId _id, boolean steps, boolean distance_traveled, boolean location, boolean ambient_temp, boolean screentime, boolean sleep_tracking, boolean weather, boolean external_temp, boolean sun, boolean socialness, boolean mood) {
         this._id = _id;
         this.steps = steps;
         this.distance_traveled = distance_traveled;

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.guidance.model.Ambient_Temperature;
-import com.example.guidance.model.Data_Storing;
+import com.example.guidance.model.Data_Type;
 import com.example.guidance.model.Location;
 import com.example.guidance.model.Mood;
 import com.example.guidance.model.Socialness;
@@ -369,12 +369,12 @@ public class DatabaseFunctions {
 
     }
 
-    public static Data_Storing getDataStoring(Context context) {
+    public static Data_Type getDataStoring(Context context) {
         Realm.init(context);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
         Realm realm = Realm.getDefaultInstance();
-        RealmQuery<Data_Storing> tasksQuery = realm.where(Data_Storing.class);
+        RealmQuery<Data_Type> tasksQuery = realm.where(Data_Type.class);
 //        realm.close();
 
         return tasksQuery.findFirst();
@@ -388,7 +388,7 @@ public class DatabaseFunctions {
 
         realm.executeTransactionAsync(r -> {
             // Instantiate the class using the factory function.
-            Data_Storing init = r.createObject(Data_Storing.class, new ObjectId());
+            Data_Type init = r.createObject(Data_Type.class, new ObjectId());
             // Configure the instance.
             init.setSteps(true);
             init.setDistance_traveled(true);
@@ -422,7 +422,7 @@ public class DatabaseFunctions {
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
         Realm realm = Realm.getDefaultInstance();
-        Data_Storing tasksQuery = realm.where(Data_Storing.class).findFirst();
+        Data_Type tasksQuery = realm.where(Data_Type.class).findFirst();
 
 //        realm.close();
 
@@ -479,8 +479,6 @@ public class DatabaseFunctions {
 
 
         RealmQuery<Location> query = realm.where(Location.class).equalTo("latitude", latitude).equalTo("longitude", longitude);
-        //TODO currently works bececause of FINE_LOCATION,
-        // COARSE_LOCATION might result in there being multiple long/lat being the same in the database? loop over those to find one within the last hour?
         Location task = query.sort("dateTime", Sort.DESCENDING).findFirst();
 
 
@@ -488,7 +486,6 @@ public class DatabaseFunctions {
             Log.d(TAG, "isThereAnEntryToday: false");
             return false;
         } else
-            //TODO assess if the date is correct or not
             return task.getDateTime().getDate() == currentTime.getDate() && task.getDateTime().getMonth() == currentTime.getMonth() &&
                     task.getDateTime().getYear() == currentTime.getYear() && task.getDateTime().getHours() == currentTime.getHours();
 

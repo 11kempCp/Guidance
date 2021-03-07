@@ -1,6 +1,5 @@
 package com.example.guidance.jobServices;
 
-import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.app.job.JobParameters;
@@ -35,20 +34,9 @@ public class DailyQuestionJobService extends JobService {
         Log.d(TAG, "onStartJob: DailyQuestionJobService");
         Date currentTime = Calendar.getInstance().getTime();
 
-//        if (isSocialnessEntryToday(this, currentTime)) {
-//
-//        } else {
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                Intent serviceIntent = new Intent(this, DailyQuestionService.class);
-//                startForegroundService(serviceIntent);
-//            } else {
-//
-//            }
-//
-//        }
 
-        if(currentTime.getHours() <=18  && currentTime.getHours() <=22){
-            if(isSocialnessEntryToday(this, currentTime) ||isMoodEntryToday(this, currentTime)){
+        if (currentTime.getHours() <= 14 && currentTime.getHours() <= 22) {
+            if (isSocialnessEntryToday(this, currentTime) || isMoodEntryToday(this, currentTime)) {
 
                 //Create an Intent for the activity you want to start
                 Intent resultIntent = new Intent(this, DailyQuestionActivity.class);
@@ -66,8 +54,7 @@ public class DailyQuestionJobService extends JobService {
                         .setContentText(getString(R.string.notification_daily_question))
                         .setSmallIcon(R.drawable.ic_daily_question)
                         .setContentIntent(resultPendingIntent)
-                        .setPriority(NotificationCompat.PRIORITY_LOW)
-                ;
+                        .setPriority(NotificationCompat.PRIORITY_LOW);
 
                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
                 notificationManager.notify(DAILY_QUESTION, builder.build());
@@ -76,22 +63,6 @@ public class DailyQuestionJobService extends JobService {
 
 
         }
-
-
-
-
-
-//        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-//        notificationManager.notify(DAILY_QUESTION, builder.build());
-
-//        Notification notification = new NotificationCompat.Builder(this, App.CHANNEL_ID)
-//                .setContentTitle(getString(R.string.steps))
-//                .setContentText(getString(R.string.notification_steps))
-//                .setSmallIcon(R.drawable.ic_daily_question)
-//                .setContentIntent(resultPendingIntent)
-//                .setPriority(NotificationCompat.PRIORITY_LOW)
-//                .build();
-
 
 
         return false;

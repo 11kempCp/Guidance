@@ -17,7 +17,7 @@ import com.example.guidance.jobServices.DailyQuestionJobService;
 import com.example.guidance.jobServices.LocationJobService;
 import com.example.guidance.jobServices.StepsJobService;
 import com.example.guidance.jobServices.WeatherJobService;
-import com.example.guidance.model.Data_Storing;
+import com.example.guidance.model.Data_Type;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,7 +51,7 @@ public class Util {
     public static final int WEATHER = 5;
 
 
-//    public static final List<Integer> utilList = Arrays.asList(DAILY_QUESTION);
+    //    public static final List<Integer> utilList = Arrays.asList(DAILY_QUESTION);
     public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, WEATHER);
 
 
@@ -92,10 +92,10 @@ public class Util {
 
         //TODO improve, refer to LocationUpdatesForegroundService github repo,
         // specifically MainActivity requestPermissions function
-        if (ContextCompat.checkSelfPermission(context, ACCESS_COARSE_LOCATION)
+        if (ContextCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_DENIED) {
             //ask for permission
-            requestPermissions(activity, new String[]{ACCESS_COARSE_LOCATION}, LOCATION);
+            requestPermissions(activity, new String[]{ACCESS_FINE_LOCATION}, LOCATION);
         }
 
     }
@@ -106,7 +106,7 @@ public class Util {
         List<Integer> unscheduledJobs = unscheduledJobs(context);
 
         //TODO remove this implementation in favour of passcode implementation
-        Data_Storing data;
+        Data_Type data;
         if (!isDataStoringInitialised(context)) {
             initialiseDataStoring(context);
         }
@@ -124,7 +124,7 @@ public class Util {
                     case AMBIENT_TEMP:
 
                         if (data.isAmbient_temp()) {
-                            checkPermissionsAndSchedule2(context,
+                            checkPermissionsAndSchedule(context,
                                     AMBIENT_TEMP,
                                     AmbientTempJobService.class,
                                     context.getResources().getInteger(R.integer.ambient_temp),
@@ -138,7 +138,7 @@ public class Util {
 
                         if (data.isSteps()) {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                checkPermissionsAndSchedule2(context,
+                                checkPermissionsAndSchedule(context,
                                         STEPS,
                                         StepsJobService.class,
                                         context.getResources().getInteger(R.integer.steps),
@@ -151,12 +151,11 @@ public class Util {
 
                         break;
                     case LOCATION:
-                        //todo change from default time
                         //todo likely change permission and feature
                         // change ACCESS_FINE_LOCATION to ACCESS_COARSE_LOCATION
                         if (data.isLocation()) {
                             Log.d(TAG, "scheduledUnscheduledJobs: " + LOCATION);
-                            checkPermissionsAndSchedule2(context,
+                            checkPermissionsAndSchedule(context,
                                     LOCATION,
                                     LocationJobService.class,
                                     context.getResources().getInteger(R.integer.location),
@@ -169,13 +168,14 @@ public class Util {
 
                     case DAILY_QUESTION:
                         //TODO DAILY_QUESTION not working
+                        //TODO change default time
                         if ((data.isSocialness() || data.isMood()) && (!isMoodEntryToday(context, currentTime) || !isSocialnessEntryToday(context, currentTime))) {
                             Log.d(TAG, "scheduledUnscheduledJobs: " + DAILY_QUESTION);
 
-                            checkPermissionsAndSchedule2(context,
+                            checkPermissionsAndSchedule(context,
                                     DAILY_QUESTION,
                                     DailyQuestionJobService.class,
-                                    context.getResources().getInteger(R.integer.daily_question),
+                                    context.getResources().getInteger(R.integer.default_time),
                                     packageManager,
                                     null,
                                     null);
@@ -187,7 +187,7 @@ public class Util {
 
                         if (data.isWeather() || data.isSun()) {
                             Log.d(TAG, "scheduledUnscheduledJobs: " + WEATHER);
-                            checkPermissionsAndSchedule2(context,
+                            checkPermissionsAndSchedule(context,
                                     WEATHER,
                                     WeatherJobService.class,
                                     context.getResources().getInteger(R.integer.weather),
@@ -197,8 +197,6 @@ public class Util {
 
 
                         }
-
-
 
 
                         break;
@@ -212,7 +210,7 @@ public class Util {
 
     }
 
-    public static void checkPermissionsAndSchedule2(Context context, int jobID, Class<?> cls, int minutes, PackageManager packageManager, String permission, String feature) {
+    public static void checkPermissionsAndSchedule(Context context, int jobID, Class<?> cls, int minutes, PackageManager packageManager, String permission, String feature) {
         if (packageManager.hasSystemFeature(feature) || feature == null) {
             Log.d(TAG, feature + " feature " + true);
 
@@ -274,13 +272,12 @@ public class Util {
     }
 
 
-    public static Date convert(long t){
-        Date test = new Date();
-        t = t*1000;
-        test.setTime(t);
-        return test;
+    public static Date convertEpochToDate(long t) {
+        Date date = new Date();
+        t = t * 1000;
+        date.setTime(t);
+        return date;
     }
-
 
 
 }

@@ -15,7 +15,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.guidance.R;
-import com.example.guidance.model.Data_Storing;
+import com.example.guidance.model.Data_Type;
 import com.google.android.material.navigation.NavigationView;
 
 import io.realm.Realm;
@@ -60,8 +60,8 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         mood = findViewById(R.id.switchMood);
 
         realm = Realm.getDefaultInstance();
-        RealmQuery<Data_Storing> tasksQuery = realm.where(Data_Storing.class);
-        Data_Storing test = tasksQuery.findFirst();
+        RealmQuery<Data_Type> tasksQuery = realm.where(Data_Type.class);
+        Data_Type test = tasksQuery.findFirst();
         assert test != null;
 
 
@@ -126,7 +126,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         if (view.getId() == R.id.switchSteps) {
             realm.executeTransactionAsync(r -> {
                 // Get a data to update.
-                Data_Storing data = r.where(Data_Storing.class).findFirst();
+                Data_Type data = r.where(Data_Type.class).findFirst();
                 // Update properties on the instance.
                 // This change is saved to the realm.
                 data.setSteps(steps.isChecked());
@@ -135,7 +135,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         } else if (view.getId() == R.id.switchDistanceTraveled) {
             realm.executeTransactionAsync(r -> {
                 // Get the Data_Storing class to update.
-                Data_Storing data = r.where(Data_Storing.class).findFirst();
+                Data_Type data = r.where(Data_Type.class).findFirst();
                 // Update properties on the instance.
                 // This change is saved to the realm.
                 data.setDistance_traveled(distance_traveled.isChecked());
@@ -145,7 +145,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         } else if (view.getId() == R.id.switchLocation) {
             realm.executeTransactionAsync(r -> {
                 // Get the Data_Storing class to update.
-                Data_Storing data = r.where(Data_Storing.class).findFirst();
+                Data_Type data = r.where(Data_Type.class).findFirst();
                 // Update properties on the instance.
                 // This change is saved to the realm.
                 data.setLocation(location.isChecked());
@@ -155,7 +155,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         } else if (view.getId() == R.id.switchDeviceTemp) {
             realm.executeTransactionAsync(r -> {
                 // Get the Data_Storing class to update.
-                Data_Storing data = r.where(Data_Storing.class).findFirst();
+                Data_Type data = r.where(Data_Type.class).findFirst();
                 // Update properties on the instance.
                 // This change is saved to the realm.
                 data.setAmbient_temp(device_temp.isChecked());
@@ -165,7 +165,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         } else if (view.getId() == R.id.switchScreentime) {
             realm.executeTransactionAsync(r -> {
                 // Get the Data_Storing class to update.
-                Data_Storing data = r.where(Data_Storing.class).findFirst();
+                Data_Type data = r.where(Data_Type.class).findFirst();
                 // Update properties on the instance.
                 // This change is saved to the realm.
                 data.setScreentime(screentime.isChecked());
@@ -175,7 +175,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         } else if (view.getId() == R.id.switchSleepTracking) {
             realm.executeTransactionAsync(r -> {
                 // Get the Data_Storing class to update.
-                Data_Storing data = r.where(Data_Storing.class).findFirst();
+                Data_Type data = r.where(Data_Type.class).findFirst();
                 // Update properties on the instance.
                 // This change is saved to the realm.
                 data.setSleep_tracking(sleep_tracking.isChecked());
@@ -185,7 +185,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         } else if (view.getId() == R.id.switchWeather) {
             realm.executeTransactionAsync(r -> {
                 // Get the Data_Storing class to update.
-                Data_Storing data = r.where(Data_Storing.class).findFirst();
+                Data_Type data = r.where(Data_Type.class).findFirst();
                 // Update properties on the instance.
                 // This change is saved to the realm.
                 data.setWeather(weather.isChecked());
@@ -195,7 +195,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         } else if (view.getId() == R.id.switchExternalTemp) {
             realm.executeTransactionAsync(r -> {
                 // Get the Data_Storing class to update.
-                Data_Storing data = r.where(Data_Storing.class).findFirst();
+                Data_Type data = r.where(Data_Type.class).findFirst();
                 // Update properties on the instance.
                 // This change is saved to the realm.
                 data.setExternal_temp(external_temp.isChecked());
@@ -205,7 +205,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         } else if (view.getId() == R.id.switchSun) {
             realm.executeTransactionAsync(r -> {
                 // Get the Data_Storing class to update.
-                Data_Storing data = r.where(Data_Storing.class).findFirst();
+                Data_Type data = r.where(Data_Type.class).findFirst();
                 // Update properties on the instance.
                 // This change is saved to the realm.
                 data.setSun(sun.isChecked());
@@ -215,7 +215,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         } else if (view.getId() == R.id.switchSocialness) {
             realm.executeTransactionAsync(r -> {
                 // Get the Data_Storing class to update.
-                Data_Storing data = r.where(Data_Storing.class).findFirst();
+                Data_Type data = r.where(Data_Type.class).findFirst();
                 // Update properties on the instance.
                 // This change is saved to the realm.
                 data.setSocialness(socialness.isChecked());
@@ -225,7 +225,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         } else if (view.getId() == R.id.switchMood) {
             realm.executeTransactionAsync(r -> {
                 // Get the Data_Storing class to update.
-                Data_Storing data = r.where(Data_Storing.class).findFirst();
+                Data_Type data = r.where(Data_Type.class).findFirst();
                 // Update properties on the instance.
                 // This change is saved to the realm.
                 data.setMood(mood.isChecked());

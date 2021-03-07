@@ -23,7 +23,7 @@ import com.example.guidance.R;
 import com.example.guidance.jobServices.LocationJobService;
 import com.example.guidance.jobServices.WeatherJobService;
 import com.example.guidance.model.Ambient_Temperature;
-import com.example.guidance.model.Data_Storing;
+import com.example.guidance.model.Data_Type;
 import com.example.guidance.model.Location;
 import com.example.guidance.model.Mood;
 import com.example.guidance.model.Socialness;
@@ -41,9 +41,9 @@ import io.realm.RealmResults;
 import io.realm.Sort;
 
 import static com.example.guidance.scheduler.Util.LOCATION;
-import static com.example.guidance.scheduler.Util.WEATHER;
 
-import static com.example.guidance.scheduler.Util.checkPermissionsAndSchedule2;
+import static com.example.guidance.scheduler.Util.WEATHER;
+import static com.example.guidance.scheduler.Util.checkPermissionsAndSchedule;
 import static com.example.guidance.scheduler.Util.scheduledUnscheduledJobs;
 import static com.example.guidance.scheduler.Util.unscheduledJobs;
 import static com.example.guidance.scheduler.Util.utilList;
@@ -100,7 +100,7 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
 
         realm.executeTransactionAsync(r -> {
             Log.d(TAG, "deleted Data_Storing");
-            r.delete(Data_Storing.class);
+            r.delete(Data_Type.class);
         });
 
         realm.executeTransactionAsync(r -> {
@@ -126,8 +126,8 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
         RealmResults<Step> step = stepRealmQuery.findAll();
         Log.d(TAG, "displaySteps " + step.size() + " steps full list: " + step);
 
-        RealmQuery<Data_Storing> dataStoringQuery = realm.where(Data_Storing.class);
-        RealmResults<Data_Storing> data = dataStoringQuery.findAll();
+        RealmQuery<Data_Type> dataStoringQuery = realm.where(Data_Type.class);
+        RealmResults<Data_Type> data = dataStoringQuery.findAll();
         Log.d(TAG, "displayData " + data.size() + " data full list: " + data);
 
         RealmQuery<Mood> moodRealmQuery = realm.where(Mood.class);
@@ -246,24 +246,24 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
 
         PackageManager packageManager = this.getPackageManager();
 
-        Log.d(TAG, "scheduledUnscheduledJobs: " + LOCATION);
-        checkPermissionsAndSchedule2(this,
-                LOCATION,
-                LocationJobService.class,
-                this.getResources().getInteger(R.integer.default_time),
-                packageManager,
-                null,
-                null);
+//        Log.d(TAG, "scheduledUnscheduledJobs: " + LOCATION);
+//        checkPermissionsAndSchedule(this,
+//                LOCATION,
+//                LocationJobService.class,
+//                this.getResources().getInteger(R.integer.default_time),
+//                packageManager,
+//                null,
+//                null);
 
 
-//            Log.d(TAG, "scheduledUnscheduledJobs: " + WEATHER);
-//            checkPermissionsAndSchedule2(this,
-//                    WEATHER,
-//                    WeatherJobService.class,
-//                    this.getResources().getInteger(R.integer.default_time),
-//                    packageManager,
-//                    null,
-//                    null);
+            Log.d(TAG, "scheduledUnscheduledJobs: " + WEATHER);
+            checkPermissionsAndSchedule(this,
+                    WEATHER,
+                    WeatherJobService.class,
+                    this.getResources().getInteger(R.integer.default_time),
+                    packageManager,
+                    null,
+                    null);
         }
 
 

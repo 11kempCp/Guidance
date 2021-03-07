@@ -104,6 +104,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onDestroy() {
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction("onPauseServiceReceiver");
+        broadcastIntent.setClass(this, onPauseServiceReceiver.class);
+        this.sendBroadcast(broadcastIntent);
+
         super.onDestroy();
     }
 
@@ -131,8 +136,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(myIntent);
                 break;
             case R.id.nav_daily_question:
-                //TODO change back to DailyQuestionActivity
-                myIntent = new Intent(this, LocationTestingActivity.class);
+                myIntent = new Intent(this, DailyQuestionActivity.class);
                 startActivity(myIntent);
                 break;
         }
@@ -140,70 +144,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-//    public void delete(View view) {
-//        realm.executeTransactionAsync(r -> {
-//            Log.d(TAG, "deleteAmbient: deleted Ambient_Temperature");
-//            r.delete(Ambient_Temperature.class);
-//        });
-//
-//        realm.executeTransactionAsync(r -> {
-//            Log.d(TAG, "deleteAmbient: deleted Step");
-//            r.delete(Step.class);
-//        });
-//
-//        Toast.makeText(this, "Deleted Everything In Realm", Toast.LENGTH_SHORT).show();
-//    }
 
-//    public void display(View view) {
-//        RealmQuery<Ambient_Temperature> ambient_temperatureRealmQuery = realm.where(Ambient_Temperature.class);
-//        RealmResults<Ambient_Temperature> ambient_temp = ambient_temperatureRealmQuery.findAll();
-//        Log.d(TAG, "displayAmbient " + ambient_temp.size() + " ambient Temp full list: " + ambient_temp);
-//
-//
-//        RealmQuery<Step> stepRealmQuery = realm.where(Step.class);
-//        RealmResults<Step> step = stepRealmQuery.findAll();
-//        Log.d(TAG, "displaySteps " + step.size() + " steps full list: " + step);
-//
-//        RealmQuery<Data_Storing> dataStoringQuery = realm.where(Data_Storing.class);
-//        RealmResults<Data_Storing> data = dataStoringQuery.findAll();
-//        Log.d(TAG, "displayData " + data.size() + " data full list: " + data);
-//
-//
-////        Toast.makeText(this, "displayAmbient " + ambient_temp.size() + " ambient Temp full list: " + ambient_temp, Toast.LENGTH_SHORT).show();
-//        Toast.makeText(this, "displaySteps " + step.size() + " steps full list: " + step, Toast.LENGTH_SHORT).show();
-//    }
-
-
-//    public void jobRunning(View view) {
-//
-//        List<Integer> test = unscheduledJobs(this);
-//        Toast.makeText(this, "Jobs " + test + " Not scheduled", Toast.LENGTH_SHORT).show();
-//        Log.d(TAG, "Jobs " + test + " Not scheduled");
-//    }
-//
-//
-//    public void start(View view) {
-//        scheduledUnscheduledJobs(this);
-//    }
-//
-//
-//    public void stop(View view) {
-//        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-//        for (int t : utilList) {
-//            scheduler.cancel(t);
-//        }
-//
-//        Log.d(TAG, "All Jobs Cancelled");
-//        Toast.makeText(this, "All Jobs Cancelled", Toast.LENGTH_SHORT).show();
-//    }
-
-
-//    public void getSteps(View view) {
-//        Toast.makeText(this, "Steps " + StepsService.getmSteps(), Toast.LENGTH_SHORT).show();
-//    }
-//
-//    public void resetSteps(View view) {
-//
-//        StepsService.resetSensor();
-//    }
 }

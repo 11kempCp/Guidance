@@ -1,6 +1,5 @@
 <resources>
 
-    <!--todo Reorganise strings.xml file-->
     <!--Start of Core Strings-->
     <string name="app_name">Guidance</string>
     <string name="contact">TODO contact email</string>
@@ -76,6 +75,7 @@
     <string name="advice">Advice</string>
     <string name="data">Data Used</string>
     <string name="justification">Justification</string>
+    <string name="daily_question">Daily Questions</string>
     <!--End of Activity Name Strings-->
 
     <!--Start of Periodic Job Times-->
@@ -88,7 +88,6 @@
     <!--End of Periodic Job Times-->
 
     <!--Start of Daily Questions-->
-    <string name="daily_question">Daily Questions</string>
 
     <string name="daily_question_one">What would you rate your socialness today?</string>
     <string name="daily_question_one_clarification">(1 being low and 4 being high)</string>
@@ -105,6 +104,7 @@
 
 
     <!--Location Testing Strings MUST DELETE-->
+    <!--//todo remove-->
     <string name="latitude_label">Latitude</string>
     <string name="longitude_label">Longitude</string>
     <string name="last_update_time_label">Last location update time</string>

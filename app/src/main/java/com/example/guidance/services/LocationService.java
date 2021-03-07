@@ -152,15 +152,9 @@ public class LocationService extends Service {
                             currentTime = Calendar.getInstance().getTime();
 
 
-                            //TODO sort out truncation/triming down to 4dp
-                            double lon = truncate(mLocation.getLongitude());
-                            double lat = truncate(mLocation.getLatitude());
-
-                            locationEntry(context, currentTime, lat, lon);
+                            locationEntry(context, currentTime, truncate(mLocation.getLatitude()), truncate(mLocation.getLongitude()));
 
 
-//                            locationEntry(context, currentTime, mLocation.getLatitude(), mLocation.getLongitude());
-//                            removeLocationUpdates(context);
 
                             if (!receivingUpdates) {
                                 stopForeground(true);
@@ -184,14 +178,7 @@ public class LocationService extends Service {
         mLocation = location.getLastLocation();
         currentTime = Calendar.getInstance().getTime();
 //        Log.d(TAG, "New location: " + mLocation.getLatitude() + " " + mLocation.getLongitude() + " " + currentTime);
-
-        //TODO sort out truncation/triming down to 4dp
-
-        double lon = truncate(mLocation.getLongitude());
-        double lat = truncate(mLocation.getLatitude());
-
-
-        locationEntry(context, currentTime, lat, lon);
+        locationEntry(context, currentTime, truncate(mLocation.getLatitude()), truncate(mLocation.getLongitude()));
 
         stopForeground(true);
         stopSelfResult(sID);
@@ -209,6 +196,7 @@ public class LocationService extends Service {
     private double truncate(double coordinate) {
 //        Log.d(TAG, "trim: input " + coordinate);
         DecimalFormat df;
+        //TODO potentially change to 3dp
         df = new DecimalFormat("##.####");
         df.setRoundingMode(RoundingMode.DOWN);
         return Double.parseDouble(df.format(coordinate));

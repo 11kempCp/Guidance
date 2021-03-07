@@ -15,7 +15,6 @@ import com.example.guidance.activity.MainActivity;
 import com.example.guidance.app.App;
 import com.example.guidance.model.Location;
 import com.example.guidance.model.onecallWeather.daily;
-import com.example.guidance.model.onecallWeather.hourly;
 import com.example.guidance.model.onecallWeather.onecallWeather;
 import com.example.guidance.realm.WeatherInterface;
 import com.example.guidance.scheduler.Util;
@@ -33,7 +32,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.example.guidance.realm.DatabaseFunctions.getMostRecentLocation;
-import static com.example.guidance.realm.DatabaseFunctions.insertWeather;
 import static com.example.guidance.realm.DatabaseFunctions.weatherEntry;
 import static com.example.guidance.scheduler.Util.WEATHER;
 
@@ -122,8 +120,8 @@ public class WeatherService extends Service {
                     for(daily d: daily){
 
 
-                        weatherEntry(WeatherService.this, Util.convert(d.getDt()),d.getWeather().get(0).getMain(),
-                                Util.convert(d.getSunrise()),Util.convert(d.getSunset()),
+                        weatherEntry(WeatherService.this, Util.convertEpochToDate(d.getDt()),d.getWeather().get(0).getMain(),
+                                Util.convertEpochToDate(d.getSunrise()),Util.convertEpochToDate(d.getSunset()),
                                 d.getFeels_like().getMorn(),d.getFeels_like().getDay(),
                                 d.getFeels_like().getEve(),d.getFeels_like().getNight(),
                                 d.getTemp().getMax(),d.getTemp().getMin());
