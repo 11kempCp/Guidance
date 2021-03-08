@@ -3,6 +3,7 @@
     <!--Start of Core Strings-->
     <string name="app_name">Guidance</string>
     <string name="contact">TODO contact email</string>
+    <integer name="study_period_length_days">14</integer>
     <!--End of Core Strings-->
 
 
@@ -32,6 +33,7 @@
     <string name="display_location">Display All Location</string>
     <string name="display_steps">Display All Steps</string>
     <string name="display_weather">Display All Weather</string>
+    <string name="display_intelligent_agent">Display IA</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
     <string name="isJobRunning">Is Job Running</string>
@@ -44,6 +46,8 @@
     <string name="debug">Debug</string>
     <string name="get_location">Get Location</string>
     <string name="clearText">Clear Text</string>
+    <string name="init_intelligent_agent">Initialise IA</string>
+    <string name="intelligent_agent_not_initialised">"Intelligent Agent Not Initialised "</string>
 
     <!--End of Debug Strings-->
 

@@ -3,13 +3,16 @@ package com.example.guidance.realm;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.guidance.R;
 import com.example.guidance.model.Ambient_Temperature;
 import com.example.guidance.model.Data_Type;
+import com.example.guidance.model.Intelligent_Agent;
 import com.example.guidance.model.Location;
 import com.example.guidance.model.Mood;
 import com.example.guidance.model.Socialness;
 import com.example.guidance.model.Step;
 import com.example.guidance.model.Weather;
+import com.example.guidance.scheduler.Util;
 
 import org.bson.types.ObjectId;
 
@@ -590,7 +593,7 @@ public class DatabaseFunctions {
     public static void updateWeather(Context context, Date currentTime, String weather, Date sunrise,
                                      Date sunset, double feels_like_morn, double feels_like_day,
                                      double feels_like_eve, double feels_like_night, double temp_max,
-                                     double temp_min){
+                                     double temp_min) {
         Realm.init(context);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
@@ -639,6 +642,112 @@ public class DatabaseFunctions {
 
 
         realm.close();
+    }
+
+
+    public static void initialiseIntelligentAgent(Context context, String passcode, int study_duration_days) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+
+        realm.executeTransactionAsync(r -> {
+            Intelligent_Agent init = r.createObject(Intelligent_Agent.class, new ObjectId());
+
+            String Analysis = "";
+            String Advice = "";
+            String Gender = "";
+            String Interaction = "";
+            String Output = "";
+
+            if (passcode.contains("ML")) {
+                Analysis = Util.MACHINE_LEARNING;
+            } else if (passcode.contains("TP")) {
+                Analysis = Util.TRADITIONAL_PROGRAMMING;
+            }
+
+            if (passcode.contains("NJ")) {
+                Advice = Util.NO_JUSTIFICATION;
+            } else if (passcode.contains(("WJ"))) {
+                Advice = Util.WITH_JUSTIFICATION;
+            }
+
+            if (passcode.contains("XX")) {
+                Gender = Util.FEMALE;
+            } else if (passcode.contains(("XY"))) {
+                Gender = Util.MALE;
+            }
+
+
+            if (passcode.contains("HH")) {
+                Interaction = Util.HIGH;
+            } else if (passcode.contains(("LL"))) {
+                Interaction = Util.LOW;
+            }
+
+            if (passcode.contains("SP")) {
+                Output = Util.SPEECH;
+            } else if (passcode.contains(("TE"))) {
+                Output = Util.TEXT;
+            }
+
+            Date currentTime = Calendar.getInstance().getTime();
+
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(currentTime);
+            cal.add(Calendar.DATE, study_duration_days);
+
+            Date end_date = cal.getTime();
+
+            init.setDate_Initialised(currentTime);
+            init.setEnd_Date(end_date);
+            init.setAnalysis(Analysis);
+            init.setAdvice(Advice);
+            init.setGender(Gender);
+            init.setInteraction(Interaction);
+            init.setOutput(Output);
+
+
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                Date currentTime = Calendar.getInstance().getTime();
+                Log.d(TAG, "executed transaction : initialiseIntelligentAgent" + currentTime);
+
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                // Transaction failed and was automatically canceled.
+                Log.e(TAG, "initialiseIntelligentAgent transaction failed: ", error);
+            }
+        });
+        realm.close();
+    }
+
+    public static void intelligentAgentEntry(Context context, String passcode) {
+
+
+        if (!isIntelligentAgentInitialised(context)) {
+            initialiseIntelligentAgent(context, passcode, R.integer.study_period_length_days);
+        } else {
+            Log.d(TAG, "intelligentAgentEntry: IA already initialised");
+        }
+    }
+
+    public static boolean isIntelligentAgentInitialised(Context context) {
+
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+        Intelligent_Agent query = realm.where(Intelligent_Agent.class).findFirst();
+        Log.d(TAG, "isIntelligentAgentInitialised: query " + query);
+        return query != null;
+
     }
 
 }

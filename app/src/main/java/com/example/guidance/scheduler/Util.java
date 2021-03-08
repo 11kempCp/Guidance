@@ -44,6 +44,23 @@ public class Util {
 
     private static final String TAG = "Util";
 
+//    Passcode MLNJXXHHSP
+    public static final String MACHINE_LEARNING = "MACHINE_LEARNING";
+    public static final String TRADITIONAL_PROGRAMMING = "TRADITIONAL_PROGRAMMING";
+
+    public static final String NO_JUSTIFICATION = "NO_JUSTIFICATION";
+    public static final String WITH_JUSTIFICATION = "WITH_JUSTIFICATION";
+
+    public static final String MALE = "MALE";
+    public static final String FEMALE = "FEMALE";
+
+    public static final String HIGH = "HIGH";
+    public static final String LOW = "LOW";
+
+    public static final String SPEECH = "SPEECH";
+    public static final String TEXT = "TEXT";
+
+
     public static final int AMBIENT_TEMP = 1;
     public static final int STEPS = 2;
     public static final int LOCATION = 3;
@@ -278,6 +295,8 @@ public class Util {
         date.setTime(t);
         return date;
     }
+
+
 
 
 }

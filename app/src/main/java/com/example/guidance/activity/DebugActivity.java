@@ -1,14 +1,17 @@
 package com.example.guidance.activity;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.job.JobScheduler;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,10 +23,10 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.guidance.R;
-import com.example.guidance.jobServices.LocationJobService;
 import com.example.guidance.jobServices.WeatherJobService;
 import com.example.guidance.model.Ambient_Temperature;
 import com.example.guidance.model.Data_Type;
+import com.example.guidance.model.Intelligent_Agent;
 import com.example.guidance.model.Location;
 import com.example.guidance.model.Mood;
 import com.example.guidance.model.Socialness;
@@ -40,8 +43,8 @@ import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
-import static com.example.guidance.scheduler.Util.LOCATION;
-
+import static com.example.guidance.realm.DatabaseFunctions.intelligentAgentEntry;
+import static com.example.guidance.realm.DatabaseFunctions.isIntelligentAgentInitialised;
 import static com.example.guidance.scheduler.Util.WEATHER;
 import static com.example.guidance.scheduler.Util.checkPermissionsAndSchedule;
 import static com.example.guidance.scheduler.Util.scheduledUnscheduledJobs;
@@ -70,7 +73,6 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
 
         displayTextView = findViewById(R.id.textViewDisplay);
         displayTextView.setMovementMethod(new ScrollingMovementMethod());
-
 
 
         drawer = findViewById(R.id.drawer_layout_debug_activity);
@@ -113,36 +115,12 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
             r.delete(Weather.class);
         });
 
+        realm.executeTransactionAsync(r -> {
+            Log.d(TAG, "deleted Intelligent_Agent");
+            r.delete(Intelligent_Agent.class);
+        });
+
         Toast.makeText(this, "Deleted Everything In Realm", Toast.LENGTH_SHORT).show();
-    }
-
-    public void display(View view) {
-        RealmQuery<Ambient_Temperature> ambient_temperatureRealmQuery = realm.where(Ambient_Temperature.class);
-        RealmResults<Ambient_Temperature> ambient_temp = ambient_temperatureRealmQuery.findAll();
-        Log.d(TAG, "displayAmbient " + ambient_temp.size() + " ambient Temp full list: " + ambient_temp);
-
-
-        RealmQuery<Step> stepRealmQuery = realm.where(Step.class);
-        RealmResults<Step> step = stepRealmQuery.findAll();
-        Log.d(TAG, "displaySteps " + step.size() + " steps full list: " + step);
-
-        RealmQuery<Data_Type> dataStoringQuery = realm.where(Data_Type.class);
-        RealmResults<Data_Type> data = dataStoringQuery.findAll();
-        Log.d(TAG, "displayData " + data.size() + " data full list: " + data);
-
-        RealmQuery<Mood> moodRealmQuery = realm.where(Mood.class);
-        RealmResults<Mood> mood = moodRealmQuery.findAll();
-        Log.d(TAG, "displayMood " + mood.size() + " mood full list: " + mood);
-
-        RealmQuery<Socialness> socialnessRealmQuery = realm.where(Socialness.class);
-        RealmResults<Socialness> socialness = socialnessRealmQuery.findAll();
-        Log.d(TAG, "displaySocialness " + socialness.size() + " socialness full list: " + socialness);
-
-
-//        Toast.makeText(this, "displayAmbient " + ambient_temp.size() + " ambient Temp full list: " + ambient_temp, Toast.LENGTH_SHORT).show();
-        Toast.makeText(this, "displaySteps " + step.size() + " steps full list: " + step, Toast.LENGTH_SHORT).show();
-        Toast.makeText(this, "displayMood " + mood.size() + " mood full list: " + mood, Toast.LENGTH_SHORT).show();
-        Toast.makeText(this, "displaySocialness " + socialness.size() + " socialness full list: " + socialness, Toast.LENGTH_SHORT).show();
     }
 
 
@@ -220,7 +198,7 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
         return true;
     }
 
-    public  void displayLocation(View view) {
+    public void displayLocation(View view) {
 
 
         RealmQuery<Location> locationRealmQuery = realm.where(Location.class);
@@ -231,7 +209,7 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
         displayTextView.setText("");
         StringBuilder displayString = new StringBuilder();
         StringBuilder displayString2 = new StringBuilder();
-        for(Location t : temp){
+        for (Location t : temp) {
             displayString.append(" ").append(t).append("\n");
             displayString2.append(t.getDateTime()).append(" ").append(t.getLatitude()).append(" , ").append(t.getLongitude()).append("\n");
             displayString.append(" ").append("\n");
@@ -256,38 +234,39 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
 //                null);
 
 
-            Log.d(TAG, "scheduledUnscheduledJobs: " + WEATHER);
-            checkPermissionsAndSchedule(this,
-                    WEATHER,
-                    WeatherJobService.class,
-                    this.getResources().getInteger(R.integer.default_time),
-                    packageManager,
-                    null,
-                    null);
+        Log.d(TAG, "scheduledUnscheduledJobs: " + WEATHER);
+        checkPermissionsAndSchedule(this,
+                WEATHER,
+                WeatherJobService.class,
+                this.getResources().getInteger(R.integer.default_time),
+                packageManager,
+                null,
+                null);
+    }
+
+
+    public void initialiseIA(View view) {
+
+
+        if (!isIntelligentAgentInitialised(this)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Enter Passcode");
+
+
+            // Set up the input
+            final EditText input = new EditText(this);
+            // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+            input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
+
+            builder.setView(input);
+
+            // Set up the buttons
+            builder.setPositiveButton("OK", (dialog, which) -> intelligentAgentEntry(DebugActivity.this, input.getText().toString()));
+            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+            builder.show();
+        } else {
+            Log.d(TAG, "intelligentAgentEntry: IA already initialised");
         }
-
-
-
-
-
-
-    public void startWeatherService(View view) {
-
-//        Intent notificationIntent = new Intent(this, LocationService.class);
-//        Intent notificationIntent = new Intent(this, WeatherService.class);
-//
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//
-//            startForegroundService(notificationIntent);
-//        }else {
-//            Log.d(TAG, "startWeatherService: error");
-//        }
-
-
-//        Date Mon Jan 19 17:35:45 GMT 1970 1614945600
-
-//        Fri Mar 05 2021 12:00:00 GMT+0000
-
 
 
     }
@@ -300,12 +279,11 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
 
         displayTextView.setText("");
         StringBuilder displayString = new StringBuilder();
-        for(Socialness t : socialness){
+        for (Socialness t : socialness) {
             displayString.append(" ").append(t).append("\n");
             displayString.append(" ").append("\n");
         }
         displayTextView.setText(displayString);
-
 
 
     }
@@ -318,7 +296,7 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
         Log.d(TAG, "displayMood " + mood.size() + " mood full list: " + mood);
         displayTextView.setText("");
         StringBuilder displayString = new StringBuilder();
-        for(Mood t : mood){
+        for (Mood t : mood) {
             displayString.append(" ").append(t).append("\n");
             displayString.append(" ").append("\n");
 
@@ -336,7 +314,7 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
 
         displayTextView.setText("");
         StringBuilder displayString = new StringBuilder();
-        for(Ambient_Temperature t : temp){
+        for (Ambient_Temperature t : temp) {
             displayString.append(" ").append(t).append("\n");
             displayString.append(" ").append("\n");
         }
@@ -353,7 +331,7 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
 
         displayTextView.setText("");
         StringBuilder displayString = new StringBuilder();
-        for(Step t : step){
+        for (Step t : step) {
             displayString.append(" ").append(t).append("\n");
             displayString.append(" ").append("\n");
 
@@ -370,7 +348,7 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
 
         displayTextView.setText("");
         StringBuilder displayString = new StringBuilder();
-        for(Weather t : weather){
+        for (Weather t : weather) {
             displayString.append(" ").append(t).append("\n");
             displayString.append(" ").append("\n");
         }
@@ -380,5 +358,26 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
     public void clearText(View view) {
 
         displayTextView.setText("");
+    }
+
+    public void displayIA(View view) {
+
+        RealmQuery<Intelligent_Agent> intelligent_agentRealmQuery = realm.where(Intelligent_Agent.class);
+//        RealmResults<Step> step = stepRealmQuery.findAll();
+        RealmResults<Intelligent_Agent> ia = intelligent_agentRealmQuery.findAll();
+
+        Log.d(TAG, "displayIA " + ia.size() + " intelligent agent full list: " + ia);
+
+
+        displayTextView.setText("");
+        StringBuilder displayString = new StringBuilder();
+        for (Intelligent_Agent t : ia) {
+            displayString.append(" ").append(t).append("\n");
+            displayString.append(" ").append("\n");
+        }
+
+        displayTextView.setText(displayString.toString());
+
+
     }
 }
