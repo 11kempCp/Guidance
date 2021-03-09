@@ -67,25 +67,25 @@
                     android:id="@+id/radioButton1QuestionOne"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/q_one" />
+                    android:text="@string/one" />
 
                 <RadioButton
                     android:id="@+id/radioButton2QuestionOne"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/q_two" />
+                    android:text="@string/two" />
 
                 <RadioButton
                     android:id="@+id/radioButton3QuestionOne"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/q_three" />
+                    android:text="@string/three" />
 
                 <RadioButton
                     android:id="@+id/radioButton4QuestionOne"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/q_four" />
+                    android:text="@string/four" />
             </RadioGroup>
 
             <TextView
@@ -124,25 +124,25 @@
                     android:id="@+id/radioButton1QuestionTwo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/q_one" />
+                    android:text="@string/one" />
 
                 <RadioButton
                     android:id="@+id/radioButton2QuestionTwo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/q_two" />
+                    android:text="@string/two" />
 
                 <RadioButton
                     android:id="@+id/radioButton3QuestionTwo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/q_three" />
+                    android:text="@string/three" />
 
                 <RadioButton
                     android:id="@+id/radioButton4QuestionTwo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/q_four" />
+                    android:text="@string/four" />
             </RadioGroup>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

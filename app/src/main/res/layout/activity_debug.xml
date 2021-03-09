@@ -120,8 +120,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="4dp"
-                android:onClick="initialiseIA"
-                android:text="@string/init_intelligent_agent"
+                android:onClick="displayQuestionnaire"
+                android:text="@string/display_questionaire"
                 app:layout_constraintEnd_toStartOf="@+id/button"
                 app:layout_constraintStart_toStartOf="@+id/button9"
                 app:layout_constraintTop_toBottomOf="@+id/button9" />

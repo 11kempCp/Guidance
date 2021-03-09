@@ -30,6 +30,8 @@ import com.example.guidance.realm.model.Data_Type;
 import com.example.guidance.realm.model.Intelligent_Agent;
 import com.example.guidance.realm.model.Location;
 import com.example.guidance.realm.model.Mood;
+import com.example.guidance.realm.model.Question;
+import com.example.guidance.realm.model.Questionaire;
 import com.example.guidance.realm.model.Socialness;
 import com.example.guidance.realm.model.Step;
 import com.example.guidance.realm.model.Weather;
@@ -129,6 +131,11 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
         realm.executeTransactionAsync(r -> {
             Log.d(TAG, "deleted Mood");
             r.delete(Mood.class);
+        });
+
+        realm.executeTransactionAsync(r -> {
+            Log.d(TAG, "deleted Questionaire");
+            r.delete(Questionaire.class);
         });
 
         Toast.makeText(this, "Deleted Everything In Realm", Toast.LENGTH_SHORT).show();
@@ -385,6 +392,31 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
         for (Intelligent_Agent t : ia) {
             displayString.append(" ").append(t).append("\n");
             displayString.append(" ").append("\n");
+        }
+
+        displayTextView.setText(displayString.toString());
+
+
+    }
+
+
+    public void displayQuestionnaire(View view) {
+
+        RealmQuery<Questionaire> questionaireRealmQuery = realm.where(Questionaire.class);
+//        RealmResults<Step> step = stepRealmQuery.findAll();
+        RealmResults<Questionaire> questionaire = questionaireRealmQuery.findAll();
+
+        Log.d(TAG, "displayIA " + questionaire.size() + " intelligent agent full list: " + questionaire);
+
+
+        displayTextView.setText("");
+        StringBuilder displayString = new StringBuilder();
+        for (Questionaire t : questionaire) {
+            displayString.append(" ").append(t).append("\n");
+            displayString.append(" ").append("\n");
+            for (Question ttt : t.getQuestion()) {
+                displayString.append(" ").append(ttt.getQuestion()).append(" ").append(ttt.getAnswer()).append("\n");
+            }
         }
 
         displayTextView.setText(displayString.toString());

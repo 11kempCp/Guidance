@@ -20,14 +20,32 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Guidance">
+        <activity android:name=".activity.QuestionaireActivity">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-        <activity android:name=".activity.PasscodeActivity"
-            android:theme="@style/femaleAppTheme.NoActionBar"/>
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+
+        </activity>
+
+
+        <activity
+            android:name=".activity.PasscodeActivity"
+            android:theme="@style/femaleAppTheme.NoActionBar" >
+
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+
+        </activity>
+
 
         <activity
             android:name=".activity.LocationTestingActivity"
             android:parentActivityName=".activity.MainActivity" />
-
         <activity
             android:name=".activity.DailyQuestionActivity"
             android:label="@string/daily_question"
@@ -37,8 +55,7 @@
         <activity
             android:name=".activity.DebugActivity"
             android:label="@string/debug"
-            android:theme="@style/femaleAppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/femaleAppTheme.NoActionBar" />
 
         <receiver android:name=".ServiceReceiver.onPauseServiceReceiver">
             <intent-filter>
@@ -50,14 +67,17 @@
             android:name=".activity.AdviceActivity"
             android:label="@string/advice"
             android:theme="@style/femaleAppTheme.NoActionBar" />
+
         <activity
             android:name=".activity.JustificationActivity"
             android:label="@string/justification"
             android:theme="@style/femaleAppTheme.NoActionBar" />
+
         <activity
             android:name=".activity.DataActivity"
             android:label="@string/data"
             android:theme="@style/femaleAppTheme.NoActionBar" />
+
         <activity
             android:name=".activity.MainActivity"
             android:theme="@style/femaleAppTheme.NoActionBar">
@@ -67,6 +87,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+
+
 
         <service
             android:name=".jobServices.StepsJobService"

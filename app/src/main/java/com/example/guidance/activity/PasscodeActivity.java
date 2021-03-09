@@ -1,5 +1,6 @@
 package com.example.guidance.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -35,6 +36,14 @@ public class PasscodeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_passcode);
 
+
+//        if(isIntelligentAgentInitialised(this)){
+//            Intent intent = new Intent(this, MainActivity.class);
+//            startActivity(intent);
+//
+//        }
+
+
         textInput = findViewById(R.id.input);
         generatePasscodes();
 
@@ -58,8 +67,12 @@ public class PasscodeActivity extends AppCompatActivity {
                 Log.d(TAG, "dataType already initialised");
             }
 
-            //todo ask permissions here
             requestPerms(this, PasscodeActivity.this);
+
+
+//            Intent intent = new Intent(this, QuestionaireActivity.class);
+//            startActivity(intent);
+
 
             finish();
         } else {

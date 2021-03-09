@@ -25,6 +25,7 @@ import io.realm.RealmConfiguration;
 import static com.example.guidance.realm.DatabaseFunctions.initialiseDataType;
 import static com.example.guidance.realm.DatabaseFunctions.isIntelligentAgentInitialised;
 import static com.example.guidance.Util.Util.requestPerms;
+import static com.example.guidance.realm.DatabaseFunctions.isQuestionaireAnswered;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     static Realm realm;
@@ -45,14 +46,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(!isIntelligentAgentInitialised(this)){
             Intent intent = new Intent(this, PasscodeActivity.class);
             startActivity(intent);
+
         }
 
 
-        //TODO remove this implementation in favour of passcode implementation
-//        if (!DatabaseFunctions.isDataTypeInitialised(this)) {
-//            initialiseDataType(this);
-//
-//        }
+
 
         Realm.init(this);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
@@ -152,5 +150,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    @Override
+    protected void onResume() {
+        if(isIntelligentAgentInitialised(this) && !isQuestionaireAnswered(this)){
+            Intent intent = new Intent(this, QuestionaireActivity.class);
+            startActivity(intent);
+        }
 
+        super.onResume();
+    }
 }

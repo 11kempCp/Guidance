@@ -9,6 +9,8 @@ import com.example.guidance.realm.model.Data_Type;
 import com.example.guidance.realm.model.Intelligent_Agent;
 import com.example.guidance.realm.model.Location;
 import com.example.guidance.realm.model.Mood;
+import com.example.guidance.realm.model.Question;
+import com.example.guidance.realm.model.Questionaire;
 import com.example.guidance.realm.model.Socialness;
 import com.example.guidance.realm.model.Step;
 import com.example.guidance.realm.model.Weather;
@@ -22,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmList;
 import io.realm.RealmQuery;
 import io.realm.Sort;
 
@@ -767,6 +770,62 @@ public class DatabaseFunctions {
 
         Intelligent_Agent query = realm.where(Intelligent_Agent.class).findFirst();
         Log.d(TAG, "isIntelligentAgentInitialised: query " + query);
+        return query != null;
+
+    }
+
+
+    public static void insertQuestionnaire(Context context, String[] questions, int[] answers, Date currentTime){
+
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+
+        realm.executeTransactionAsync(r -> {
+            Questionaire init = r.createObject(Questionaire.class, new ObjectId());
+            init.setDateTime(currentTime);
+            for (int i =0; i<questions.length;i++){
+                Question question = r.createObject(Question.class, new ObjectId());
+                question.setAnswer(answers[i]);
+                question.setQuestion(questions[i]);
+                init.getQuestion().add(question);
+
+            }
+
+
+
+
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+//                Log.d(TAG, "AmbientTemp onSuccess:");
+                Date currentTime = Calendar.getInstance().getTime();
+                Log.d(TAG, "executed transaction : insertQuestionaire" + currentTime);
+
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                // Transaction failed and was automatically canceled.
+                Log.e(TAG, "insertQuestionaire transaction failed: ", error);
+
+            }
+        });
+        realm.close();
+
+    }
+
+    public static boolean isQuestionaireAnswered(Context context){
+
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+        Questionaire query = realm.where(Questionaire.class).findFirst();
+        Log.d(TAG, "isQuestionaireAnswered: query " + query);
         return query != null;
 
     }

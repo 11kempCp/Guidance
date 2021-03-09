@@ -34,6 +34,7 @@
     <string name="display_steps">Display All Steps</string>
     <string name="display_weather">Display All Weather</string>
     <string name="display_intelligent_agent">Display IA</string>
+    <string name="display_questionaire">Display Questionnaire</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
     <string name="isJobRunning">Is Job Running</string>
@@ -51,15 +52,27 @@
 
     <!--End of Debug Strings-->
 
+    <!--//todo answers for the questions-->
+    <!--Start of Questionaire Strings-->
+    <string-array name="questions">
+        <item>How likely are you to follow the advice given by this Intelligent Agent?</item>
+        <item>How often would you like to receive advice?</item>
+        <item>What gender would you prefer the Intelligent Agent to be?</item>
+        <item>What method of communication would you prefer the Intelligent Agent to use?</item>
+        <item>Are you likely to follow advice given by this Intelligent Agent if a reason for the advice is given?</item>
+        <item>Do you trust applications that have machine learning implemented?</item>
+    </string-array>
 
-    <!--Start of Application Strings-->
+
+    <!--End of Questionaire Strings-->
+
     <string name="current_advice">Current Advice</string>
     <string name="past_advice">Past Advice</string>
     <string name="graph">Graph</string>
 
     <string name="passcode">Passcode</string>
     <!--//todo remove MLNJXYHHSP from Enter Passcode-->
-    <string name="enter_passcode">Enter Passcode- MLNJXYHHSP</string>
+    <string name="enter_passcode">Enter Passcode</string>
     <string name="submit">Submit</string>
     <string name="questionaire">Questionaire</string>
     <string name="answer">Answer</string>
@@ -102,10 +115,10 @@
     <string name="daily_question_two_clarification">(1 being bad and 4 being good)</string>
     <string name="clarification">Clarification</string>
 
-    <string name="q_one">1</string>
-    <string name="q_two">2</string>
-    <string name="q_three">3</string>
-    <string name="q_four">4</string>
+    <string name="one">1</string>
+    <string name="two">2</string>
+    <string name="three">3</string>
+    <string name="four">4</string>
     <string name="title_activity_testing_location">TestingLocation</string>
     <!--End of Daily Questions-->
 
