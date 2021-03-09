@@ -58,6 +58,7 @@
     <string name="graph">Graph</string>
 
     <string name="passcode">Passcode</string>
+    <string name="enter_passcode">Enter Passcode</string>
     <string name="questionaire">Questionaire</string>
     <string name="answer">Answer</string>
 

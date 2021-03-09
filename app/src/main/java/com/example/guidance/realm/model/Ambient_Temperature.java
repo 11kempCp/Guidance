@@ -1,4 +1,4 @@
-package com.example.guidance.model;
+package com.example.guidance.realm.model;
 
 import org.bson.types.ObjectId;
 
@@ -8,24 +8,23 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 /**
- * Created by Conor K on 23/02/2021.
+ * Created by Conor K on 14/02/2021.
  */
-public class Mood extends RealmObject {
+public class Ambient_Temperature extends RealmObject {
 
     @PrimaryKey
     private ObjectId _id;
     private Date dateTime;
-    private int rating;
+    private float ambientTemp;
 
-
-    public Mood(){
+    public Ambient_Temperature(){
 
     }
 
-    public Mood(ObjectId _id, Date dateTime, int rating) {
+    public Ambient_Temperature(ObjectId _id, Date dateTime, int ambientTemp) {
         this._id = _id;
         this.dateTime = dateTime;
-        this.rating = rating;
+        this.ambientTemp = ambientTemp;
     }
 
     public ObjectId get_id() {
@@ -44,11 +43,11 @@ public class Mood extends RealmObject {
         this.dateTime = dateTime;
     }
 
-    public int getRating() {
-        return rating;
+    public float getAmbientTemp() {
+        return ambientTemp;
     }
 
-    public void setRating(int rating) {
-        this.rating = rating;
+    public void setAmbientTemp(float ambientTemp) {
+        this.ambientTemp = ambientTemp;
     }
 }

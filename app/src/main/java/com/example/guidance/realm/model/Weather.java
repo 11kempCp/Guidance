@@ -1,4 +1,4 @@
-package com.example.guidance.model;
+package com.example.guidance.realm.model;
 
 import org.bson.types.ObjectId;
 

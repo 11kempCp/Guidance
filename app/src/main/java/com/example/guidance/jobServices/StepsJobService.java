@@ -12,7 +12,7 @@ import com.example.guidance.services.StepsService;
 import java.util.Calendar;
 import java.util.Date;
 
-import static com.example.guidance.realm.DatabaseFunctions.isStepEntryToday;
+import static com.example.guidance.realm.DatabaseFunctions.isStepEntryDate;
 import static com.example.guidance.realm.DatabaseFunctions.insertStepsCounter;
 import static com.example.guidance.realm.DatabaseFunctions.updateStepToday;
 
@@ -28,14 +28,14 @@ public class StepsJobService extends JobService {
         Intent serviceIntent = new Intent(this, StepsService.class);
 
         Date currentTime = Calendar.getInstance().getTime();
-        if (isStepEntryToday(this, currentTime)) {
+        if (isStepEntryDate(this, currentTime)) {
             Log.d(TAG, "Updated Existing Entry");
-            Toast.makeText(this, "Updated Existing Entry", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Updated Existing Entry", Toast.LENGTH_SHORT).show();
             updateStepToday(this, StepsService.getmSteps(), currentTime);
         } else {
             StepsService.resetSensor();
             Log.d(TAG, "New Entry Saved into Database");
-            Toast.makeText(this, "New Entry Saved into Database", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "New Entry Saved into Database", Toast.LENGTH_SHORT).show();
             insertStepsCounter(this, StepsService.getmSteps(), currentTime);
         }
 

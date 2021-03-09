@@ -1,6 +1,6 @@
-package com.example.guidance.model.onecallWeather;
+package com.example.guidance.realm.model.onecallWeather;
 
-import com.example.guidance.model.currentWeather.weather;
+import com.example.guidance.realm.model.currentWeather.weather;
 
 import java.util.ArrayList;
 

@@ -17,12 +17,14 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.guidance.R;
+import com.example.guidance.Util.Util;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.Calendar;
 import java.util.Date;
 
 import static com.example.guidance.realm.DatabaseFunctions.*;
+import static com.example.guidance.Util.Util.DAILY_QUESTION;
 
 public class DailyQuestionActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -86,8 +88,8 @@ public class DailyQuestionActivity extends AppCompatActivity implements Navigati
             ((RadioButton)radioGroupTwo.getChildAt(value-1)).setChecked(true);
         }
 
-        if(isSocialnessEntryToday(this, ct)){
-            int value = getTodaysSocialnessEntry(this, ct);
+        if(isSocialnessEntryDate(this, ct)){
+            int value = getSocialnessDateRating(this, ct);
 
             ((RadioButton)radioGroupOne.getChildAt(value-1)).setChecked(true);
         }
@@ -95,6 +97,7 @@ public class DailyQuestionActivity extends AppCompatActivity implements Navigati
 
 
         radioGroupOne.setOnCheckedChangeListener((group, checkedId) -> {
+            Util.stopBackgroundNotification(DAILY_QUESTION);
             switch (checkedId){
                 case R.id.radioButton1QuestionOne:
                     Date currentTime = Calendar.getInstance().getTime();
@@ -124,6 +127,7 @@ public class DailyQuestionActivity extends AppCompatActivity implements Navigati
 
 
         radioGroupTwo.setOnCheckedChangeListener((group, checkedId) -> {
+            Util.stopBackgroundNotification(DAILY_QUESTION);
             switch (checkedId){
                 case R.id.radioButton1QuestionTwo:
                     Date currentTime = Calendar.getInstance().getTime();
@@ -161,6 +165,9 @@ public class DailyQuestionActivity extends AppCompatActivity implements Navigati
             super.onBackPressed();
         }
     }
+
+
+
 
     @SuppressLint("NonConstantResourceId")
     @Override

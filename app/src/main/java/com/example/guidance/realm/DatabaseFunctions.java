@@ -4,25 +4,28 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.guidance.R;
-import com.example.guidance.model.Ambient_Temperature;
-import com.example.guidance.model.Data_Type;
-import com.example.guidance.model.Intelligent_Agent;
-import com.example.guidance.model.Location;
-import com.example.guidance.model.Mood;
-import com.example.guidance.model.Socialness;
-import com.example.guidance.model.Step;
-import com.example.guidance.model.Weather;
-import com.example.guidance.scheduler.Util;
+import com.example.guidance.realm.model.Ambient_Temperature;
+import com.example.guidance.realm.model.Data_Type;
+import com.example.guidance.realm.model.Intelligent_Agent;
+import com.example.guidance.realm.model.Location;
+import com.example.guidance.realm.model.Mood;
+import com.example.guidance.realm.model.Socialness;
+import com.example.guidance.realm.model.Step;
+import com.example.guidance.realm.model.Weather;
+import com.example.guidance.Util.Util;
 
 import org.bson.types.ObjectId;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmQuery;
 import io.realm.Sort;
+
+import static com.example.guidance.Util.Intelligent_Agent.*;
 
 /**
  * Created by Conor K on 17/02/2021.
@@ -216,7 +219,7 @@ public class DatabaseFunctions {
     }
 
     public static void socialnessEntry(Context context, Date currentTime, int value) {
-        if (isSocialnessEntryToday(context, currentTime)) {
+        if (isSocialnessEntryDate(context, currentTime)) {
             updateSocialnessToday(context, value, currentTime);
         } else {
             saveSocialnessToDatabase(context, value, currentTime);
@@ -236,13 +239,13 @@ public class DatabaseFunctions {
         }, new Realm.Transaction.OnSuccess() {
             @Override
             public void onSuccess() {
-                Log.d(TAG, "executed transaction : saveStepsCounterToDatabase" + currentTime);
+                Log.d(TAG, "executed transaction : saveSocialnessToDatabase" + currentTime);
             }
         }, new Realm.Transaction.OnError() {
             @Override
             public void onError(Throwable error) {
                 // Transaction failed and was automatically canceled.
-                Log.e(TAG, "saveStepsCounterToDatabase transaction failed: ", error);
+                Log.e(TAG, "saveSocialnessToDatabase transaction failed: ", error);
 
             }
         });
@@ -274,7 +277,6 @@ public class DatabaseFunctions {
         }, new Realm.Transaction.OnSuccess() {
             @Override
             public void onSuccess() {
-//                Log.d(TAG, "updateSteps onSuccess:");
                 Log.d(TAG, "executed transaction : updateSocialnessToday" + currentTime);
 
             }
@@ -293,7 +295,7 @@ public class DatabaseFunctions {
     }
 
 
-    public static boolean isSocialnessEntryToday(Context context, Date currentTime) {
+    public static boolean isSocialnessEntryDate(Context context, Date currentTime) {
         Realm.init(context);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
@@ -313,7 +315,7 @@ public class DatabaseFunctions {
                     task.getDateTime().getYear() == currentTime.getYear();
     }
 
-    public static int getTodaysSocialnessEntry(Context context, Date currentTime) {
+    public static int getSocialnessDateRating(Context context, Date currentTime) {
         Realm.init(context);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
@@ -324,7 +326,7 @@ public class DatabaseFunctions {
         return task.getRating();
     }
 
-    public static boolean isStepEntryToday(Context context, Date currentTime) {
+    public static boolean isStepEntryDate(Context context, Date currentTime) {
         Realm.init(context);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
@@ -372,7 +374,7 @@ public class DatabaseFunctions {
 
     }
 
-    public static Data_Type getDataStoring(Context context) {
+    public static Data_Type getDataType(Context context) {
         Realm.init(context);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
@@ -383,7 +385,7 @@ public class DatabaseFunctions {
         return tasksQuery.findFirst();
     }
 
-    public static void initialiseDataStoring(Context context) {
+    public static void initialiseDataType(Context context) {
         Realm.init(context);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
@@ -420,7 +422,7 @@ public class DatabaseFunctions {
         realm.close();
     }
 
-    public static boolean isDataStoringInitialised(Context context) {
+    public static boolean isDataTypeInitialised(Context context) {
         Realm.init(context);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
@@ -482,15 +484,31 @@ public class DatabaseFunctions {
 
 
         RealmQuery<Location> query = realm.where(Location.class).equalTo("latitude", latitude).equalTo("longitude", longitude);
+        //Finds the last entry at the specified coordinates
         Location task = query.sort("dateTime", Sort.DESCENDING).findFirst();
 
 
+        long timestamp1 = task.getDateTime().getTime();
+        long timestamp2 = currentTime.getTime();
+
         if (task == null) {
-            Log.d(TAG, "isThereAnEntryToday: false");
             return false;
-        } else
-            return task.getDateTime().getDate() == currentTime.getDate() && task.getDateTime().getMonth() == currentTime.getMonth() &&
-                    task.getDateTime().getYear() == currentTime.getYear() && task.getDateTime().getHours() == currentTime.getHours();
+
+        }else return Math.abs(timestamp1 - timestamp2) < TimeUnit.MINUTES.toMillis(context.getResources().getInteger(R.integer.location));
+
+
+//        if (task == null) {
+//            return false;
+//        } else if(task.getDateTime().getDate() == currentTime.getDate() && task.getDateTime().getMonth() == currentTime.getMonth() &&
+//                task.getDateTime().getYear() == currentTime.getYear() && task.getDateTime().getHours() == currentTime.getHours()){
+//            int minutes = task.getDateTime().getMinutes();
+//            int current_minutes = currentTime.getMinutes();
+//            if(minutes <= (current_minutes - 30)){
+//
+//            }
+//
+//        }
+
 
     }
 
@@ -503,9 +521,8 @@ public class DatabaseFunctions {
 
 
         RealmQuery<Location> query = realm.where(Location.class).lessThan("dateTime", currentTime);
-        Location task = query.sort("dateTime", Sort.DESCENDING).findFirst();
 
-        return task;
+        return query.sort("dateTime", Sort.DESCENDING).findFirst();
     }
 
     public static void weatherEntry(Context context, Date currentTime, String weather, Date sunrise,
@@ -626,7 +643,6 @@ public class DatabaseFunctions {
         }, new Realm.Transaction.OnSuccess() {
             @Override
             public void onSuccess() {
-//                Log.d(TAG, "updateSteps onSuccess:");
                 Date ct = Calendar.getInstance().getTime();
                 Log.d(TAG, "executed transaction : updateWeather " + ct);
 
@@ -635,7 +651,7 @@ public class DatabaseFunctions {
             @Override
             public void onError(Throwable error) {
                 // Transaction failed and was automatically canceled.
-                Log.e(TAG, "updateStepToday transaction failed: ", error);
+                Log.e(TAG, "updateWeather transaction failed: ", error);
 
             }
         });
@@ -661,35 +677,35 @@ public class DatabaseFunctions {
             String Interaction = "";
             String Output = "";
 
-            if (passcode.contains("ML")) {
-                Analysis = Util.MACHINE_LEARNING;
-            } else if (passcode.contains("TP")) {
-                Analysis = Util.TRADITIONAL_PROGRAMMING;
+            if (passcode.contains(MACHINE_LEARNING)) {
+                Analysis = MACHINE_LEARNING;
+            } else if (passcode.contains(TRADITIONAL_PROGRAMMING)) {
+                Analysis = TRADITIONAL_PROGRAMMING;
             }
 
-            if (passcode.contains("NJ")) {
-                Advice = Util.NO_JUSTIFICATION;
-            } else if (passcode.contains(("WJ"))) {
-                Advice = Util.WITH_JUSTIFICATION;
+            if (passcode.contains(NO_JUSTIFICATION)) {
+                Advice = NO_JUSTIFICATION;
+            } else if (passcode.contains(WITH_JUSTIFICATION)) {
+                Advice = WITH_JUSTIFICATION;
             }
 
-            if (passcode.contains("XX")) {
-                Gender = Util.FEMALE;
-            } else if (passcode.contains(("XY"))) {
-                Gender = Util.MALE;
+            if (passcode.contains(FEMALE)) {
+                Gender = FEMALE;
+            } else if (passcode.contains(MALE)) {
+                Gender = MALE;
             }
 
 
-            if (passcode.contains("HH")) {
-                Interaction = Util.HIGH;
-            } else if (passcode.contains(("LL"))) {
-                Interaction = Util.LOW;
+            if (passcode.contains(HIGH)) {
+                Interaction = HIGH;
+            } else if (passcode.contains(LOW)) {
+                Interaction = LOW;
             }
 
-            if (passcode.contains("SP")) {
-                Output = Util.SPEECH;
-            } else if (passcode.contains(("TE"))) {
-                Output = Util.TEXT;
+            if (passcode.contains(SPEECH)) {
+                Output = SPEECH;
+            } else if (passcode.contains(TEXT)) {
+                Output = TEXT;
             }
 
             Date currentTime = Calendar.getInstance().getTime();

@@ -1,8 +1,7 @@
-package com.example.guidance.model;
+package com.example.guidance.realm.model;
 
 import org.bson.types.ObjectId;
 
-import java.util.Calendar;
 import java.util.Date;
 
 import io.realm.RealmObject;

@@ -1,31 +1,31 @@
-package com.example.guidance.model;
+package com.example.guidance.realm.model;
 
 import org.bson.types.ObjectId;
 
-import java.util.Calendar;
 import java.util.Date;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 /**
- * Created by Conor K on 14/02/2021.
+ * Created by Conor K on 22/02/2021.
  */
-public class Ambient_Temperature extends RealmObject {
+public class Socialness extends RealmObject {
 
     @PrimaryKey
     private ObjectId _id;
     private Date dateTime;
-    private float ambientTemp;
+    private int rating;
 
-    public Ambient_Temperature(){
+
+    public Socialness(){
 
     }
 
-    public Ambient_Temperature(ObjectId _id, Date dateTime, int ambientTemp) {
+    public Socialness(ObjectId _id, Date dateTime, int rating) {
         this._id = _id;
         this.dateTime = dateTime;
-        this.ambientTemp = ambientTemp;
+        this.rating = rating;
     }
 
     public ObjectId get_id() {
@@ -44,11 +44,11 @@ public class Ambient_Temperature extends RealmObject {
         this.dateTime = dateTime;
     }
 
-    public float getAmbientTemp() {
-        return ambientTemp;
+    public int getRating() {
+        return rating;
     }
 
-    public void setAmbientTemp(float ambientTemp) {
-        this.ambientTemp = ambientTemp;
+    public void setRating(int rating) {
+        this.rating = rating;
     }
 }

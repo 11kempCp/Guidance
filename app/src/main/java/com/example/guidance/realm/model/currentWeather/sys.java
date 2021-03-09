@@ -1,4 +1,4 @@
-package com.example.guidance.model.currentWeather;
+package com.example.guidance.realm.model.currentWeather;
 
 /**
  * Created by Conor K on 04/03/2021.

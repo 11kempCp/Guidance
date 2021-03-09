@@ -1,4 +1,4 @@
-package com.example.guidance.model;
+package com.example.guidance.realm.model;
 
 import org.bson.types.ObjectId;
 
@@ -21,6 +21,7 @@ public class Intelligent_Agent extends RealmObject {
     private String Gender;
     private String Interaction;
     private String Output;
+
 
     public Intelligent_Agent(){
 
@@ -101,4 +102,6 @@ public class Intelligent_Agent extends RealmObject {
     public void setOutput(String output) {
         Output = output;
     }
+
+
 }

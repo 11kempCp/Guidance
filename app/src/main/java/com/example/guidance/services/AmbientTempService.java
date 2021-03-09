@@ -22,7 +22,7 @@ import com.example.guidance.realm.DatabaseFunctions;
 import java.util.Calendar;
 import java.util.Date;
 
-import static com.example.guidance.scheduler.Util.AMBIENT_TEMP;
+import static com.example.guidance.Util.Util.AMBIENT_TEMP;
 
 /**
  * Created by Conor K on 16/02/2021.

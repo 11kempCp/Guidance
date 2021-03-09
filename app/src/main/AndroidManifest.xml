@@ -2,25 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.guidance">
-
     <!-- Permission likely not needed remove after testing -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
-
-    <!-- Required for all JobServices -->
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" /> <!-- Required for all JobServices -->
     <permission android:name="android.permission.BIND_JOB_SERVICE" />
 
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <!-- Provides location accuracy to within a city block. -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
-    <!-- REMOVE ACCESS_FINE_LOCATION-->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> <!-- Provides location accuracy to within a city block. -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- REMOVE ACCESS_FINE_LOCATION -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-
-
-    <!--Required for making calls to OpenWeather-->
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> <!-- Required for making calls to OpenWeather -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -30,13 +20,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Guidance">
+        <activity android:name=".activity.PasscodeActivity">
 
 
+
+
+        </activity>
         <activity
             android:name=".activity.LocationTestingActivity"
             android:parentActivityName=".activity.MainActivity" />
-
-
         <activity
             android:name=".activity.DailyQuestionActivity"
             android:label="@string/daily_question"
@@ -52,7 +44,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
 
         <receiver android:name=".ServiceReceiver.onPauseServiceReceiver">
             <intent-filter>
@@ -105,24 +96,18 @@
             android:enabled="true"
             android:label="Location JobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-
         <service
             android:name=".services.LocationService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="location"
             tools:node="merge" />
-
-
         <service
             android:name=".jobServices.WeatherJobService"
             android:enabled="true"
             android:label="Weather Job Service"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-
         <service android:name=".services.WeatherService" />
-
-
     </application>
 
 </manifest>

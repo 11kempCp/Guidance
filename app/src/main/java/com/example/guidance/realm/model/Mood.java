@@ -1,4 +1,4 @@
-package com.example.guidance.model;
+package com.example.guidance.realm.model;
 
 import org.bson.types.ObjectId;
 
@@ -8,9 +8,9 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 /**
- * Created by Conor K on 22/02/2021.
+ * Created by Conor K on 23/02/2021.
  */
-public class Socialness extends RealmObject {
+public class Mood extends RealmObject {
 
     @PrimaryKey
     private ObjectId _id;
@@ -18,11 +18,11 @@ public class Socialness extends RealmObject {
     private int rating;
 
 
-    public Socialness(){
+    public Mood(){
 
     }
 
-    public Socialness(ObjectId _id, Date dateTime, int rating) {
+    public Mood(ObjectId _id, Date dateTime, int rating) {
         this._id = _id;
         this.dateTime = dateTime;
         this.rating = rating;

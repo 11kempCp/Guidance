@@ -1,4 +1,4 @@
-package com.example.guidance.model.currentWeather;
+package com.example.guidance.realm.model.currentWeather;
 
 import android.util.Log;
 
@@ -25,7 +25,7 @@ public class WeatherCity {
     private final String name;
     private final int cod;
 
-    public WeatherCity(com.example.guidance.model.currentWeather.coord coord, ArrayList<com.example.guidance.model.currentWeather.weather> weather, String base, com.example.guidance.model.currentWeather.main main, int visibility, com.example.guidance.model.currentWeather.wind wind, com.example.guidance.model.currentWeather.clouds clouds, long dt, com.example.guidance.model.currentWeather.sys sys, int timezone, int id, String name, int cod) {
+    public WeatherCity(com.example.guidance.realm.model.currentWeather.coord coord, ArrayList<com.example.guidance.realm.model.currentWeather.weather> weather, String base, com.example.guidance.realm.model.currentWeather.main main, int visibility, com.example.guidance.realm.model.currentWeather.wind wind, com.example.guidance.realm.model.currentWeather.clouds clouds, long dt, com.example.guidance.realm.model.currentWeather.sys sys, int timezone, int id, String name, int cod) {
         this.coord = coord;
         this.weather = weather;
         this.base = base;
@@ -41,11 +41,11 @@ public class WeatherCity {
         this.cod = cod;
     }
 
-    public com.example.guidance.model.currentWeather.coord getCoord() {
+    public com.example.guidance.realm.model.currentWeather.coord getCoord() {
         return coord;
     }
 
-    public ArrayList<com.example.guidance.model.currentWeather.weather> getWeather() {
+    public ArrayList<com.example.guidance.realm.model.currentWeather.weather> getWeather() {
         return weather;
     }
 
@@ -53,7 +53,7 @@ public class WeatherCity {
         return base;
     }
 
-    public com.example.guidance.model.currentWeather.main getMain() {
+    public com.example.guidance.realm.model.currentWeather.main getMain() {
         return main;
     }
 
@@ -61,11 +61,11 @@ public class WeatherCity {
         return visibility;
     }
 
-    public com.example.guidance.model.currentWeather.wind getWind() {
+    public com.example.guidance.realm.model.currentWeather.wind getWind() {
         return wind;
     }
 
-    public com.example.guidance.model.currentWeather.clouds getClouds() {
+    public com.example.guidance.realm.model.currentWeather.clouds getClouds() {
         return clouds;
     }
 
@@ -73,7 +73,7 @@ public class WeatherCity {
         return dt;
     }
 
-    public com.example.guidance.model.currentWeather.sys getSys() {
+    public com.example.guidance.realm.model.currentWeather.sys getSys() {
         return sys;
     }
 
@@ -99,7 +99,7 @@ public class WeatherCity {
 
         Log.d(TAG, test.getCoord().getLat() + " " + test.getCoord().getLon());
 
-        ArrayList<com.example.guidance.model.currentWeather.weather> blank = test.getWeather();
+        ArrayList<com.example.guidance.realm.model.currentWeather.weather> blank = test.getWeather();
 
         for (weather t : blank) {
             Log.d(TAG, t.getId() + " " + t.getMain() + " " + t.getDescription() + " " + t.getIcon());

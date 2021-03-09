@@ -29,7 +29,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import static com.example.guidance.realm.DatabaseFunctions.locationEntry;
-import static com.example.guidance.scheduler.Util.LOCATION;
+import static com.example.guidance.Util.Util.LOCATION;
 
 /**
  * Created by Conor K on 03/03/2021.

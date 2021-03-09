@@ -1,19 +1,15 @@
 package com.example.guidance.services;
 
-import android.app.Activity;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -22,10 +18,7 @@ import com.example.guidance.R;
 import com.example.guidance.activity.MainActivity;
 import com.example.guidance.app.App;
 
-import java.util.Calendar;
-
-import static com.example.guidance.realm.DatabaseFunctions.*;
-import static com.example.guidance.scheduler.Util.STEPS;
+import static com.example.guidance.Util.Util.STEPS;
 
 /**
  * Created by Conor K on 18/02/2021.
@@ -118,7 +111,7 @@ public class StepsService extends Service {
 
     @Override
     public void onDestroy() {
-        Toast.makeText(this, " DESTROY Total Steps " + mSteps, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, " DESTROY Total Steps " + mSteps, Toast.LENGTH_SHORT).show();
 
         stopForeground(sID);
 

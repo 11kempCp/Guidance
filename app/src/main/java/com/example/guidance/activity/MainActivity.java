@@ -22,10 +22,12 @@ import com.google.android.material.navigation.NavigationView;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
-import static com.example.guidance.realm.DatabaseFunctions.initialiseDataStoring;
-import static com.example.guidance.scheduler.Util.requestPerms;
+import static com.example.guidance.realm.DatabaseFunctions.initialiseDataType;
+import static com.example.guidance.realm.DatabaseFunctions.isIntelligentAgentInitialised;
+import static com.example.guidance.Util.Util.requestPerms;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+    private static final String PREF_SHOW_ABOUT_ON_APP_START = "PREF_SHOW_ABOUT_ON_APP_START";
     static Realm realm;
 
     TextView currentAdvice, currentGraph;
@@ -40,9 +42,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        if(!isIntelligentAgentInitialised(this)){
+
+            Intent intent = new Intent(this, PasscodeActivity.class);
+            startActivity(intent);
+        }
+
+
         //TODO remove this implementation in favour of passcode implementation
-        if (!DatabaseFunctions.isDataStoringInitialised(this)) {
-            initialiseDataStoring(this);
+        if (!DatabaseFunctions.isDataTypeInitialised(this)) {
+            initialiseDataType(this);
 
         }
 

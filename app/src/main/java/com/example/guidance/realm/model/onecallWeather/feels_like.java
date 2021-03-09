@@ -1,4 +1,4 @@
-package com.example.guidance.model.onecallWeather;
+package com.example.guidance.realm.model.onecallWeather;
 
 /**
  * Created by Conor K on 05/03/2021.

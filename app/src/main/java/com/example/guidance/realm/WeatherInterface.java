@@ -1,7 +1,7 @@
 package com.example.guidance.realm;
 
-import com.example.guidance.model.currentWeather.WeatherCity;
-import com.example.guidance.model.onecallWeather.onecallWeather;
+import com.example.guidance.realm.model.currentWeather.WeatherCity;
+import com.example.guidance.realm.model.onecallWeather.onecallWeather;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

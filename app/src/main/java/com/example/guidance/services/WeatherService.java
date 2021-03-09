@@ -13,11 +13,11 @@ import androidx.core.app.NotificationCompat;
 import com.example.guidance.R;
 import com.example.guidance.activity.MainActivity;
 import com.example.guidance.app.App;
-import com.example.guidance.model.Location;
-import com.example.guidance.model.onecallWeather.daily;
-import com.example.guidance.model.onecallWeather.onecallWeather;
+import com.example.guidance.realm.model.Location;
+import com.example.guidance.realm.model.onecallWeather.daily;
+import com.example.guidance.realm.model.onecallWeather.onecallWeather;
 import com.example.guidance.realm.WeatherInterface;
-import com.example.guidance.scheduler.Util;
+import com.example.guidance.Util.Util;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -33,7 +33,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.example.guidance.realm.DatabaseFunctions.getMostRecentLocation;
 import static com.example.guidance.realm.DatabaseFunctions.weatherEntry;
-import static com.example.guidance.scheduler.Util.WEATHER;
+import static com.example.guidance.Util.Util.WEATHER;
 
 /**
  * Created by Conor K on 04/03/2021.

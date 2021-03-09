@@ -1,4 +1,4 @@
-package com.example.guidance.model.currentWeather;
+package com.example.guidance.realm.model.currentWeather;
 
 public class coord {
       double lon;

@@ -1,6 +1,4 @@
-package com.example.guidance.model.onecallWeather;
-
-import com.example.guidance.model.currentWeather.weather;
+package com.example.guidance.realm.model.onecallWeather;
 
 import java.util.ArrayList;
 
@@ -20,7 +18,7 @@ public class hourly {
     int visibility;
     double wind_speed;
     int wind_deg;
-    ArrayList<com.example.guidance.model.currentWeather.weather> weather;
+    ArrayList<com.example.guidance.realm.model.currentWeather.weather> weather;
     double pop;
 
 }

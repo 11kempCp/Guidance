@@ -1,6 +1,7 @@
-package com.example.guidance.scheduler;
+package com.example.guidance.Util;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
@@ -17,7 +18,7 @@ import com.example.guidance.jobServices.DailyQuestionJobService;
 import com.example.guidance.jobServices.LocationJobService;
 import com.example.guidance.jobServices.StepsJobService;
 import com.example.guidance.jobServices.WeatherJobService;
-import com.example.guidance.model.Data_Type;
+import com.example.guidance.realm.model.Data_Type;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,16 +26,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.ACTIVITY_RECOGNITION;
 import static androidx.core.app.ActivityCompat.requestPermissions;
 import static androidx.core.content.ContextCompat.checkSelfPermission;
-import static com.example.guidance.realm.DatabaseFunctions.getDataStoring;
-import static com.example.guidance.realm.DatabaseFunctions.initialiseDataStoring;
-import static com.example.guidance.realm.DatabaseFunctions.isDataStoringInitialised;
-import static com.example.guidance.realm.DatabaseFunctions.isMoodEntryToday;
-import static com.example.guidance.realm.DatabaseFunctions.isSocialnessEntryToday;
+import static com.example.guidance.realm.DatabaseFunctions.getDataType;
+import static com.example.guidance.realm.DatabaseFunctions.initialiseDataType;
+import static com.example.guidance.realm.DatabaseFunctions.isDataTypeInitialised;
+import static io.realm.Realm.getApplicationContext;
 
 
 /**
@@ -44,21 +43,7 @@ public class Util {
 
     private static final String TAG = "Util";
 
-//    Passcode MLNJXXHHSP
-    public static final String MACHINE_LEARNING = "MACHINE_LEARNING";
-    public static final String TRADITIONAL_PROGRAMMING = "TRADITIONAL_PROGRAMMING";
 
-    public static final String NO_JUSTIFICATION = "NO_JUSTIFICATION";
-    public static final String WITH_JUSTIFICATION = "WITH_JUSTIFICATION";
-
-    public static final String MALE = "MALE";
-    public static final String FEMALE = "FEMALE";
-
-    public static final String HIGH = "HIGH";
-    public static final String LOW = "LOW";
-
-    public static final String SPEECH = "SPEECH";
-    public static final String TEXT = "TEXT";
 
 
     public static final int AMBIENT_TEMP = 1;
@@ -67,9 +52,10 @@ public class Util {
     public static final int DAILY_QUESTION = 4;
     public static final int WEATHER = 5;
 
+    //  todo change back so that WEATHER is called
 
-    //    public static final List<Integer> utilList = Arrays.asList(DAILY_QUESTION);
-    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, WEATHER);
+    //    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, WEATHER);
+    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION);
 
 
     public static boolean scheduleJob(Context context, Class<?> serviceClass, int jobId, int minutes) {
@@ -124,11 +110,11 @@ public class Util {
 
         //TODO remove this implementation in favour of passcode implementation
         Data_Type data;
-        if (!isDataStoringInitialised(context)) {
-            initialiseDataStoring(context);
+        if (!isDataTypeInitialised(context)) {
+            initialiseDataType(context);
         }
 
-        data = getDataStoring(context);
+        data = getDataType(context);
 
         Date currentTime = Calendar.getInstance().getTime();
 
@@ -186,7 +172,7 @@ public class Util {
                     case DAILY_QUESTION:
                         //TODO DAILY_QUESTION not working
                         //TODO change default time
-                        if ((data.isSocialness() || data.isMood()) && (!isMoodEntryToday(context, currentTime) || !isSocialnessEntryToday(context, currentTime))) {
+                        if ((data.isSocialness() || data.isMood())) {
                             Log.d(TAG, "scheduledUnscheduledJobs: " + DAILY_QUESTION);
 
                             checkPermissionsAndSchedule(context,
@@ -296,7 +282,11 @@ public class Util {
         return date;
     }
 
-
+    public static void stopBackgroundNotification(int notification_id) {
+        Log.d(TAG, "stopBackgroundNotification: " + notification_id);
+        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(notification_id);
+    }
 
 
 }

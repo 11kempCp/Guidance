@@ -18,8 +18,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 import static com.example.guidance.realm.DatabaseFunctions.isMoodEntryToday;
-import static com.example.guidance.realm.DatabaseFunctions.isSocialnessEntryToday;
-import static com.example.guidance.scheduler.Util.DAILY_QUESTION;
+import static com.example.guidance.realm.DatabaseFunctions.isSocialnessEntryDate;
+import static com.example.guidance.Util.Util.DAILY_QUESTION;
 
 /**
  * Created by Conor K on 22/02/2021.
@@ -35,9 +35,9 @@ public class DailyQuestionJobService extends JobService {
         Date currentTime = Calendar.getInstance().getTime();
 
 
-        if (currentTime.getHours() <= 14 && currentTime.getHours() <= 22) {
-            if (isSocialnessEntryToday(this, currentTime) || isMoodEntryToday(this, currentTime)) {
-
+        if (currentTime.getHours() >= 14 && currentTime.getHours() <= 22) {
+            //TODO if user has selected one but not the other
+            if(!isSocialnessEntryDate(this, currentTime) || !isMoodEntryToday(this,currentTime)){
                 //Create an Intent for the activity you want to start
                 Intent resultIntent = new Intent(this, DailyQuestionActivity.class);
                 // Create the TaskStackBuilder and add the intent, which inflates the back stack
@@ -58,11 +58,9 @@ public class DailyQuestionJobService extends JobService {
 
                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
                 notificationManager.notify(DAILY_QUESTION, builder.build());
-
             }
-
-
         }
+
 
 
         return false;
@@ -70,6 +68,9 @@ public class DailyQuestionJobService extends JobService {
 
     @Override
     public boolean onStopJob(JobParameters params) {
+
+        stopForeground(true);
+
         return false;
     }
 }

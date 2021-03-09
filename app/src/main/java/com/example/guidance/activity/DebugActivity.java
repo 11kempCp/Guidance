@@ -24,14 +24,14 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.guidance.R;
 import com.example.guidance.jobServices.WeatherJobService;
-import com.example.guidance.model.Ambient_Temperature;
-import com.example.guidance.model.Data_Type;
-import com.example.guidance.model.Intelligent_Agent;
-import com.example.guidance.model.Location;
-import com.example.guidance.model.Mood;
-import com.example.guidance.model.Socialness;
-import com.example.guidance.model.Step;
-import com.example.guidance.model.Weather;
+import com.example.guidance.realm.model.Ambient_Temperature;
+import com.example.guidance.realm.model.Data_Type;
+import com.example.guidance.realm.model.Intelligent_Agent;
+import com.example.guidance.realm.model.Location;
+import com.example.guidance.realm.model.Mood;
+import com.example.guidance.realm.model.Socialness;
+import com.example.guidance.realm.model.Step;
+import com.example.guidance.realm.model.Weather;
 import com.example.guidance.services.StepsService;
 import com.google.android.material.navigation.NavigationView;
 
@@ -45,11 +45,11 @@ import io.realm.Sort;
 
 import static com.example.guidance.realm.DatabaseFunctions.intelligentAgentEntry;
 import static com.example.guidance.realm.DatabaseFunctions.isIntelligentAgentInitialised;
-import static com.example.guidance.scheduler.Util.WEATHER;
-import static com.example.guidance.scheduler.Util.checkPermissionsAndSchedule;
-import static com.example.guidance.scheduler.Util.scheduledUnscheduledJobs;
-import static com.example.guidance.scheduler.Util.unscheduledJobs;
-import static com.example.guidance.scheduler.Util.utilList;
+import static com.example.guidance.Util.Util.WEATHER;
+import static com.example.guidance.Util.Util.checkPermissionsAndSchedule;
+import static com.example.guidance.Util.Util.scheduledUnscheduledJobs;
+import static com.example.guidance.Util.Util.unscheduledJobs;
+import static com.example.guidance.Util.Util.utilList;
 
 public class DebugActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -118,6 +118,16 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
         realm.executeTransactionAsync(r -> {
             Log.d(TAG, "deleted Intelligent_Agent");
             r.delete(Intelligent_Agent.class);
+        });
+
+        realm.executeTransactionAsync(r -> {
+            Log.d(TAG, "deleted Socialness");
+            r.delete(Socialness.class);
+        });
+
+        realm.executeTransactionAsync(r -> {
+            Log.d(TAG, "deleted Mood");
+            r.delete(Mood.class);
         });
 
         Toast.makeText(this, "Deleted Everything In Realm", Toast.LENGTH_SHORT).show();

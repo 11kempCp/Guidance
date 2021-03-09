@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import static com.example.guidance.scheduler.Util.scheduledUnscheduledJobs;
+import static com.example.guidance.Util.Util.scheduledUnscheduledJobs;
 
 
 

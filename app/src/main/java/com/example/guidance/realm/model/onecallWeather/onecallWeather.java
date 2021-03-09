@@ -1,8 +1,8 @@
-package com.example.guidance.model.onecallWeather;
+package com.example.guidance.realm.model.onecallWeather;
 
 import android.util.Log;
 
-import com.example.guidance.model.currentWeather.weather;
+import com.example.guidance.realm.model.currentWeather.weather;
 
 import java.util.ArrayList;
 
@@ -25,7 +25,7 @@ public class onecallWeather {
     private final ArrayList<alerts> alerts;
 
 
-    public onecallWeather(double lon, double lat, String timezone, int timezone_offset, com.example.guidance.model.onecallWeather.current current, ArrayList<com.example.guidance.model.onecallWeather.minutely> minutely, ArrayList<com.example.guidance.model.onecallWeather.hourly> hourly, ArrayList<com.example.guidance.model.onecallWeather.daily> daily, ArrayList<com.example.guidance.model.onecallWeather.alerts> alerts) {
+    public onecallWeather(double lon, double lat, String timezone, int timezone_offset, com.example.guidance.realm.model.onecallWeather.current current, ArrayList<com.example.guidance.realm.model.onecallWeather.minutely> minutely, ArrayList<com.example.guidance.realm.model.onecallWeather.hourly> hourly, ArrayList<com.example.guidance.realm.model.onecallWeather.daily> daily, ArrayList<com.example.guidance.realm.model.onecallWeather.alerts> alerts) {
         this.lon = lon;
         this.lat = lat;
         this.timezone = timezone;

@@ -15,7 +15,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.guidance.R;
-import com.example.guidance.model.Data_Type;
+import com.example.guidance.realm.model.Data_Type;
 import com.google.android.material.navigation.NavigationView;
 
 import io.realm.Realm;
