@@ -3,6 +3,7 @@ package com.example.guidance.activity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -17,6 +18,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.guidance.R;
+import com.example.guidance.ServiceReceiver.onPauseServiceReceiver;
 import com.example.guidance.Util.Util;
 import com.google.android.material.navigation.NavigationView;
 
@@ -28,6 +30,7 @@ import static com.example.guidance.Util.Util.DAILY_QUESTION;
 
 public class DailyQuestionActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static final String TAG = "DailyQuestionActivity";
     private DrawerLayout drawer;
     private RadioGroup radioGroupOne, radioGroupTwo;
     private TextView dailyQuestionOne, dailyQuestionTwo, clarificationOne, clarificationTwo;
@@ -201,5 +204,14 @@ public class DailyQuestionActivity extends AppCompatActivity implements Navigati
         return true;
     }
 
+    @Override
+    protected void onPause() {
+        Log.d(TAG, "onPause:");
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction("onPauseServiceReceiver");
+        broadcastIntent.setClass(this, onPauseServiceReceiver.class);
+        this.sendBroadcast(broadcastIntent);
+        super.onPause();
+    }
 
 }

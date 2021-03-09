@@ -15,11 +15,15 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.guidance.R;
+import com.example.guidance.ServiceReceiver.onPauseServiceReceiver;
 import com.example.guidance.realm.model.Data_Type;
 import com.google.android.material.navigation.NavigationView;
 
 import io.realm.Realm;
 import io.realm.RealmQuery;
+
+import static com.example.guidance.Util.Util.requestPermsFineLocation;
+import static com.example.guidance.Util.Util.requestPermsSteps;
 
 public class DataActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     static Realm realm;
@@ -50,7 +54,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         steps = findViewById(R.id.switchSteps);
         distance_traveled = findViewById(R.id.switchDistanceTraveled);
         location = findViewById(R.id.switchLocation);
-        device_temp = findViewById(R.id.switchDeviceTemp);
+        device_temp = findViewById(R.id.switchAmbientTemp);
         screentime = findViewById(R.id.switchScreentime);
         sleep_tracking = findViewById(R.id.switchSleepTracking);
         weather = findViewById(R.id.switchWeather);
@@ -124,6 +128,11 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
     public void updateDatabase(View view) {
 
         if (view.getId() == R.id.switchSteps) {
+
+            if(steps.isChecked()){
+                requestPermsSteps(this, DataActivity.this);
+            }
+
             realm.executeTransactionAsync(r -> {
                 // Get a data to update.
                 Data_Type data = r.where(Data_Type.class).findFirst();
@@ -143,6 +152,11 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
 
             });
         } else if (view.getId() == R.id.switchLocation) {
+
+            if(location.isChecked()){
+                requestPermsFineLocation(this, DataActivity.this);
+            }
+
             realm.executeTransactionAsync(r -> {
                 // Get the Data_Storing class to update.
                 Data_Type data = r.where(Data_Type.class).findFirst();
@@ -152,7 +166,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 Log.i(TAG, "Updated Data_Storing: location " + location.isChecked());
 
             });
-        } else if (view.getId() == R.id.switchDeviceTemp) {
+        } else if (view.getId() == R.id.switchAmbientTemp) {
             realm.executeTransactionAsync(r -> {
                 // Get the Data_Storing class to update.
                 Data_Type data = r.where(Data_Type.class).findFirst();
@@ -234,6 +248,16 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
             });
         }
 
+    }
+
+    @Override
+    protected void onPause() {
+        Log.d(TAG, "onPause:");
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction("onPauseServiceReceiver");
+        broadcastIntent.setClass(this, onPauseServiceReceiver.class);
+        this.sendBroadcast(broadcastIntent);
+        super.onPause();
     }
 
 

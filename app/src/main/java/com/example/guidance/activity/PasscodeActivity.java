@@ -3,6 +3,7 @@ package com.example.guidance.activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,6 +17,7 @@ import static com.example.guidance.Util.Intelligent_Agent.Analysis;
 import static com.example.guidance.Util.Intelligent_Agent.Gender;
 import static com.example.guidance.Util.Intelligent_Agent.Interaction;
 import static com.example.guidance.Util.Intelligent_Agent.Output;
+import static com.example.guidance.Util.Util.requestPerms;
 import static com.example.guidance.realm.DatabaseFunctions.initialiseDataType;
 import static com.example.guidance.realm.DatabaseFunctions.intelligentAgentEntry;
 import static com.example.guidance.realm.DatabaseFunctions.isDataTypeInitialised;
@@ -34,6 +36,7 @@ public class PasscodeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_passcode);
 
         textInput = findViewById(R.id.input);
+        generatePasscodes();
 
     }
 
@@ -55,11 +58,13 @@ public class PasscodeActivity extends AppCompatActivity {
                 Log.d(TAG, "dataType already initialised");
             }
 
-            //todo ask permissions
+            //todo ask permissions here
+            requestPerms(this, PasscodeActivity.this);
 
             finish();
         } else {
             Log.d(TAG, "Invalid passcode");
+            Toast.makeText(this, "Invalid Passcode", Toast.LENGTH_SHORT).show();
         }
 
 
@@ -99,8 +104,6 @@ public class PasscodeActivity extends AppCompatActivity {
 
 
     private boolean isValidPasscode(String passcode) {
-
-        generatePasscodes();
         return passcodeList.contains(passcode);
     }
 

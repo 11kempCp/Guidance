@@ -69,12 +69,12 @@
                 app:layout_constraintTop_toBottomOf="@+id/switchDistanceTraveled" />
 
             <Switch
-                android:id="@+id/switchDeviceTemp"
+                android:id="@+id/switchAmbientTemp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:onClick="updateDatabase"
-                android:text="@string/device_temp"
+                android:text="@string/ambient_temp"
                 app:layout_constraintEnd_toEndOf="@+id/switchLocation"
                 app:layout_constraintHorizontal_bias="0.385"
                 app:layout_constraintStart_toStartOf="@+id/switchLocation"
@@ -87,10 +87,10 @@
                 android:layout_marginTop="8dp"
                 android:onClick="updateDatabase"
                 android:text="@string/screentime"
-                app:layout_constraintEnd_toEndOf="@+id/switchDeviceTemp"
+                app:layout_constraintEnd_toEndOf="@+id/switchAmbientTemp"
                 app:layout_constraintHorizontal_bias="0.535"
-                app:layout_constraintStart_toStartOf="@+id/switchDeviceTemp"
-                app:layout_constraintTop_toBottomOf="@+id/switchDeviceTemp" />
+                app:layout_constraintStart_toStartOf="@+id/switchAmbientTemp"
+                app:layout_constraintTop_toBottomOf="@+id/switchAmbientTemp" />
 
             <Switch
                 android:id="@+id/switchWeather"
@@ -110,7 +110,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:onClick="updateDatabase"
-                android:text="@string/ambient_temp"
+                android:text="@string/external_temp"
                 app:layout_constraintEnd_toEndOf="@+id/switchWeather"
                 app:layout_constraintStart_toStartOf="@+id/switchWeather"
                 app:layout_constraintTop_toBottomOf="@+id/switchWeather" />

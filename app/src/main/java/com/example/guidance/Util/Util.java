@@ -85,6 +85,14 @@ public class Util {
 
     public static void requestPerms(Context context, Activity activity) {
 //        ACTIVITY_RECOGNITION Request, needed for Step Counter
+
+        requestPermsSteps(context, activity);
+        requestPermsFineLocation(context,activity);
+
+
+    }
+
+    public static void requestPermsSteps(Context context, Activity activity){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             if (ContextCompat.checkSelfPermission(context, ACTIVITY_RECOGNITION)
                     == PackageManager.PERMISSION_DENIED) {
@@ -92,7 +100,9 @@ public class Util {
                 requestPermissions(activity, new String[]{ACTIVITY_RECOGNITION}, STEPS);
             }
         }
+    }
 
+    public static void requestPermsFineLocation(Context context, Activity activity){
         //TODO improve, refer to LocationUpdatesForegroundService github repo,
         // specifically MainActivity requestPermissions function
         if (ContextCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION)
@@ -100,8 +110,10 @@ public class Util {
             //ask for permission
             requestPermissions(activity, new String[]{ACCESS_FINE_LOCATION}, LOCATION);
         }
-
     }
+
+
+
 
 
     public static void scheduledUnscheduledJobs(Context context) {
@@ -109,12 +121,12 @@ public class Util {
         List<Integer> unscheduledJobs = unscheduledJobs(context);
 
         //TODO remove this implementation in favour of passcode implementation
-        Data_Type data;
-        if (!isDataTypeInitialised(context)) {
-            initialiseDataType(context);
-        }
+//        Data_Type data;
+//        if (!isDataTypeInitialised(context)) {
+//            initialiseDataType(context);
+//        }
 
-        data = getDataType(context);
+        Data_Type data = getDataType(context);
 
         Date currentTime = Calendar.getInstance().getTime();
 

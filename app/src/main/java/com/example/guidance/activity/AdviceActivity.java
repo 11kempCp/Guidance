@@ -2,6 +2,7 @@ package com.example.guidance.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
@@ -12,6 +13,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.guidance.R;
+import com.example.guidance.ServiceReceiver.onPauseServiceReceiver;
 import com.google.android.material.navigation.NavigationView;
 
 public class AdviceActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -80,5 +82,15 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
 
 
         return true;
+    }
+
+    @Override
+    protected void onPause() {
+        Log.d(TAG, "onPause:");
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction("onPauseServiceReceiver");
+        broadcastIntent.setClass(this, onPauseServiceReceiver.class);
+        this.sendBroadcast(broadcastIntent);
+        super.onPause();
     }
 }

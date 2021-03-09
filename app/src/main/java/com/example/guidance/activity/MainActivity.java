@@ -27,7 +27,6 @@ import static com.example.guidance.realm.DatabaseFunctions.isIntelligentAgentIni
 import static com.example.guidance.Util.Util.requestPerms;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    private static final String PREF_SHOW_ABOUT_ON_APP_START = "PREF_SHOW_ABOUT_ON_APP_START";
     static Realm realm;
 
     TextView currentAdvice, currentGraph;
@@ -44,24 +43,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         if(!isIntelligentAgentInitialised(this)){
-
             Intent intent = new Intent(this, PasscodeActivity.class);
             startActivity(intent);
         }
 
 
         //TODO remove this implementation in favour of passcode implementation
-        if (!DatabaseFunctions.isDataTypeInitialised(this)) {
-            initialiseDataType(this);
-
-        }
+//        if (!DatabaseFunctions.isDataTypeInitialised(this)) {
+//            initialiseDataType(this);
+//
+//        }
 
         Realm.init(this);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
 
 
-        requestPerms(this, this);
+//        requestPerms(this, this);
 
 
         realm = Realm.getDefaultInstance();

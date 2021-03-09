@@ -488,13 +488,18 @@ public class DatabaseFunctions {
         Location task = query.sort("dateTime", Sort.DESCENDING).findFirst();
 
 
-        long timestamp1 = task.getDateTime().getTime();
-        long timestamp2 = currentTime.getTime();
+
 
         if (task == null) {
             return false;
 
-        }else return Math.abs(timestamp1 - timestamp2) < TimeUnit.MINUTES.toMillis(context.getResources().getInteger(R.integer.location));
+        }else {
+            long timestamp1 = task.getDateTime().getTime();
+            long timestamp2 = currentTime.getTime();
+            return Math.abs(timestamp1 - timestamp2) < TimeUnit.MINUTES.toMillis(context.getResources().getInteger(R.integer.location));
+
+        }
+
 
 
 //        if (task == null) {

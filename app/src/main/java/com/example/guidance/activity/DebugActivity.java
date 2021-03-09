@@ -23,6 +23,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.guidance.R;
+import com.example.guidance.ServiceReceiver.onPauseServiceReceiver;
 import com.example.guidance.jobServices.WeatherJobService;
 import com.example.guidance.realm.model.Ambient_Temperature;
 import com.example.guidance.realm.model.Data_Type;
@@ -390,4 +391,15 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
 
 
     }
+
+    @Override
+    protected void onPause() {
+        Log.d(TAG, "onPause:");
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction("onPauseServiceReceiver");
+        broadcastIntent.setClass(this, onPauseServiceReceiver.class);
+        this.sendBroadcast(broadcastIntent);
+        super.onPause();
+    }
+
 }
