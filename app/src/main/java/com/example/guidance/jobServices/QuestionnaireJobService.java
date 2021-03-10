@@ -12,7 +12,9 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.example.guidance.R;
 import com.example.guidance.activity.DailyQuestionActivity;
+import com.example.guidance.activity.QuestionaireActivity;
 import com.example.guidance.app.App;
+import com.example.guidance.realm.model.Questionnaire;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -31,14 +33,13 @@ public class QuestionnaireJobService extends JobService {
 
     @Override
     public boolean onStartJob(JobParameters params) {
-        Log.d(TAG, "onStartJob: QuestionnaireJobService");
+        Log.d(TAG, "onStartJob: ");
         Date currentTime = Calendar.getInstance().getTime();
-
-
-        if (currentTime.after(getQuestionnaire(this).getDateTime())) {
-            //TODO if user has selected one but not the other
+        Questionnaire questionnaire = getQuestionnaire(this);
+        if(questionnaire != null){
+            if (currentTime.after(getQuestionnaire(this).getDateTime())) {
                 //Create an Intent for the activity you want to start
-                Intent resultIntent = new Intent(this, DailyQuestionActivity.class);
+                Intent resultIntent = new Intent(this, QuestionaireActivity.class);
                 // Create the TaskStackBuilder and add the intent, which inflates the back stack
                 TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
                 stackBuilder.addNextIntentWithParentStack(resultIntent);
@@ -46,7 +47,6 @@ public class QuestionnaireJobService extends JobService {
                 PendingIntent resultPendingIntent =
                         stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                //TODO "DAILY_QUESTION" ?
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this, App.CHANNEL_ID);
                 builder.setContentIntent(resultPendingIntent)
                         .setContentTitle(getString(R.string.questionnaire))
@@ -58,6 +58,9 @@ public class QuestionnaireJobService extends JobService {
                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
                 notificationManager.notify(QUESTIONNAIRE, builder.build());
             }
+        }
+
+
 
 
 
