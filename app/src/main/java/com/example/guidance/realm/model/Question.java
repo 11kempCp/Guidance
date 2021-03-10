@@ -13,14 +13,14 @@ public class Question extends RealmObject {
     @PrimaryKey
     private ObjectId _id;
     private String question;
-    private int answer;
+    private String answer;
 
     public Question(){
 
     }
 
 
-    public Question(ObjectId _id, String question, int answer) {
+    public Question(ObjectId _id, String question, String answer) {
         this._id = _id;
         this.question = question;
         this.answer = answer;
@@ -42,11 +42,11 @@ public class Question extends RealmObject {
         this.question = question;
     }
 
-    public int getAnswer() {
+    public String getAnswer() {
         return answer;
     }
 
-    public void setAnswer(int answer) {
+    public void setAnswer(String answer) {
         this.answer = answer;
     }
 }

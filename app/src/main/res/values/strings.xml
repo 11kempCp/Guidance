@@ -19,6 +19,7 @@
     <string name="notification_daily_question">Please Answer Daily Questions</string>
     <string name="notification_location">Storing Location</string>
     <string name="notification_weather">Storing Weather</string>
+    <string name="notification_questionnaire">Please Answer Questionnaire</string>
     <!--End of Notification Strings-->
 
 
@@ -52,8 +53,60 @@
 
     <!--End of Debug Strings-->
 
-    <!--//todo answers for the questions-->
-    <!--Start of Questionaire Strings-->
+    <!--Start of Questionnaire Strings-->
+
+    <!--Each answer string-array for each question should be put here-->
+    <array name="answers">
+        <item>@array/answer_1</item>
+        <item>@array/answer_2</item>
+        <item>@array/answer_3</item>
+        <item>@array/answer_4</item>
+        <item>@array/answer_5</item>
+        <item>@array/answer_6</item>
+
+    </array>
+
+    <!--Each question will have answers these should be put here and then the array in the above
+    array "answers"-->
+    <string-array name="answer_1">
+        <item>Very Likely</item>
+        <item>Likely</item>
+        <item>Unlikely</item>
+        <item>Very Unlikely</item>
+    </string-array>
+
+    <string-array name="answer_2">
+        <item>Once Per Day</item>
+        <item>Twice Per Day</item>
+        <item>Four Times Per Day</item>
+    </string-array>
+
+    <string-array name="answer_3">
+        <item>Male</item>
+        <item>Female</item>
+        <item>Neutral</item>
+
+    </string-array>
+
+    <string-array name="answer_4">
+        <item>Text</item>
+        <item>Speech</item>
+        <item>Text and Speech</item>
+    </string-array>
+
+    <string-array name="answer_5">
+        <item>Yes</item>
+        <item>No</item>
+    </string-array>
+
+    <string-array name="answer_6">
+        <item>Yes</item>
+        <item>No</item>
+    </string-array>
+
+    <!--Questions for the questionnaire should go here,
+     each question should have a answer_ string-array-->
+
     <string-array name="questions">
         <item>How likely are you to follow the advice given by this Intelligent Agent?</item>
         <item>How often would you like to receive advice?</item>
@@ -62,8 +115,6 @@
         <item>Are you likely to follow advice given by this Intelligent Agent if a reason for the advice is given?</item>
         <item>Do you trust applications that have machine learning implemented?</item>
     </string-array>
-
-
     <!--End of Questionaire Strings-->
 
     <string name="current_advice">Current Advice</string>
@@ -71,10 +122,9 @@
     <string name="graph">Graph</string>
 
     <string name="passcode">Passcode</string>
-    <!--//todo remove MLNJXYHHSP from Enter Passcode-->
     <string name="enter_passcode">Enter Passcode</string>
     <string name="submit">Submit</string>
-    <string name="questionaire">Questionaire</string>
+    <string name="questionnaire">Questionaire</string>
     <string name="answer">Answer</string>
 
     <string name="steps">Steps</string>
@@ -100,6 +150,9 @@
 
     <!--Start of Periodic Job Times-->
     <integer name="default_time">15</integer>
+    <integer name="daily">1440</integer>
+
+
     <integer name="ambient_temp">60</integer>
     <integer name="steps">120</integer>
     <integer name="location">30</integer>

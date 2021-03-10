@@ -11,17 +11,17 @@ import io.realm.annotations.PrimaryKey;
 /**
  * Created by Conor K on 09/03/2021.
  */
-public class Questionaire extends RealmObject {
+public class Questionnaire extends RealmObject {
 
     @PrimaryKey
     private ObjectId _id;
     private Date dateTime;
     private RealmList<Question> question;
 
-    public Questionaire(){
+    public Questionnaire(){
     }
 
-    public Questionaire(ObjectId _id, Date dateTime, RealmList<Question> question) {
+    public Questionnaire(ObjectId _id, Date dateTime, RealmList<Question> question) {
         this._id = _id;
         this.dateTime = dateTime;
         this.question = question;

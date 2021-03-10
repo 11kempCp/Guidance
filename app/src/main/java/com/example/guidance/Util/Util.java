@@ -16,6 +16,7 @@ import com.example.guidance.R;
 import com.example.guidance.jobServices.AmbientTempJobService;
 import com.example.guidance.jobServices.DailyQuestionJobService;
 import com.example.guidance.jobServices.LocationJobService;
+import com.example.guidance.jobServices.QuestionnaireJobService;
 import com.example.guidance.jobServices.StepsJobService;
 import com.example.guidance.jobServices.WeatherJobService;
 import com.example.guidance.realm.model.Data_Type;
@@ -31,8 +32,6 @@ import static android.Manifest.permission.ACTIVITY_RECOGNITION;
 import static androidx.core.app.ActivityCompat.requestPermissions;
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 import static com.example.guidance.realm.DatabaseFunctions.getDataType;
-import static com.example.guidance.realm.DatabaseFunctions.initialiseDataType;
-import static com.example.guidance.realm.DatabaseFunctions.isDataTypeInitialised;
 import static io.realm.Realm.getApplicationContext;
 
 
@@ -44,18 +43,17 @@ public class Util {
     private static final String TAG = "Util";
 
 
-
-
     public static final int AMBIENT_TEMP = 1;
     public static final int STEPS = 2;
     public static final int LOCATION = 3;
     public static final int DAILY_QUESTION = 4;
     public static final int WEATHER = 5;
+    public static final int QUESTIONNAIRE = 6;
 
     //  todo change back so that WEATHER is called
 
-    //    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, WEATHER);
-    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION);
+    //        public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, WEATHER, QUESTIONNAIRE);
+    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, QUESTIONNAIRE);
 
 
     public static boolean scheduleJob(Context context, Class<?> serviceClass, int jobId, int minutes) {
@@ -87,12 +85,12 @@ public class Util {
 //        ACTIVITY_RECOGNITION Request, needed for Step Counter
 
         requestPermsSteps(context, activity);
-        requestPermsFineLocation(context,activity);
+        requestPermsFineLocation(context, activity);
 
 
     }
 
-    public static void requestPermsSteps(Context context, Activity activity){
+    public static void requestPermsSteps(Context context, Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             if (ContextCompat.checkSelfPermission(context, ACTIVITY_RECOGNITION)
                     == PackageManager.PERMISSION_DENIED) {
@@ -102,7 +100,7 @@ public class Util {
         }
     }
 
-    public static void requestPermsFineLocation(Context context, Activity activity){
+    public static void requestPermsFineLocation(Context context, Activity activity) {
         //TODO improve, refer to LocationUpdatesForegroundService github repo,
         // specifically MainActivity requestPermissions function
         if (ContextCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION)
@@ -111,9 +109,6 @@ public class Util {
             requestPermissions(activity, new String[]{ACCESS_FINE_LOCATION}, LOCATION);
         }
     }
-
-
-
 
 
     public static void scheduledUnscheduledJobs(Context context) {
@@ -213,6 +208,17 @@ public class Util {
 
                         }
 
+
+                        break;
+                    case QUESTIONNAIRE:
+
+                        checkPermissionsAndSchedule(context,
+                                QUESTIONNAIRE,
+                                QuestionnaireJobService.class,
+                                context.getResources().getInteger(R.integer.daily),
+                                packageManager,
+                                null,
+                                null);
 
                         break;
                 }

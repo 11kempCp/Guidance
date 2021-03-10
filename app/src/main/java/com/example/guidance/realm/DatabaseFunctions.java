@@ -10,11 +10,10 @@ import com.example.guidance.realm.model.Intelligent_Agent;
 import com.example.guidance.realm.model.Location;
 import com.example.guidance.realm.model.Mood;
 import com.example.guidance.realm.model.Question;
-import com.example.guidance.realm.model.Questionaire;
+import com.example.guidance.realm.model.Questionnaire;
 import com.example.guidance.realm.model.Socialness;
 import com.example.guidance.realm.model.Step;
 import com.example.guidance.realm.model.Weather;
-import com.example.guidance.Util.Util;
 
 import org.bson.types.ObjectId;
 
@@ -24,7 +23,6 @@ import java.util.concurrent.TimeUnit;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
-import io.realm.RealmList;
 import io.realm.RealmQuery;
 import io.realm.Sort;
 
@@ -775,7 +773,7 @@ public class DatabaseFunctions {
     }
 
 
-    public static void insertQuestionnaire(Context context, String[] questions, int[] answers, Date currentTime){
+    public static void insertQuestionnaire(Context context, String[] questions, String[] answers, Date currentTime){
 
         Realm.init(context);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
@@ -784,7 +782,7 @@ public class DatabaseFunctions {
 
 
         realm.executeTransactionAsync(r -> {
-            Questionaire init = r.createObject(Questionaire.class, new ObjectId());
+            Questionnaire init = r.createObject(Questionnaire.class, new ObjectId());
             init.setDateTime(currentTime);
             for (int i =0; i<questions.length;i++){
                 Question question = r.createObject(Question.class, new ObjectId());
@@ -824,10 +822,21 @@ public class DatabaseFunctions {
         Realm.setDefaultConfiguration(realmConfiguration);
         Realm realm = Realm.getDefaultInstance();
 
-        Questionaire query = realm.where(Questionaire.class).findFirst();
+        Questionnaire query = realm.where(Questionnaire.class).findFirst();
         Log.d(TAG, "isQuestionaireAnswered: query " + query);
         return query != null;
 
+    }
+
+    public static Questionnaire getQuestionnaire(Context context) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+        RealmQuery<Questionnaire> tasksQuery = realm.where(Questionnaire.class);
+//        realm.close();
+
+        return tasksQuery.findFirst();
     }
 
 }
