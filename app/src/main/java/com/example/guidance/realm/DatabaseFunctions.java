@@ -497,7 +497,7 @@ public class DatabaseFunctions {
         }else {
             long timestamp1 = task.getDateTime().getTime();
             long timestamp2 = currentTime.getTime();
-            return Math.abs(timestamp1 - timestamp2) < TimeUnit.MINUTES.toMillis(context.getResources().getInteger(R.integer.location));
+            return Math.abs(timestamp1 - timestamp2) < TimeUnit.MINUTES.toMillis(context.getResources().getInteger(R.integer.location)/2);
 
         }
 
