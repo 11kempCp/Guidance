@@ -165,8 +165,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:onClick="displaySocialness"
-                android:text="@string/display_socialness"
+                android:onClick="displayDataTypeUsageData"
+                android:text="@string/datatype_usage_data"
                 app:layout_constraintEnd_toStartOf="@+id/button5"
                 app:layout_constraintStart_toStartOf="@+id/button2"
                 app:layout_constraintTop_toBottomOf="@+id/button2" />

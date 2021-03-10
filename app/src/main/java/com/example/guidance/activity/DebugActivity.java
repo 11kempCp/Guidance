@@ -26,6 +26,7 @@ import com.example.guidance.R;
 import com.example.guidance.ServiceReceiver.onPauseServiceReceiver;
 import com.example.guidance.jobServices.WeatherJobService;
 import com.example.guidance.realm.model.Ambient_Temperature;
+import com.example.guidance.realm.model.DataTypeUsageData;
 import com.example.guidance.realm.model.Data_Type;
 import com.example.guidance.realm.model.Intelligent_Agent;
 import com.example.guidance.realm.model.Location;
@@ -424,6 +425,22 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
         displayTextView.setText(displayString.toString());
 
 
+    }
+
+    public void displayDataTypeUsageData(View view) {
+        RealmQuery<DataTypeUsageData> dataTypeUsageDataRealmQuery = realm.where(DataTypeUsageData.class);
+//        RealmResults<Step> step = stepRealmQuery.findAll();
+        RealmResults<DataTypeUsageData> dataTypeUsageData = dataTypeUsageDataRealmQuery.sort("dateTime", Sort.DESCENDING).findAll();
+
+        Log.d(TAG, "displayDataTypeUsageData " + dataTypeUsageData.size() + " DataTypeUsageData full list: " + dataTypeUsageData);
+
+        displayTextView.setText("");
+        StringBuilder displayString = new StringBuilder();
+        for (DataTypeUsageData t : dataTypeUsageData) {
+            displayString.append(" ").append(t).append("\n");
+            displayString.append(" ").append("\n");
+        }
+        displayTextView.setText(displayString.toString());
     }
 
     @Override

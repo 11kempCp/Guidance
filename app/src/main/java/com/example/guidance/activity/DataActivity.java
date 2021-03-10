@@ -19,11 +19,15 @@ import com.example.guidance.ServiceReceiver.onPauseServiceReceiver;
 import com.example.guidance.realm.model.Data_Type;
 import com.google.android.material.navigation.NavigationView;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import io.realm.Realm;
 import io.realm.RealmQuery;
 
 import static com.example.guidance.Util.Util.requestPermsFineLocation;
 import static com.example.guidance.Util.Util.requestPermsSteps;
+import static com.example.guidance.realm.DatabaseFunctions.insertDataTypeUsageData;
 
 public class DataActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     static Realm realm;
@@ -126,6 +130,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void updateDatabase(View view) {
+        Date currentTime = Calendar.getInstance().getTime();
 
         if (view.getId() == R.id.switchSteps) {
 
@@ -141,6 +146,9 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 data.setSteps(steps.isChecked());
                 Log.i(TAG, "Updated Data_Storing: steps " + steps.isChecked());
             });
+
+            insertDataTypeUsageData(this,currentTime, String.valueOf(steps.getText()), steps.isChecked());
+
         } else if (view.getId() == R.id.switchDistanceTraveled) {
             realm.executeTransactionAsync(r -> {
                 // Get the Data_Storing class to update.
@@ -151,6 +159,9 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 Log.i(TAG, "Updated Data_Storing: distance_traveled " + distance_traveled.isChecked());
 
             });
+
+            insertDataTypeUsageData(this, currentTime, String.valueOf(distance_traveled.getText()), distance_traveled.isChecked());
+
         } else if (view.getId() == R.id.switchLocation) {
 
             if(location.isChecked()){
@@ -166,6 +177,8 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 Log.i(TAG, "Updated Data_Storing: location " + location.isChecked());
 
             });
+            insertDataTypeUsageData(this,currentTime, String.valueOf(location.getText()), location.isChecked());
+
         } else if (view.getId() == R.id.switchAmbientTemp) {
             realm.executeTransactionAsync(r -> {
                 // Get the Data_Storing class to update.
@@ -176,6 +189,9 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 Log.i(TAG, "Updated Data_Storing: device_temp " + device_temp.isChecked());
 
             });
+
+            insertDataTypeUsageData(this,currentTime, String.valueOf(device_temp.getText()), device_temp.isChecked());
+
         } else if (view.getId() == R.id.switchScreentime) {
             realm.executeTransactionAsync(r -> {
                 // Get the Data_Storing class to update.
@@ -186,6 +202,9 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 Log.i(TAG, "Updated Data_Storing: screentime " + screentime.isChecked());
 
             });
+
+            insertDataTypeUsageData(this,currentTime, String.valueOf(screentime.getText()), screentime.isChecked());
+
         } else if (view.getId() == R.id.switchSleepTracking) {
             realm.executeTransactionAsync(r -> {
                 // Get the Data_Storing class to update.
@@ -196,6 +215,9 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 Log.i(TAG, "Updated Data_Storing: sleep_tracking " + sleep_tracking.isChecked());
 
             });
+
+            insertDataTypeUsageData(this,currentTime, String.valueOf(sleep_tracking.getText()), sleep_tracking.isChecked());
+
         } else if (view.getId() == R.id.switchWeather) {
             realm.executeTransactionAsync(r -> {
                 // Get the Data_Storing class to update.
@@ -206,6 +228,9 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 Log.i(TAG, "Updated Data_Storing: weather " + weather.isChecked());
 
             });
+
+            insertDataTypeUsageData(this,currentTime, String.valueOf(weather.getText()), weather.isChecked());
+
         } else if (view.getId() == R.id.switchExternalTemp) {
             realm.executeTransactionAsync(r -> {
                 // Get the Data_Storing class to update.
@@ -216,6 +241,9 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 Log.i(TAG, "Updated Data_Storing: external_temp " + external_temp.isChecked());
 
             });
+
+            insertDataTypeUsageData(this,currentTime, String.valueOf(external_temp.getText()), external_temp.isChecked());
+
         } else if (view.getId() == R.id.switchSun) {
             realm.executeTransactionAsync(r -> {
                 // Get the Data_Storing class to update.
@@ -226,6 +254,9 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 Log.i(TAG, "Updated Data_Storing: sun " + sun.isChecked());
 
             });
+
+            insertDataTypeUsageData(this,currentTime, String.valueOf(sun.getText()), sun.isChecked());
+
         } else if (view.getId() == R.id.switchSocialness) {
             realm.executeTransactionAsync(r -> {
                 // Get the Data_Storing class to update.
@@ -236,6 +267,9 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 Log.i(TAG, "Updated Data_Storing: socialness " + socialness.isChecked());
 
             });
+
+            insertDataTypeUsageData(this,currentTime, String.valueOf(socialness.getText()), socialness.isChecked());
+
         } else if (view.getId() == R.id.switchMood) {
             realm.executeTransactionAsync(r -> {
                 // Get the Data_Storing class to update.
@@ -246,6 +280,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 Log.i(TAG, "Updated Data_Storing: mood " + mood.isChecked());
 
             });
+            insertDataTypeUsageData(this,currentTime, String.valueOf(mood.getText()), mood.isChecked());
         }
 
     }

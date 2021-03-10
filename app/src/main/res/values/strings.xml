@@ -36,6 +36,7 @@
     <string name="display_weather">Display All Weather</string>
     <string name="display_intelligent_agent">Display IA</string>
     <string name="display_questionaire">Display Questionnaire</string>
+    <string name="datatype_usage_data">Display DataTypeUsageData</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
     <string name="isJobRunning">Is Job Running</string>
