@@ -10,11 +10,14 @@ import android.hardware.SensorManager;
 import android.os.Build;
 import android.util.Log;
 
+import com.example.guidance.realm.model.Data_Type;
 import com.example.guidance.services.AmbientTempService;
 import com.example.guidance.realm.DatabaseFunctions;
 
 import java.util.Calendar;
 import java.util.Date;
+
+import static com.example.guidance.realm.DatabaseFunctions.getDataType;
 
 /**
  * Created by Conor K on 14/02/2021.
@@ -29,19 +32,25 @@ public class AmbientTempJobService extends JobService
 
     @Override
     public boolean onStartJob(JobParameters params) {
+        Data_Type data = getDataType(this);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Intent serviceIntent = new Intent(this, AmbientTempService.class);
-            startForegroundService(serviceIntent);
-        } else {
+        if (data.isAmbient_temp()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Intent serviceIntent = new Intent(this, AmbientTempService.class);
+                startForegroundService(serviceIntent);
+            } else {
 
-            Date currentTime = Calendar.getInstance().getTime();
-            mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-            Sensor sensor = mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
-            boolean test = mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_FASTEST);
-            Log.d(TAG, "Job Finished " + currentTime + " sensorManager " + test);
+                Date currentTime = Calendar.getInstance().getTime();
+                mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+                Sensor sensor = mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
+                boolean test = mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_FASTEST);
+                Log.d(TAG, "Job Finished " + currentTime + " sensorManager " + test);
 
+            }
+        }else {
+            //todo unschedule job?
         }
+
         return false;
     }
 

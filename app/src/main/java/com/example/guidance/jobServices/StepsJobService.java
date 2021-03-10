@@ -7,11 +7,13 @@ import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.guidance.realm.model.Data_Type;
 import com.example.guidance.services.StepsService;
 
 import java.util.Calendar;
 import java.util.Date;
 
+import static com.example.guidance.realm.DatabaseFunctions.getDataType;
 import static com.example.guidance.realm.DatabaseFunctions.isStepEntryDate;
 import static com.example.guidance.realm.DatabaseFunctions.insertStepsCounter;
 import static com.example.guidance.realm.DatabaseFunctions.updateStepToday;
@@ -27,23 +29,28 @@ public class StepsJobService extends JobService {
     public boolean onStartJob(JobParameters params) {
         Intent serviceIntent = new Intent(this, StepsService.class);
 
-        Date currentTime = Calendar.getInstance().getTime();
-        if (isStepEntryDate(this, currentTime)) {
-            Log.d(TAG, "Updated Existing Entry");
+        Data_Type data = getDataType(this);
+
+        if(data.isSteps()){
+            Date currentTime = Calendar.getInstance().getTime();
+            if (isStepEntryDate(this, currentTime)) {
+                Log.d(TAG, "Updated Existing Entry");
 //            Toast.makeText(this, "Updated Existing Entry", Toast.LENGTH_SHORT).show();
-            updateStepToday(this, StepsService.getmSteps(), currentTime);
-        } else {
-            StepsService.resetSensor();
-            Log.d(TAG, "New Entry Saved into Database");
+                updateStepToday(this, StepsService.getmSteps(), currentTime);
+            } else {
+                StepsService.resetSensor();
+                Log.d(TAG, "New Entry Saved into Database");
 //            Toast.makeText(this, "New Entry Saved into Database", Toast.LENGTH_SHORT).show();
-            insertStepsCounter(this, StepsService.getmSteps(), currentTime);
+                insertStepsCounter(this, StepsService.getmSteps(), currentTime);
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(serviceIntent);
+            } else {
+                startService(serviceIntent);
+            }
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(serviceIntent);
-        } else {
-            startService(serviceIntent);
-        }
         return false;
 
     }

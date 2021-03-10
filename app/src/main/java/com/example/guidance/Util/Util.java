@@ -52,8 +52,8 @@ public class Util {
 
     //  todo change back so that WEATHER is called
 
-    //        public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, WEATHER, QUESTIONNAIRE);
-    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, QUESTIONNAIRE);
+    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, WEATHER, QUESTIONNAIRE);
+//    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, QUESTIONNAIRE);
 
 
     public static boolean scheduleJob(Context context, Class<?> serviceClass, int jobId, int minutes) {
@@ -113,7 +113,7 @@ public class Util {
 
     public static void scheduledUnscheduledJobs(Context context) {
 
-        List<Integer> unscheduledJobs = unscheduledJobs(context);
+        List<Integer> unscheduledJobs = getUnscheduledJobs(context);
 
         //TODO remove this implementation in favour of passcode implementation
 //        Data_Type data;
@@ -195,7 +195,7 @@ public class Util {
 
                     case WEATHER:
 
-                        if (data.isWeather() || data.isSun()) {
+                        if (data.isWeather() || data.isSun() || data.isExternal_temp()) {
                             Log.d(TAG, "scheduledUnscheduledJobs: " + WEATHER);
                             checkPermissionsAndSchedule(context,
                                     WEATHER,
@@ -253,23 +253,23 @@ public class Util {
     }
 
 
-    public static List<Integer> unscheduledJobs(Context context) {
+    public static List<Integer> getUnscheduledJobs(Context context) {
         final JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
 //        Log.d(TAG, "scheduleUnscheduledJobs: ");
         List<Integer> temp = new ArrayList<>();
-        List<Integer> testing = new ArrayList<>();
+        List<Integer> scheduledJobs = new ArrayList<>();
 
         for (JobInfo jobInfo : jobScheduler.getAllPendingJobs()) {
-            testing.add(jobInfo.getId());
+            scheduledJobs.add(jobInfo.getId());
         }
 
 
-        for (int something : utilList) {
+        for (int jobId : utilList) {
 
-            if (jobScheduler.getPendingJob(something) == null) {
-                if (!testing.contains(something)) {
-                    temp.add(something);
+            if (jobScheduler.getPendingJob(jobId) == null) {
+                if (!scheduledJobs.contains(jobId)) {
+                    temp.add(jobId);
                 }
             }
 
@@ -279,6 +279,18 @@ public class Util {
         return temp;
     }
 
+
+    public static boolean unscheduledJob(Context context, int jobID) {
+        final JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+
+        if (jobScheduler.getPendingJob(jobID) != null) {
+            jobScheduler.cancel(jobID);
+            return true;
+        }
+        return false;
+
+
+    }
 
     public static boolean isJobScheduled(Context context, int JobId) {
         final JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);

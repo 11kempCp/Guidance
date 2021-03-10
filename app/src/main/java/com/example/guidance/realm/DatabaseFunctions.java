@@ -27,7 +27,16 @@ import io.realm.RealmConfiguration;
 import io.realm.RealmQuery;
 import io.realm.Sort;
 
-import static com.example.guidance.Util.Intelligent_Agent.*;
+import static com.example.guidance.Util.Intelligent_Agent.FEMALE;
+import static com.example.guidance.Util.Intelligent_Agent.HIGH;
+import static com.example.guidance.Util.Intelligent_Agent.LOW;
+import static com.example.guidance.Util.Intelligent_Agent.MACHINE_LEARNING;
+import static com.example.guidance.Util.Intelligent_Agent.MALE;
+import static com.example.guidance.Util.Intelligent_Agent.NO_JUSTIFICATION;
+import static com.example.guidance.Util.Intelligent_Agent.SPEECH;
+import static com.example.guidance.Util.Intelligent_Agent.TEXT;
+import static com.example.guidance.Util.Intelligent_Agent.TRADITIONAL_PROGRAMMING;
+import static com.example.guidance.Util.Intelligent_Agent.WITH_JUSTIFICATION;
 
 /**
  * Created by Conor K on 17/02/2021.
@@ -490,18 +499,15 @@ public class DatabaseFunctions {
         Location task = query.sort("dateTime", Sort.DESCENDING).findFirst();
 
 
-
-
         if (task == null) {
             return false;
 
-        }else {
+        } else {
             long timestamp1 = task.getDateTime().getTime();
             long timestamp2 = currentTime.getTime();
-            return Math.abs(timestamp1 - timestamp2) < TimeUnit.MINUTES.toMillis(context.getResources().getInteger(R.integer.location)/2);
+            return Math.abs(timestamp1 - timestamp2) < TimeUnit.MINUTES.toMillis(context.getResources().getInteger(R.integer.location) / 2);
 
         }
-
 
 
 //        if (task == null) {
@@ -537,14 +543,16 @@ public class DatabaseFunctions {
                                     double feels_like_eve, double feels_like_night, double temp_max,
                                     double temp_min) {
 
+        Data_Type dataType = getDataType(context);
+
         if (!isExistingWeather(context, currentTime)) {
             insertWeather(context, currentTime, weather, sunrise, sunset,
                     feels_like_morn, feels_like_day, feels_like_eve,
-                    feels_like_night, temp_max, temp_min);
+                    feels_like_night, temp_max, temp_min, dataType.isWeather(), dataType.isExternal_temp(), dataType.isSun());
         } else {
             updateWeather(context, currentTime, weather, sunrise, sunset,
                     feels_like_morn, feels_like_day, feels_like_eve,
-                    feels_like_night, temp_max, temp_min);
+                    feels_like_night, temp_max, temp_min, dataType.isWeather(), dataType.isExternal_temp(), dataType.isSun());
         }
 
     }
@@ -572,7 +580,7 @@ public class DatabaseFunctions {
     public static void insertWeather(Context context, Date currentTime, String weather, Date sunrise,
                                      Date sunset, double feels_like_morn, double feels_like_day,
                                      double feels_like_eve, double feels_like_night, double temp_max,
-                                     double temp_min) {
+                                     double temp_min, boolean isWeather, boolean isExternalTemp, boolean isSun) {
 
         Realm.init(context);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
@@ -581,25 +589,50 @@ public class DatabaseFunctions {
 
 
         realm.executeTransactionAsync(r -> {
+
             Weather init = r.createObject(Weather.class, new ObjectId());
 
             init.setDateTime(currentTime);
-            init.setWeather(weather);
-            init.setSunRise(sunrise);
-            init.setSunSet(sunset);
-            init.setFeels_like_morn(feels_like_morn);
-            init.setFeels_like_day(feels_like_day);
-            init.setFeels_like_eve(feels_like_eve);
-            init.setFeels_like_night(feels_like_night);
-            init.setTemp_max(temp_max);
-            init.setTemp_min(temp_min);
+
+            if (isWeather) {
+                init.setWeather(weather);
+            }else {
+                init.setWeather(null);
+
+            }
+
+
+            if (isSun) {
+                init.setSunRise(sunrise);
+                init.setSunSet(sunset);
+            }else{
+                init.setSunRise(null);
+                init.setSunSet(null);
+            }
+
+            if (isExternalTemp) {
+                init.setFeels_like_morn(feels_like_morn);
+                init.setFeels_like_day(feels_like_day);
+                init.setFeels_like_eve(feels_like_eve);
+                init.setFeels_like_night(feels_like_night);
+                init.setTemp_max(temp_max);
+                init.setTemp_min(temp_min);
+            }else {
+                init.setFeels_like_morn(null);
+                init.setFeels_like_day(null);
+                init.setFeels_like_eve(null);
+                init.setFeels_like_night(null);
+                init.setTemp_max(null);
+                init.setTemp_min(null);
+            }
+
 
 //            Log.d(TAG, "executed transaction : saveAmbientTempToDatabase " + currentTime);
         }, new Realm.Transaction.OnSuccess() {
             @Override
             public void onSuccess() {
 //                Log.d(TAG, "AmbientTemp onSuccess:");
-                Log.d(TAG, "executed transaction : insertWeather" + currentTime);
+                Log.d(TAG, "executed transaction : insertWeather " + currentTime);
 
             }
         }, new Realm.Transaction.OnError() {
@@ -617,7 +650,7 @@ public class DatabaseFunctions {
     public static void updateWeather(Context context, Date currentTime, String weather, Date sunrise,
                                      Date sunset, double feels_like_morn, double feels_like_day,
                                      double feels_like_eve, double feels_like_night, double temp_max,
-                                     double temp_min) {
+                                     double temp_min, boolean isWeather, boolean isExternalTemp, boolean isSun) {
         Realm.init(context);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
@@ -635,15 +668,38 @@ public class DatabaseFunctions {
             } else {
                 Log.d(TAG, "updatingWeather");
                 result.setDateTime(currentTime);
-                result.setWeather(weather);
-                result.setSunRise(sunrise);
-                result.setSunSet(sunset);
-                result.setFeels_like_morn(feels_like_morn);
-                result.setFeels_like_day(feels_like_day);
-                result.setFeels_like_eve(feels_like_eve);
-                result.setFeels_like_night(feels_like_night);
-                result.setTemp_max(temp_max);
-                result.setTemp_min(temp_min);
+
+                if (isWeather) {
+                    result.setWeather(weather);
+                }else {
+                    result.setWeather(null);
+
+                }
+
+
+                if (isSun) {
+                    result.setSunRise(sunrise);
+                    result.setSunSet(sunset);
+                }else{
+                    result.setSunRise(null);
+                    result.setSunSet(null);
+                }
+
+                if (isExternalTemp) {
+                    result.setFeels_like_morn(feels_like_morn);
+                    result.setFeels_like_day(feels_like_day);
+                    result.setFeels_like_eve(feels_like_eve);
+                    result.setFeels_like_night(feels_like_night);
+                    result.setTemp_max(temp_max);
+                    result.setTemp_min(temp_min);
+                }else {
+                    result.setFeels_like_morn(null);
+                    result.setFeels_like_day(null);
+                    result.setFeels_like_eve(null);
+                    result.setFeels_like_night(null);
+                    result.setTemp_max(null);
+                    result.setTemp_min(null);
+                }
 
                 r.insertOrUpdate(result);
             }
@@ -774,7 +830,7 @@ public class DatabaseFunctions {
     }
 
 
-    public static void insertQuestionnaire(Context context, String[] questions, String[] answers, Date currentTime){
+    public static void insertQuestionnaire(Context context, String[] questions, String[] answers, Date currentTime) {
 
         Realm.init(context);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
@@ -785,15 +841,13 @@ public class DatabaseFunctions {
         realm.executeTransactionAsync(r -> {
             Questionnaire init = r.createObject(Questionnaire.class, new ObjectId());
             init.setDateTime(currentTime);
-            for (int i =0; i<questions.length;i++){
+            for (int i = 0; i < questions.length; i++) {
                 Question question = r.createObject(Question.class, new ObjectId());
                 question.setAnswer(answers[i]);
                 question.setQuestion(questions[i]);
                 init.getQuestion().add(question);
 
             }
-
-
 
 
         }, new Realm.Transaction.OnSuccess() {
@@ -816,7 +870,7 @@ public class DatabaseFunctions {
 
     }
 
-    public static boolean isQuestionaireAnswered(Context context){
+    public static boolean isQuestionaireAnswered(Context context) {
 
         Realm.init(context);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
@@ -840,7 +894,7 @@ public class DatabaseFunctions {
         return tasksQuery.findFirst();
     }
 
-    public static void insertDataTypeUsageData(Context context, Date currentTime, String data_type, boolean status){
+    public static void insertDataTypeUsageData(Context context, Date currentTime, String data_type, boolean status) {
 
         Realm.init(context);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();

@@ -52,7 +52,7 @@ import static com.example.guidance.realm.DatabaseFunctions.isIntelligentAgentIni
 import static com.example.guidance.Util.Util.WEATHER;
 import static com.example.guidance.Util.Util.checkPermissionsAndSchedule;
 import static com.example.guidance.Util.Util.scheduledUnscheduledJobs;
-import static com.example.guidance.Util.Util.unscheduledJobs;
+import static com.example.guidance.Util.Util.getUnscheduledJobs;
 import static com.example.guidance.Util.Util.utilList;
 
 public class DebugActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -145,7 +145,7 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
 
     public void jobRunning(View view) {
 
-        List<Integer> test = unscheduledJobs(this);
+        List<Integer> test = getUnscheduledJobs(this);
         Toast.makeText(this, "Jobs " + test + " Not scheduled", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "Jobs " + test + " Not scheduled");
     }

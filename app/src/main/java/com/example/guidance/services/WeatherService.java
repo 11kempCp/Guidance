@@ -93,10 +93,10 @@ public class WeatherService extends Service {
 
         Date currentTime = Calendar.getInstance().getTime();
 
-        Location c = getMostRecentLocation(this, currentTime);
+        Location location = getMostRecentLocation(this, currentTime);
 
-        if (c != null) {
-            Call<onecallWeather> call = weather.getDailyWeather(c.getLatitude(), c.getLongitude(), "current,minutely,hourly,alerts", key, "metric");
+        if (location != null) {
+            Call<onecallWeather> call = weather.getDailyWeather(location.getLatitude(), location.getLongitude(), "current,minutely,hourly,alerts", key, "metric");
 
 
             call.enqueue(new Callback<onecallWeather>() {

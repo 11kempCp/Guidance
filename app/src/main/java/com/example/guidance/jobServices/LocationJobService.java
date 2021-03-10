@@ -6,10 +6,13 @@ import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 
+import com.example.guidance.realm.model.Data_Type;
 import com.example.guidance.services.LocationService;
 
 import java.util.Calendar;
 import java.util.Date;
+
+import static com.example.guidance.realm.DatabaseFunctions.getDataType;
 
 /**
  * Created by Conor K on 25/02/2021.
@@ -20,16 +23,20 @@ public class LocationJobService extends JobService {
 
     @Override
     public boolean onStartJob(JobParameters params) {
-        Intent serviceIntent = new Intent("CHECK_LOCATION" ,null ,this, LocationService.class);
+        Intent serviceIntent = new Intent("CHECK_LOCATION", null, this, LocationService.class);
 
         Date currentTime = Calendar.getInstance().getTime();
 
+        Data_Type data = getDataType(this);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(serviceIntent);
-        } else {
-            startService(serviceIntent);
+        if (data.isLocation()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(serviceIntent);
+            } else {
+                startService(serviceIntent);
+            }
         }
+
 
         return false;
 

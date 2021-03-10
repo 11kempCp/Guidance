@@ -13,10 +13,12 @@ import androidx.core.app.NotificationManagerCompat;
 import com.example.guidance.R;
 import com.example.guidance.activity.DailyQuestionActivity;
 import com.example.guidance.app.App;
+import com.example.guidance.realm.model.Data_Type;
 
 import java.util.Calendar;
 import java.util.Date;
 
+import static com.example.guidance.realm.DatabaseFunctions.getDataType;
 import static com.example.guidance.realm.DatabaseFunctions.isMoodEntryToday;
 import static com.example.guidance.realm.DatabaseFunctions.isSocialnessEntryDate;
 import static com.example.guidance.Util.Util.DAILY_QUESTION;
@@ -34,32 +36,35 @@ public class DailyQuestionJobService extends JobService {
         Log.d(TAG, "onStartJob: DailyQuestionJobService");
         Date currentTime = Calendar.getInstance().getTime();
 
+        Data_Type data = getDataType(this);
+        if ((data.isSocialness() || data.isMood())) {
+            if (currentTime.getHours() >= 14 && currentTime.getHours() <= 22) {
+                //TODO if user has selected one but not the other
+                if(!isSocialnessEntryDate(this, currentTime) || !isMoodEntryToday(this,currentTime)){
+                    //Create an Intent for the activity you want to start
+                    Intent resultIntent = new Intent(this, DailyQuestionActivity.class);
+                    // Create the TaskStackBuilder and add the intent, which inflates the back stack
+                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+                    stackBuilder.addNextIntentWithParentStack(resultIntent);
+                    // Get the PendingIntent containing the entire back stack
+                    PendingIntent resultPendingIntent =
+                            stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        if (currentTime.getHours() >= 14 && currentTime.getHours() <= 22) {
-            //TODO if user has selected one but not the other
-            if(!isSocialnessEntryDate(this, currentTime) || !isMoodEntryToday(this,currentTime)){
-                //Create an Intent for the activity you want to start
-                Intent resultIntent = new Intent(this, DailyQuestionActivity.class);
-                // Create the TaskStackBuilder and add the intent, which inflates the back stack
-                TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-                stackBuilder.addNextIntentWithParentStack(resultIntent);
-                // Get the PendingIntent containing the entire back stack
-                PendingIntent resultPendingIntent =
-                        stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                    //TODO "DAILY_QUESTION" ?
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(this, App.CHANNEL_ID);
+                    builder.setContentIntent(resultPendingIntent)
+                            .setContentTitle(getString(R.string.daily_question))
+                            .setContentText(getString(R.string.notification_daily_question))
+                            .setSmallIcon(R.drawable.ic_daily_question)
+                            .setContentIntent(resultPendingIntent)
+                            .setPriority(NotificationCompat.PRIORITY_LOW);
 
-                //TODO "DAILY_QUESTION" ?
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, App.CHANNEL_ID);
-                builder.setContentIntent(resultPendingIntent)
-                        .setContentTitle(getString(R.string.daily_question))
-                        .setContentText(getString(R.string.notification_daily_question))
-                        .setSmallIcon(R.drawable.ic_daily_question)
-                        .setContentIntent(resultPendingIntent)
-                        .setPriority(NotificationCompat.PRIORITY_LOW);
-
-                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-                notificationManager.notify(DAILY_QUESTION, builder.build());
+                    NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+                    notificationManager.notify(DAILY_QUESTION, builder.build());
+                }
             }
         }
+
 
 
 
