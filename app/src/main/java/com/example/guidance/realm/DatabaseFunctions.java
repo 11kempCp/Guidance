@@ -913,7 +913,7 @@ public class DatabaseFunctions {
             public void onSuccess() {
 //                Log.d(TAG, "AmbientTemp onSuccess:");
                 Date currentTime = Calendar.getInstance().getTime();
-                Log.d(TAG, "executed transaction : insertDataTypeUsageData" + currentTime);
+//                Log.d(TAG, "executed transaction : insertDataTypeUsageData " + currentTime);
 
             }
         }, new Realm.Transaction.OnError() {

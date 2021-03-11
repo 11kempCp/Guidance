@@ -2,7 +2,7 @@
 
     <!--Start of Core Strings-->
     <string name="app_name">Guidance</string>
-    <string name="contact">TODO contact email</string>
+    <string name="contact">KempCP@cardiff.ac.uk</string>
     <integer name="study_period_length_days">14</integer>
     <!--End of Core Strings-->
 

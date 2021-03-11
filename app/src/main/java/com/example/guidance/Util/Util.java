@@ -1,6 +1,7 @@
 package com.example.guidance.Util;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
@@ -31,6 +32,7 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.ACTIVITY_RECOGNITION;
 import static androidx.core.app.ActivityCompat.requestPermissions;
 import static androidx.core.content.ContextCompat.checkSelfPermission;
+import static androidx.core.content.ContextCompat.getSystemService;
 import static com.example.guidance.realm.DatabaseFunctions.getDataType;
 import static io.realm.Realm.getApplicationContext;
 
@@ -52,8 +54,8 @@ public class Util {
 
     //  todo change back so that WEATHER is called
 
-    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, WEATHER, QUESTIONNAIRE);
-//    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, QUESTIONNAIRE);
+//    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, WEATHER, QUESTIONNAIRE);
+    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, QUESTIONNAIRE);
 
 
     public static boolean scheduleJob(Context context, Class<?> serviceClass, int jobId, int minutes) {
@@ -285,11 +287,11 @@ public class Util {
 
         if (jobScheduler.getPendingJob(jobID) != null) {
             jobScheduler.cancel(jobID);
+            Log.d(TAG, "unscheduledJob: " + jobID);
             return true;
         }
+        Log.d(TAG, "unscheduledJob: Job " + jobID + " not scheduled");
         return false;
-
-
     }
 
     public static boolean isJobScheduled(Context context, int JobId) {
@@ -318,5 +320,14 @@ public class Util {
         notificationManager.cancel(notification_id);
     }
 
+    public static boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

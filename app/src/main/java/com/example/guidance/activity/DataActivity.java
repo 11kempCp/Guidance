@@ -1,6 +1,7 @@
 package com.example.guidance.activity;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -16,7 +17,12 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.guidance.R;
 import com.example.guidance.ServiceReceiver.onPauseServiceReceiver;
+import com.example.guidance.Util.Util;
 import com.example.guidance.realm.model.Data_Type;
+import com.example.guidance.services.AmbientTempService;
+import com.example.guidance.services.LocationService;
+import com.example.guidance.services.StepsService;
+import com.example.guidance.services.WeatherService;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.Calendar;
@@ -25,8 +31,15 @@ import java.util.Date;
 import io.realm.Realm;
 import io.realm.RealmQuery;
 
+import static com.example.guidance.Util.Util.AMBIENT_TEMP;
+import static com.example.guidance.Util.Util.DAILY_QUESTION;
+import static com.example.guidance.Util.Util.LOCATION;
+import static com.example.guidance.Util.Util.STEPS;
+import static com.example.guidance.Util.Util.WEATHER;
 import static com.example.guidance.Util.Util.requestPermsFineLocation;
 import static com.example.guidance.Util.Util.requestPermsSteps;
+import static com.example.guidance.Util.Util.stopBackgroundNotification;
+import static com.example.guidance.Util.Util.unscheduledJob;
 import static com.example.guidance.realm.DatabaseFunctions.insertDataTypeUsageData;
 
 public class DataActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -37,7 +50,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
 
     private DrawerLayout drawer;
 
-    Switch steps, distance_traveled, location, device_temp, screentime, sleep_tracking, weather, external_temp, sun, socialness, mood;
+    Switch steps, distance_traveled, location, ambient_temp, screentime, sleep_tracking, weather, external_temp, sun, socialness, mood;
 
 
     @Override
@@ -58,7 +71,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         steps = findViewById(R.id.switchSteps);
         distance_traveled = findViewById(R.id.switchDistanceTraveled);
         location = findViewById(R.id.switchLocation);
-        device_temp = findViewById(R.id.switchAmbientTemp);
+        ambient_temp = findViewById(R.id.switchAmbientTemp);
         screentime = findViewById(R.id.switchScreentime);
         sleep_tracking = findViewById(R.id.switchSleepTracking);
         weather = findViewById(R.id.switchWeather);
@@ -76,7 +89,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         steps.setChecked(test.isSteps());
         distance_traveled.setChecked(test.isDistance_traveled());
         location.setChecked(test.isLocation());
-        device_temp.setChecked(test.isAmbient_temp());
+        ambient_temp.setChecked(test.isAmbient_temp());
         screentime.setChecked(test.isScreentime());
         sleep_tracking.setChecked(test.isSleep_tracking());
         weather.setChecked(test.isWeather());
@@ -134,8 +147,19 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
 
         if (view.getId() == R.id.switchSteps) {
 
-            if(steps.isChecked()){
+            if (steps.isChecked()) {
                 requestPermsSteps(this, DataActivity.this);
+            } else {
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    if (Util.isMyServiceRunning(StepsService.class)) {
+                        Intent serviceIntent = new Intent(this, StepsService.class);
+                        stopService(serviceIntent);
+                    }
+                }
+
+                unscheduledJob(this, STEPS);
+                stopBackgroundNotification(STEPS);
             }
 
             realm.executeTransactionAsync(r -> {
@@ -147,9 +171,24 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 Log.i(TAG, "Updated Data_Storing: steps " + steps.isChecked());
             });
 
-            insertDataTypeUsageData(this,currentTime, String.valueOf(steps.getText()), steps.isChecked());
+            insertDataTypeUsageData(this, currentTime, String.valueOf(steps.getText()), steps.isChecked());
 
         } else if (view.getId() == R.id.switchDistanceTraveled) {
+
+//            if (distance_traveled.isChecked()) {
+//            } else {
+//                unscheduledJob(this, DISTANCE_TRAVELED);
+//                stopBackgroundNotification(DISTANCE_TRAVELED);
+//
+//            }
+//
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                if (Util.isMyServiceRunning(DistanceTraveledService.class)) {
+//                    Intent serviceIntent = new Intent(this, DistanceTraveledService.class);
+//                    stopService(serviceIntent);
+//                }
+//            }
+
             realm.executeTransactionAsync(r -> {
                 // Get the Data_Storing class to update.
                 Data_Type data = r.where(Data_Type.class).findFirst();
@@ -164,8 +203,19 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
 
         } else if (view.getId() == R.id.switchLocation) {
 
-            if(location.isChecked()){
+            if (location.isChecked()) {
                 requestPermsFineLocation(this, DataActivity.this);
+            } else {
+                unscheduledJob(this, LOCATION);
+                stopBackgroundNotification(LOCATION);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    if (Util.isMyServiceRunning(LocationService.class)) {
+                        Intent serviceIntent = new Intent(this, LocationService.class);
+                        stopService(serviceIntent);
+                    }
+                }
+
             }
 
             realm.executeTransactionAsync(r -> {
@@ -177,22 +227,50 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 Log.i(TAG, "Updated Data_Storing: location " + location.isChecked());
 
             });
-            insertDataTypeUsageData(this,currentTime, String.valueOf(location.getText()), location.isChecked());
+            insertDataTypeUsageData(this, currentTime, String.valueOf(location.getText()), location.isChecked());
 
         } else if (view.getId() == R.id.switchAmbientTemp) {
+
+            if (!ambient_temp.isChecked()) {
+                unscheduledJob(this, AMBIENT_TEMP);
+
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    if (Util.isMyServiceRunning(AmbientTempService.class)) {
+                        Intent serviceIntent = new Intent(this, AmbientTempService.class);
+                        stopService(serviceIntent);
+                    }
+                }
+
+
+            }
+
             realm.executeTransactionAsync(r -> {
                 // Get the Data_Storing class to update.
                 Data_Type data = r.where(Data_Type.class).findFirst();
                 // Update properties on the instance.
                 // This change is saved to the realm.
-                data.setAmbient_temp(device_temp.isChecked());
-                Log.i(TAG, "Updated Data_Storing: device_temp " + device_temp.isChecked());
+                data.setAmbient_temp(ambient_temp.isChecked());
+                Log.i(TAG, "Updated Data_Storing: device_temp " + ambient_temp.isChecked());
 
             });
 
-            insertDataTypeUsageData(this,currentTime, String.valueOf(device_temp.getText()), device_temp.isChecked());
+            insertDataTypeUsageData(this, currentTime, String.valueOf(ambient_temp.getText()), ambient_temp.isChecked());
 
         } else if (view.getId() == R.id.switchScreentime) {
+            //todo uncomment
+//            if(!screentime.isChecked()){
+//                unscheduledJob(this,SCREENTIME);
+//                stopBackgroundNotification(SCREENTIME);
+//            }
+//
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                if (Util.isMyServiceRunning(ScreentimeService.class)) {
+//                    Intent serviceIntent = new Intent(this, ScreentimeService.class);
+//                    stopService(serviceIntent);
+//                }
+//            }
+
             realm.executeTransactionAsync(r -> {
                 // Get the Data_Storing class to update.
                 Data_Type data = r.where(Data_Type.class).findFirst();
@@ -203,9 +281,22 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
 
             });
 
-            insertDataTypeUsageData(this,currentTime, String.valueOf(screentime.getText()), screentime.isChecked());
+            insertDataTypeUsageData(this, currentTime, String.valueOf(screentime.getText()), screentime.isChecked());
 
         } else if (view.getId() == R.id.switchSleepTracking) {
+
+            //todo uncomment
+//            if(!sleep_tracking.isChecked()){
+//                unscheduledJob(this,SLEEP_TRACKING);
+//                stopBackgroundNotification(SLEEP_TRACKING);
+//            }
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                if (Util.isMyServiceRunning(SleepTrackingService.class)) {
+//                    Intent serviceIntent = new Intent(this, SleepTrackingService.class);
+//                    stopService(serviceIntent);
+//                }
+//            }
+
             realm.executeTransactionAsync(r -> {
                 // Get the Data_Storing class to update.
                 Data_Type data = r.where(Data_Type.class).findFirst();
@@ -216,9 +307,22 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
 
             });
 
-            insertDataTypeUsageData(this,currentTime, String.valueOf(sleep_tracking.getText()), sleep_tracking.isChecked());
+            insertDataTypeUsageData(this, currentTime, String.valueOf(sleep_tracking.getText()), sleep_tracking.isChecked());
 
         } else if (view.getId() == R.id.switchWeather) {
+
+            if (!weather.isChecked() && !external_temp.isChecked() && !sun.isChecked()) {
+                unscheduledJob(this, WEATHER);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    if (Util.isMyServiceRunning(WeatherService.class)) {
+                        Intent serviceIntent = new Intent(this, WeatherService.class);
+                        stopService(serviceIntent);
+                    }
+                }
+
+            }
+
             realm.executeTransactionAsync(r -> {
                 // Get the Data_Storing class to update.
                 Data_Type data = r.where(Data_Type.class).findFirst();
@@ -229,9 +333,20 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
 
             });
 
-            insertDataTypeUsageData(this,currentTime, String.valueOf(weather.getText()), weather.isChecked());
+            insertDataTypeUsageData(this, currentTime, String.valueOf(weather.getText()), weather.isChecked());
 
         } else if (view.getId() == R.id.switchExternalTemp) {
+
+            if (!weather.isChecked() && !external_temp.isChecked() && !sun.isChecked()) {
+                unscheduledJob(this, WEATHER);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    if (Util.isMyServiceRunning(WeatherService.class)) {
+                        Intent serviceIntent = new Intent(this, WeatherService.class);
+                        stopService(serviceIntent);
+                    }
+                }
+            }
+
             realm.executeTransactionAsync(r -> {
                 // Get the Data_Storing class to update.
                 Data_Type data = r.where(Data_Type.class).findFirst();
@@ -242,9 +357,20 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
 
             });
 
-            insertDataTypeUsageData(this,currentTime, String.valueOf(external_temp.getText()), external_temp.isChecked());
+            insertDataTypeUsageData(this, currentTime, String.valueOf(external_temp.getText()), external_temp.isChecked());
 
         } else if (view.getId() == R.id.switchSun) {
+
+            if (!weather.isChecked() && !external_temp.isChecked() && !sun.isChecked()) {
+                unscheduledJob(this, WEATHER);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    if (Util.isMyServiceRunning(WeatherService.class)) {
+                        Intent serviceIntent = new Intent(this, WeatherService.class);
+                        stopService(serviceIntent);
+                    }
+                }
+            }
+
             realm.executeTransactionAsync(r -> {
                 // Get the Data_Storing class to update.
                 Data_Type data = r.where(Data_Type.class).findFirst();
@@ -255,9 +381,16 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
 
             });
 
-            insertDataTypeUsageData(this,currentTime, String.valueOf(sun.getText()), sun.isChecked());
+            insertDataTypeUsageData(this, currentTime, String.valueOf(sun.getText()), sun.isChecked());
 
         } else if (view.getId() == R.id.switchSocialness) {
+
+            if (!socialness.isChecked() && !mood.isChecked()) {
+                unscheduledJob(this, DAILY_QUESTION);
+                stopBackgroundNotification(DAILY_QUESTION);
+
+            }
+
             realm.executeTransactionAsync(r -> {
                 // Get the Data_Storing class to update.
                 Data_Type data = r.where(Data_Type.class).findFirst();
@@ -268,9 +401,15 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
 
             });
 
-            insertDataTypeUsageData(this,currentTime, String.valueOf(socialness.getText()), socialness.isChecked());
+            insertDataTypeUsageData(this, currentTime, String.valueOf(socialness.getText()), socialness.isChecked());
 
         } else if (view.getId() == R.id.switchMood) {
+
+            if (!socialness.isChecked() && !mood.isChecked()) {
+                unscheduledJob(this, DAILY_QUESTION);
+                stopBackgroundNotification(DAILY_QUESTION);
+            }
+
             realm.executeTransactionAsync(r -> {
                 // Get the Data_Storing class to update.
                 Data_Type data = r.where(Data_Type.class).findFirst();
@@ -280,7 +419,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 Log.i(TAG, "Updated Data_Storing: mood " + mood.isChecked());
 
             });
-            insertDataTypeUsageData(this,currentTime, String.valueOf(mood.getText()), mood.isChecked());
+            insertDataTypeUsageData(this, currentTime, String.valueOf(mood.getText()), mood.isChecked());
         }
 
     }

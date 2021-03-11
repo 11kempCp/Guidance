@@ -35,15 +35,6 @@ public class AmbientTempService extends Service implements SensorEventListener {
 
     private int sID;
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -89,6 +80,15 @@ public class AmbientTempService extends Service implements SensorEventListener {
     public IBinder onBind(Intent intent) {
         return null;
     }
+
+
+    @Override
+    public void onDestroy() {
+        stopForeground(true);
+        stopSelfResult(sID);
+
+    }
+
 
 
 }
