@@ -8,8 +8,10 @@ import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.os.Build;
 import android.util.Log;
+import androidx.appcompat.widget.Toolbar;
 
 import androidx.core.content.ContextCompat;
 
@@ -21,18 +23,21 @@ import com.example.guidance.jobServices.QuestionnaireJobService;
 import com.example.guidance.jobServices.StepsJobService;
 import com.example.guidance.jobServices.WeatherJobService;
 import com.example.guidance.realm.model.Data_Type;
+import com.example.guidance.realm.model.Intelligent_Agent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.ACTIVITY_RECOGNITION;
 import static androidx.core.app.ActivityCompat.requestPermissions;
 import static androidx.core.content.ContextCompat.checkSelfPermission;
-import static androidx.core.content.ContextCompat.getSystemService;
+import static com.example.guidance.Util.IA.FEMALE;
+import static com.example.guidance.Util.IA.MALE;
 import static com.example.guidance.realm.DatabaseFunctions.getDataType;
 import static io.realm.Realm.getApplicationContext;
 
@@ -316,18 +321,53 @@ public class Util {
 
     public static void stopBackgroundNotification(int notification_id) {
         Log.d(TAG, "stopBackgroundNotification: " + notification_id);
-        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) Objects.requireNonNull(getApplicationContext()).getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(notification_id);
     }
 
     public static boolean isMyServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager manager = (ActivityManager) Objects.requireNonNull(getApplicationContext()).getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (serviceClass.getName().equals(service.service.getClassName())) {
                 return true;
             }
         }
         return false;
+    }
+
+
+    public static void setToolbarColor(Intelligent_Agent intelligent_agent, Toolbar toolbar, Resources resources){
+        if (intelligent_agent != null) {
+            String gender = intelligent_agent.getGender();
+            if (gender.equals(FEMALE)) {
+                Log.d(TAG, "onCreate: femaleAppTheme_NoActionBar");
+                toolbar.setBackgroundColor(resources.getColor(R.color.femalePrimaryColour));
+            } else if (gender.equals(MALE)) {
+                Log.d(TAG, "onCreate: malePrimaryColour");
+
+                toolbar.setBackgroundColor(resources.getColor(R.color.malePrimaryColour));
+            } else {
+                Log.d(TAG, "onCreate: defaultPrimaryColour");
+                toolbar.setBackgroundColor(resources.getColor(R.color.defaultPrimaryColour));
+            }
+        }
+    }
+
+    public static void setActivityTheme(Intelligent_Agent intelligent_agent, Activity activity){
+        if (intelligent_agent != null) {
+            String gender = intelligent_agent.getGender();
+            if (gender.equals(FEMALE)) {
+                Log.d(TAG, "onCreate: setTheme femaleAppTheme_NoActionBar");
+                activity.setTheme(R.style.femaleAppTheme_NoActionBar);
+            } else if (gender.equals(MALE)) {
+                Log.d(TAG, "onCreate: setTheme maleAppTheme_NoActionBar");
+
+                activity.setTheme(R.style.maleAppTheme_NoActionBar);
+            } else {
+                Log.d(TAG, "onCreate: setTheme defaultAppTheme_NoActionBar");
+                activity.setTheme(R.style.defaultAppTheme_NoActionBar);
+            }
+        }
     }
 
 }

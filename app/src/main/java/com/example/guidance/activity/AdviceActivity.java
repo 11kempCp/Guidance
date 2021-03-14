@@ -14,7 +14,13 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.guidance.R;
 import com.example.guidance.ServiceReceiver.onPauseServiceReceiver;
+import com.example.guidance.Util.Util;
+import com.example.guidance.realm.model.Intelligent_Agent;
 import com.google.android.material.navigation.NavigationView;
+
+import static com.example.guidance.Util.IA.FEMALE;
+import static com.example.guidance.Util.IA.MALE;
+import static com.example.guidance.realm.DatabaseFunctions.getIntelligentAgent;
 
 public class AdviceActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -26,6 +32,10 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        Intelligent_Agent intelligent_agent = getIntelligentAgent(this);
+        Util.setActivityTheme(intelligent_agent, this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_advice);
         drawer = findViewById(R.id.drawer_layout_advice_activity);
@@ -34,6 +44,8 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
         navigationView.setNavigationItemSelectedListener(this);
 
         setSupportActionBar(toolbar);
+
+        Util.setToolbarColor(intelligent_agent,toolbar, getResources());
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_open);

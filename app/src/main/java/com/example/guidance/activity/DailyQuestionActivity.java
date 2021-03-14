@@ -20,11 +20,14 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.guidance.R;
 import com.example.guidance.ServiceReceiver.onPauseServiceReceiver;
 import com.example.guidance.Util.Util;
+import com.example.guidance.realm.model.Intelligent_Agent;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.Calendar;
 import java.util.Date;
 
+import static com.example.guidance.Util.IA.FEMALE;
+import static com.example.guidance.Util.IA.MALE;
 import static com.example.guidance.realm.DatabaseFunctions.*;
 import static com.example.guidance.Util.Util.DAILY_QUESTION;
 
@@ -40,6 +43,12 @@ public class DailyQuestionActivity extends AppCompatActivity implements Navigati
     @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        Intelligent_Agent intelligent_agent = getIntelligentAgent(this);
+
+        Util.setActivityTheme(intelligent_agent, this);
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_daily_question);
 
@@ -50,6 +59,10 @@ public class DailyQuestionActivity extends AppCompatActivity implements Navigati
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         setSupportActionBar(toolbar);
+
+        Util.setToolbarColor(intelligent_agent, toolbar, getResources());
+
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_open);
         drawer.addDrawerListener(toggle);

@@ -8,7 +8,7 @@ import static com.example.guidance.Util.Util.*;
 /**
  * Created by Conor K on 08/03/2021.
  */
-public class Intelligent_Agent {
+public class IA {
 
     //    Passcode MLNJXXHHSP
     public static final String MACHINE_LEARNING = "ML";

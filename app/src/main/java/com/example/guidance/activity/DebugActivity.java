@@ -24,7 +24,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.guidance.R;
 import com.example.guidance.ServiceReceiver.onPauseServiceReceiver;
+import com.example.guidance.Util.Util;
 import com.example.guidance.jobServices.WeatherJobService;
+import com.example.guidance.realm.DatabaseFunctions;
 import com.example.guidance.realm.model.Ambient_Temperature;
 import com.example.guidance.realm.model.DataTypeUsageData;
 import com.example.guidance.realm.model.Data_Type;
@@ -47,6 +49,9 @@ import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
+import static com.example.guidance.Util.IA.FEMALE;
+import static com.example.guidance.Util.IA.MALE;
+import static com.example.guidance.realm.DatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.DatabaseFunctions.intelligentAgentEntry;
 import static com.example.guidance.realm.DatabaseFunctions.isIntelligentAgentInitialised;
 import static com.example.guidance.Util.Util.WEATHER;
@@ -65,6 +70,12 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        Intelligent_Agent intelligent_agent = getIntelligentAgent(this);
+
+        Util.setActivityTheme(intelligent_agent, this);
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_debug);
 
@@ -84,6 +95,9 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         setSupportActionBar(toolbar);
+
+        Util.setToolbarColor(intelligent_agent, toolbar, getResources());
+
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_open);
@@ -451,6 +465,27 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
         broadcastIntent.setClass(this, onPauseServiceReceiver.class);
         this.sendBroadcast(broadcastIntent);
         super.onPause();
+    }
+
+
+    public void toggleGender(View view){
+
+        Intelligent_Agent intelligent_agent = getIntelligentAgent(this);
+
+
+        if (intelligent_agent != null) {
+
+            String gender = intelligent_agent.getGender();
+            String DEFAULT = "DEFAULT";
+            if (gender.equals(DEFAULT)) {
+                DatabaseFunctions.intelligentAgentSetGender(this, MALE);
+            } else if (gender.equals(MALE)) {
+                DatabaseFunctions.intelligentAgentSetGender(this,FEMALE);
+            } else {
+                DatabaseFunctions.intelligentAgentSetGender(this,"DEFAULT");
+            }
+        }
+
     }
 
 }

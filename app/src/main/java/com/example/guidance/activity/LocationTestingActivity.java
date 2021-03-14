@@ -3,7 +3,6 @@ package com.example.guidance.activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;

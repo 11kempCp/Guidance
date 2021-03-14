@@ -19,6 +19,7 @@ import com.example.guidance.R;
 import com.example.guidance.ServiceReceiver.onPauseServiceReceiver;
 import com.example.guidance.Util.Util;
 import com.example.guidance.realm.model.Data_Type;
+import com.example.guidance.realm.model.Intelligent_Agent;
 import com.example.guidance.services.AmbientTempService;
 import com.example.guidance.services.LocationService;
 import com.example.guidance.services.StepsService;
@@ -31,6 +32,8 @@ import java.util.Date;
 import io.realm.Realm;
 import io.realm.RealmQuery;
 
+import static com.example.guidance.Util.IA.FEMALE;
+import static com.example.guidance.Util.IA.MALE;
 import static com.example.guidance.Util.Util.AMBIENT_TEMP;
 import static com.example.guidance.Util.Util.DAILY_QUESTION;
 import static com.example.guidance.Util.Util.LOCATION;
@@ -40,6 +43,7 @@ import static com.example.guidance.Util.Util.requestPermsFineLocation;
 import static com.example.guidance.Util.Util.requestPermsSteps;
 import static com.example.guidance.Util.Util.stopBackgroundNotification;
 import static com.example.guidance.Util.Util.unscheduledJob;
+import static com.example.guidance.realm.DatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.DatabaseFunctions.insertDataTypeUsageData;
 
 public class DataActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -55,6 +59,12 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        Intelligent_Agent intelligent_agent = getIntelligentAgent(this);
+
+        Util.setActivityTheme(intelligent_agent, this);
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data);
         drawer = findViewById(R.id.drawer_layout_data_activity);
@@ -63,6 +73,9 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         setSupportActionBar(toolbar);
+        Util.setToolbarColor(intelligent_agent, toolbar, getResources());
+
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_open);
         drawer.addDrawerListener(toggle);

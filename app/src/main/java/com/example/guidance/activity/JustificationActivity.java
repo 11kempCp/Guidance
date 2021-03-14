@@ -11,11 +11,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import com.example.guidance.R;
 import com.example.guidance.ServiceReceiver.onPauseServiceReceiver;
+import com.example.guidance.Util.Util;
+import com.example.guidance.realm.model.Intelligent_Agent;
 import com.google.android.material.navigation.NavigationView;
+
+import static com.example.guidance.Util.IA.FEMALE;
+import static com.example.guidance.Util.IA.MALE;
+import static com.example.guidance.realm.DatabaseFunctions.getIntelligentAgent;
 
 public class JustificationActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -26,6 +31,11 @@ public class JustificationActivity extends AppCompatActivity implements Navigati
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        Intelligent_Agent intelligent_agent = getIntelligentAgent(this);
+
+        Util.setActivityTheme(intelligent_agent, this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_justification);
 
@@ -35,6 +45,7 @@ public class JustificationActivity extends AppCompatActivity implements Navigati
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        Util.setToolbarColor(intelligent_agent, toolbar, getResources());
 
         setSupportActionBar(toolbar);
 

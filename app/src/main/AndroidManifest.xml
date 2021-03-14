@@ -21,7 +21,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Guidance">
         <activity android:name=".activity.QuestionaireActivity"
-            android:theme="@style/femaleAppTheme.NoActionBar">
+            android:theme="@style/defaultAppTheme.NoActionBar">
 <!--            <intent-filter>-->
 <!--                <action android:name="android.intent.action.MAIN" />-->
 
@@ -33,7 +33,7 @@
 
         <activity
             android:name=".activity.PasscodeActivity"
-            android:theme="@style/femaleAppTheme.NoActionBar" >
+            android:theme="@style/defaultAppTheme.NoActionBar" >
 
 <!--            <intent-filter>-->
 <!--                <action android:name="android.intent.action.MAIN" />-->
@@ -51,12 +51,12 @@
             android:name=".activity.DailyQuestionActivity"
             android:label="@string/daily_question"
             android:parentActivityName=".activity.MainActivity"
-            android:theme="@style/femaleAppTheme.NoActionBar" />
+            android:theme="@style/defaultAppTheme.NoActionBar" />
 
         <activity
             android:name=".activity.DebugActivity"
             android:label="@string/debug"
-            android:theme="@style/femaleAppTheme.NoActionBar" />
+            android:theme="@style/defaultAppTheme.NoActionBar" />
 
         <receiver android:name=".ServiceReceiver.onPauseServiceReceiver">
             <intent-filter>
@@ -67,21 +67,21 @@
         <activity
             android:name=".activity.AdviceActivity"
             android:label="@string/advice"
-            android:theme="@style/femaleAppTheme.NoActionBar" />
+            android:theme="@style/defaultAppTheme.NoActionBar" />
 
         <activity
             android:name=".activity.JustificationActivity"
             android:label="@string/justification"
-            android:theme="@style/femaleAppTheme.NoActionBar" />
+            android:theme="@style/defaultAppTheme.NoActionBar" />
 
         <activity
             android:name=".activity.DataActivity"
             android:label="@string/data"
-            android:theme="@style/femaleAppTheme.NoActionBar" />
+            android:theme="@style/defaultAppTheme.NoActionBar" />
 
         <activity
             android:name=".activity.MainActivity"
-            android:theme="@style/femaleAppTheme.NoActionBar">
+            android:theme="@style/defaultAppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

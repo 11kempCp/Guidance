@@ -1,6 +1,5 @@
 package com.example.guidance.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,16 +8,19 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.guidance.R;
+import com.example.guidance.Util.Util;
+import com.example.guidance.realm.model.Intelligent_Agent;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 
-import static com.example.guidance.Util.Intelligent_Agent.Advice;
-import static com.example.guidance.Util.Intelligent_Agent.Analysis;
-import static com.example.guidance.Util.Intelligent_Agent.Gender;
-import static com.example.guidance.Util.Intelligent_Agent.Interaction;
-import static com.example.guidance.Util.Intelligent_Agent.Output;
+import static com.example.guidance.Util.IA.Advice;
+import static com.example.guidance.Util.IA.Analysis;
+import static com.example.guidance.Util.IA.Gender;
+import static com.example.guidance.Util.IA.Interaction;
+import static com.example.guidance.Util.IA.Output;
 import static com.example.guidance.Util.Util.requestPerms;
+import static com.example.guidance.realm.DatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.DatabaseFunctions.initialiseDataType;
 import static com.example.guidance.realm.DatabaseFunctions.intelligentAgentEntry;
 import static com.example.guidance.realm.DatabaseFunctions.isDataTypeInitialised;
@@ -33,16 +35,14 @@ public class PasscodeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        Intelligent_Agent intelligent_agent = getIntelligentAgent(this);
+
+        Util.setActivityTheme(intelligent_agent, this);
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_passcode);
-
-
-//        if(isIntelligentAgentInitialised(this)){
-//            Intent intent = new Intent(this, MainActivity.class);
-//            startActivity(intent);
-//
-//        }
-
 
         textInput = findViewById(R.id.input);
         generatePasscodes();
@@ -63,7 +63,7 @@ public class PasscodeActivity extends AppCompatActivity {
 
             if (!isDataTypeInitialised(this)) {
                 initialiseDataType(PasscodeActivity.this);
-            }else {
+            } else {
                 Log.d(TAG, "dataType already initialised");
             }
 

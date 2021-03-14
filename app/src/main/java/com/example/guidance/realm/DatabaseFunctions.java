@@ -27,16 +27,16 @@ import io.realm.RealmConfiguration;
 import io.realm.RealmQuery;
 import io.realm.Sort;
 
-import static com.example.guidance.Util.Intelligent_Agent.FEMALE;
-import static com.example.guidance.Util.Intelligent_Agent.HIGH;
-import static com.example.guidance.Util.Intelligent_Agent.LOW;
-import static com.example.guidance.Util.Intelligent_Agent.MACHINE_LEARNING;
-import static com.example.guidance.Util.Intelligent_Agent.MALE;
-import static com.example.guidance.Util.Intelligent_Agent.NO_JUSTIFICATION;
-import static com.example.guidance.Util.Intelligent_Agent.SPEECH;
-import static com.example.guidance.Util.Intelligent_Agent.TEXT;
-import static com.example.guidance.Util.Intelligent_Agent.TRADITIONAL_PROGRAMMING;
-import static com.example.guidance.Util.Intelligent_Agent.WITH_JUSTIFICATION;
+import static com.example.guidance.Util.IA.FEMALE;
+import static com.example.guidance.Util.IA.HIGH;
+import static com.example.guidance.Util.IA.LOW;
+import static com.example.guidance.Util.IA.MACHINE_LEARNING;
+import static com.example.guidance.Util.IA.MALE;
+import static com.example.guidance.Util.IA.NO_JUSTIFICATION;
+import static com.example.guidance.Util.IA.SPEECH;
+import static com.example.guidance.Util.IA.TEXT;
+import static com.example.guidance.Util.IA.TRADITIONAL_PROGRAMMING;
+import static com.example.guidance.Util.IA.WITH_JUSTIFICATION;
 
 /**
  * Created by Conor K on 17/02/2021.
@@ -829,6 +829,46 @@ public class DatabaseFunctions {
 
     }
 
+    public static void intelligentAgentSetGender(Context context, String gender) {
+
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+        realm.executeTransactionAsync(r -> {
+
+            Intelligent_Agent result = r.where(Intelligent_Agent.class).findFirst();
+
+            if (result == null) {
+                Log.d(TAG, "intelligentAgentSetGender: ERROR");
+            } else {
+
+                result.setGender(gender);
+                r.insertOrUpdate(result);
+            }
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+//                Log.d(TAG, "updateSteps onSuccess:");
+                Date ct = Calendar.getInstance().getTime();
+                Log.d(TAG, "executed transaction : intelligentAgentSetGender " + gender + " " + ct);
+
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                // Transaction failed and was automatically canceled.
+                Log.e(TAG, "updateStepToday transaction failed: ", error);
+
+            }
+        });
+
+
+        realm.close();
+
+    }
+
 
     public static void insertQuestionnaire(Context context, String[] questions, String[] answers, Date currentTime) {
 
@@ -936,7 +976,6 @@ public class DatabaseFunctions {
             }
         });
         realm.close();
-
     }
 
 }

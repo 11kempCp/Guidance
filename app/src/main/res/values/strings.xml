@@ -47,6 +47,7 @@
     <string name="getsteps">get Steps</string>
     <string name="resetsensor">Reset Steps Sensor</string>
     <string name="debug">Debug</string>
+    <string name="toggle_gender">TG</string>
     <string name="get_location">Get Location</string>
     <string name="clearText">Clear Text</string>
     <string name="init_intelligent_agent">Initialise IA</string>

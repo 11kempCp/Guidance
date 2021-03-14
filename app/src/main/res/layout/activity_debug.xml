@@ -49,7 +49,7 @@
                 android:layout_marginEnd="8dp"
                 android:onClick="stop"
                 android:text="@string/stop"
-                app:layout_constraintEnd_toStartOf="@+id/delete2"
+                app:layout_constraintEnd_toStartOf="@+id/button13"
                 app:layout_constraintStart_toEndOf="@+id/button6"
                 app:layout_constraintTop_toTopOf="@+id/button6" />
 
@@ -202,6 +202,16 @@
                 app:layout_constraintTop_toTopOf="@+id/button11"
 
                 />
+
+            <Button
+                android:id="@+id/button13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="@string/toggle_gender"
+                app:layout_constraintEnd_toStartOf="@+id/delete2"
+                app:layout_constraintTop_toTopOf="@+id/button6"
+                android:onClick="toggleGender"/>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

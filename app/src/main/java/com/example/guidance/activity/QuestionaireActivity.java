@@ -2,7 +2,6 @@ package com.example.guidance.activity;
 
 import android.content.res.TypedArray;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -12,14 +11,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.guidance.R;
 import com.example.guidance.Util.QuestionaireRecyclerViewAdapter;
+import com.example.guidance.Util.Util;
+import com.example.guidance.realm.model.Intelligent_Agent;
 
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
+import static com.example.guidance.Util.IA.FEMALE;
+import static com.example.guidance.Util.IA.MALE;
 import static com.example.guidance.Util.QuestionaireRecyclerViewAdapter.getAmountQuestionsAnswered;
 import static com.example.guidance.Util.QuestionaireRecyclerViewAdapter.getAnswers;
 import static com.example.guidance.Util.QuestionaireRecyclerViewAdapter.getQuestions;
+import static com.example.guidance.realm.DatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.DatabaseFunctions.insertQuestionnaire;
 
 public class QuestionaireActivity extends AppCompatActivity {
@@ -29,6 +32,12 @@ public class QuestionaireActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        Intelligent_Agent intelligent_agent = getIntelligentAgent(this);
+
+        Util.setActivityTheme(intelligent_agent, this);
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_questionaire);
         RecyclerView recyclerView = findViewById(R.id.recyclerViewQuestionaire);

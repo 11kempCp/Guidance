@@ -8,9 +8,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="defaultPrimaryColour">#FFFFFFFF</color>
-    <color name="defaultPrimaryDark">#FF000000</color>
-    <color name="defaultColourAccent">#FF018786</color>
+    <color name="defaultPrimaryColour">#96e5e4</color>
+    <color name="defaultPrimaryDark">#59d6d4</color>
+    <color name="defaultColourAccent">#e59697</color>
 
     <color name="femalePrimaryColour">#fadadd</color>
     <color name="femalePrimaryDark">#e75480</color>
@@ -18,7 +18,7 @@
 
     <color name="malePrimaryColour">#89cff0</color>
     <color name="malePrimaryDark">#4395e3</color>
-    <color name="maleColourAccent">#cc6633</color>
+    <color name="maleColourAccent">#f1c8a1</color>
 
 
 </resources>
