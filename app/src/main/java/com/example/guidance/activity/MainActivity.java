@@ -153,10 +153,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         //Todo re-enable questionnaire
-//        if(isIntelligentAgentInitialised(this) && !isQuestionaireAnswered(this)){
-//            Intent intent = new Intent(this, QuestionaireActivity.class);
-//            startActivity(intent);
-//        }
+        if(isIntelligentAgentInitialised(this) && !isQuestionaireAnswered(this)){
+            Intent intent = new Intent(this, QuestionaireActivity.class);
+            startActivity(intent);
+        }
 
         super.onResume();
     }

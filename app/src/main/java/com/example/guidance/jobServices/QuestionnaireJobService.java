@@ -14,6 +14,7 @@ import com.example.guidance.R;
 import com.example.guidance.activity.DailyQuestionActivity;
 import com.example.guidance.activity.QuestionaireActivity;
 import com.example.guidance.app.App;
+import com.example.guidance.realm.model.Intelligent_Agent;
 import com.example.guidance.realm.model.Questionnaire;
 
 import java.util.Calendar;
@@ -21,6 +22,7 @@ import java.util.Date;
 
 import static com.example.guidance.Util.Util.DAILY_QUESTION;
 import static com.example.guidance.Util.Util.QUESTIONNAIRE;
+import static com.example.guidance.realm.DatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.DatabaseFunctions.getQuestionnaire;
 
 /**
@@ -37,7 +39,7 @@ public class QuestionnaireJobService extends JobService {
         Date currentTime = Calendar.getInstance().getTime();
         Questionnaire questionnaire = getQuestionnaire(this);
         if(questionnaire != null){
-            if (currentTime.after(getQuestionnaire(this).getDateTime())) {
+            if (currentTime.after(getIntelligentAgent(this).getEnd_Date())) {
                 //Create an Intent for the activity you want to start
                 Intent resultIntent = new Intent(this, QuestionaireActivity.class);
                 // Create the TaskStackBuilder and add the intent, which inflates the back stack

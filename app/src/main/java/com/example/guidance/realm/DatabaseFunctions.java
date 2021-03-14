@@ -894,6 +894,17 @@ public class DatabaseFunctions {
         return tasksQuery.findFirst();
     }
 
+    public static Intelligent_Agent getIntelligentAgent(Context context) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+        RealmQuery<Intelligent_Agent> tasksQuery = realm.where(Intelligent_Agent.class);
+//        realm.close();
+
+        return tasksQuery.findFirst();
+    }
+
     public static void insertDataTypeUsageData(Context context, Date currentTime, String data_type, boolean status) {
 
         Realm.init(context);

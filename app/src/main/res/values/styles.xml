@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Base Default application theme. -->
+    <style name="defaultAppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/defaultPrimaryColour</item>
+        <item name="colorPrimaryDark">@color/defaultPrimaryDark</item>
+        <item name="colorAccent">@color/defaultColourAccent</item>
+    </style>
+
     <!-- Base Female application theme. -->
     <style name="femaleAppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
@@ -15,6 +23,12 @@
         <item name="colorPrimary">@color/malePrimaryColour</item>
         <item name="colorPrimaryDark">@color/malePrimaryDark</item>
         <item name="colorAccent">@color/maleColourAccent</item>
+    </style>
+
+    <style name="defaultAppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
     <style name="femaleAppTheme.NoActionBar">
