@@ -44,6 +44,7 @@ import static com.example.guidance.Util.Util.requestPermsSteps;
 import static com.example.guidance.Util.Util.stopBackgroundNotification;
 import static com.example.guidance.Util.Util.unscheduledJob;
 import static com.example.guidance.realm.DatabaseFunctions.getIntelligentAgent;
+import static com.example.guidance.realm.DatabaseFunctions.initialiseDataType;
 import static com.example.guidance.realm.DatabaseFunctions.insertDataTypeUsageData;
 
 public class DataActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -96,20 +97,24 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         realm = Realm.getDefaultInstance();
         RealmQuery<Data_Type> tasksQuery = realm.where(Data_Type.class);
         Data_Type test = tasksQuery.findFirst();
-        assert test != null;
+
+        if(test!=null){
+            steps.setChecked(test.isSteps());
+            distance_traveled.setChecked(test.isDistance_traveled());
+            location.setChecked(test.isLocation());
+            ambient_temp.setChecked(test.isAmbient_temp());
+            screentime.setChecked(test.isScreentime());
+            sleep_tracking.setChecked(test.isSleep_tracking());
+            weather.setChecked(test.isWeather());
+            external_temp.setChecked(test.isExternal_temp());
+            sun.setChecked(test.isSun());
+            socialness.setChecked(test.isSocialness());
+            mood.setChecked(test.isMood());
+        }else{
+            initialiseDataType(this);
+        }
 
 
-        steps.setChecked(test.isSteps());
-        distance_traveled.setChecked(test.isDistance_traveled());
-        location.setChecked(test.isLocation());
-        ambient_temp.setChecked(test.isAmbient_temp());
-        screentime.setChecked(test.isScreentime());
-        sleep_tracking.setChecked(test.isSleep_tracking());
-        weather.setChecked(test.isWeather());
-        external_temp.setChecked(test.isExternal_temp());
-        sun.setChecked(test.isSun());
-        socialness.setChecked(test.isSocialness());
-        mood.setChecked(test.isMood());
 
     }
 
@@ -180,7 +185,9 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 Data_Type data = r.where(Data_Type.class).findFirst();
                 // Update properties on the instance.
                 // This change is saved to the realm.
-                data.setSteps(steps.isChecked());
+                if (data != null) {
+                    data.setSteps(steps.isChecked());
+                }
                 Log.i(TAG, "Updated Data_Storing: steps " + steps.isChecked());
             });
 
@@ -207,7 +214,9 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 Data_Type data = r.where(Data_Type.class).findFirst();
                 // Update properties on the instance.
                 // This change is saved to the realm.
-                data.setDistance_traveled(distance_traveled.isChecked());
+                if (data != null) {
+                    data.setDistance_traveled(distance_traveled.isChecked());
+                }
                 Log.i(TAG, "Updated Data_Storing: distance_traveled " + distance_traveled.isChecked());
 
             });
@@ -236,7 +245,9 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 Data_Type data = r.where(Data_Type.class).findFirst();
                 // Update properties on the instance.
                 // This change is saved to the realm.
-                data.setLocation(location.isChecked());
+                if (data != null) {
+                    data.setLocation(location.isChecked());
+                }
                 Log.i(TAG, "Updated Data_Storing: location " + location.isChecked());
 
             });
@@ -263,7 +274,9 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 Data_Type data = r.where(Data_Type.class).findFirst();
                 // Update properties on the instance.
                 // This change is saved to the realm.
-                data.setAmbient_temp(ambient_temp.isChecked());
+                if (data != null) {
+                    data.setAmbient_temp(ambient_temp.isChecked());
+                }
                 Log.i(TAG, "Updated Data_Storing: device_temp " + ambient_temp.isChecked());
 
             });
@@ -289,7 +302,9 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 Data_Type data = r.where(Data_Type.class).findFirst();
                 // Update properties on the instance.
                 // This change is saved to the realm.
-                data.setScreentime(screentime.isChecked());
+                if (data != null) {
+                    data.setScreentime(screentime.isChecked());
+                }
                 Log.i(TAG, "Updated Data_Storing: screentime " + screentime.isChecked());
 
             });
@@ -315,7 +330,9 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 Data_Type data = r.where(Data_Type.class).findFirst();
                 // Update properties on the instance.
                 // This change is saved to the realm.
-                data.setSleep_tracking(sleep_tracking.isChecked());
+                if (data != null) {
+                    data.setSleep_tracking(sleep_tracking.isChecked());
+                }
                 Log.i(TAG, "Updated Data_Storing: sleep_tracking " + sleep_tracking.isChecked());
 
             });
@@ -341,7 +358,9 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 Data_Type data = r.where(Data_Type.class).findFirst();
                 // Update properties on the instance.
                 // This change is saved to the realm.
-                data.setWeather(weather.isChecked());
+                if (data != null) {
+                    data.setWeather(weather.isChecked());
+                }
                 Log.i(TAG, "Updated Data_Storing: weather " + weather.isChecked());
 
             });
@@ -365,7 +384,9 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 Data_Type data = r.where(Data_Type.class).findFirst();
                 // Update properties on the instance.
                 // This change is saved to the realm.
-                data.setExternal_temp(external_temp.isChecked());
+                if (data != null) {
+                    data.setExternal_temp(external_temp.isChecked());
+                }
                 Log.i(TAG, "Updated Data_Storing: external_temp " + external_temp.isChecked());
 
             });
@@ -389,7 +410,9 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 Data_Type data = r.where(Data_Type.class).findFirst();
                 // Update properties on the instance.
                 // This change is saved to the realm.
-                data.setSun(sun.isChecked());
+                if (data != null) {
+                    data.setSun(sun.isChecked());
+                }
                 Log.i(TAG, "Updated Data_Storing: sun " + sun.isChecked());
 
             });
@@ -409,7 +432,9 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 Data_Type data = r.where(Data_Type.class).findFirst();
                 // Update properties on the instance.
                 // This change is saved to the realm.
-                data.setSocialness(socialness.isChecked());
+                if (data != null) {
+                    data.setSocialness(socialness.isChecked());
+                }
                 Log.i(TAG, "Updated Data_Storing: socialness " + socialness.isChecked());
 
             });
@@ -428,7 +453,9 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 Data_Type data = r.where(Data_Type.class).findFirst();
                 // Update properties on the instance.
                 // This change is saved to the realm.
-                data.setMood(mood.isChecked());
+                if (data != null) {
+                    data.setMood(mood.isChecked());
+                }
                 Log.i(TAG, "Updated Data_Storing: mood " + mood.isChecked());
 
             });

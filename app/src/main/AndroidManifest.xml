@@ -7,11 +7,17 @@
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" /> <!-- Required for all JobServices -->
     <permission android:name="android.permission.BIND_JOB_SERVICE" />
 
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> <!-- Provides location accuracy to within a city block. -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- REMOVE ACCESS_FINE_LOCATION -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!-- Provides location accuracy to within a city block. -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- REMOVE ACCESS_FINE_LOCATION -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> <!-- Required for making calls to OpenWeather -->
+    <!-- Required only when requesting background location access on
+      Android 10 (API level 29) and higher. -->
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <!-- Required for making calls to OpenWeather -->
     <uses-permission android:name="android.permission.INTERNET" />
+
 
     <application
         android:name=".app.App"
@@ -115,13 +121,16 @@
             android:name=".jobServices.LocationJobService"
             android:enabled="true"
             android:label="Location JobService"
+            android:foregroundServiceType="location"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+
         <service
             android:name=".services.LocationService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="location"
             tools:node="merge" />
+
         <service
             android:name=".jobServices.WeatherJobService"
             android:enabled="true"

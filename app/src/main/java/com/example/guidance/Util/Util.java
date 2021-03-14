@@ -11,8 +11,8 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Build;
 import android.util.Log;
-import androidx.appcompat.widget.Toolbar;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 import com.example.guidance.R;
@@ -59,20 +59,37 @@ public class Util {
 
     //  todo change back so that WEATHER is called
 
-//    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, WEATHER, QUESTIONNAIRE);
+    //    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, WEATHER, QUESTIONNAIRE);
     public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, QUESTIONNAIRE);
 
-
     public static boolean scheduleJob(Context context, Class<?> serviceClass, int jobId, int minutes) {
+        Date currentTime = Calendar.getInstance().getTime();
+        ComponentName componentName = new ComponentName(context, serviceClass);
+        JobInfo info = new JobInfo.Builder(jobId, componentName)
+                .setPersisted(true)
+                .setPeriodic(minutes * 60 * 1000)
+                .build();
 
+        JobScheduler jobScheduler = context.getSystemService(JobScheduler.class);
+        int resultCode = jobScheduler.schedule(info);
+        if (resultCode == JobScheduler.RESULT_SUCCESS) {
+            Log.d(TAG, "Job " + jobId + "  Scheduled " + currentTime);
+            return true;
+        } else {
+            Log.d(TAG, "Job " + jobId + " Scheduling Failed " + " resultCode: " + currentTime);
+            return false;
+        }
+    }
 
-        //todo requires internet connectivity
+    public static boolean scheduleJob(Context context, Class<?> serviceClass, int jobId, int minutes, int networkType) {
+
         Date currentTime = Calendar.getInstance().getTime();
 
         ComponentName componentName = new ComponentName(context, serviceClass);
         JobInfo info = new JobInfo.Builder(jobId, componentName)
                 .setPersisted(true)
                 .setPeriodic(minutes * 60 * 1000)
+                .setRequiredNetworkType(networkType)
                 .build();
 
 
@@ -99,8 +116,7 @@ public class Util {
 
     public static void requestPermsSteps(Context context, Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            if (ContextCompat.checkSelfPermission(context, ACTIVITY_RECOGNITION)
-                    == PackageManager.PERMISSION_DENIED) {
+            if (ContextCompat.checkSelfPermission(context, ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_DENIED) {
                 //ask for permission
                 requestPermissions(activity, new String[]{ACTIVITY_RECOGNITION}, STEPS);
             }
@@ -146,7 +162,6 @@ public class Util {
                                     AmbientTempJobService.class,
                                     context.getResources().getInteger(R.integer.ambient_temp),
                                     packageManager,
-                                    null,
                                     PackageManager.FEATURE_SENSOR_AMBIENT_TEMPERATURE);
                         }
 
@@ -176,9 +191,7 @@ public class Util {
                                     LOCATION,
                                     LocationJobService.class,
                                     context.getResources().getInteger(R.integer.location),
-                                    packageManager,
-                                    ACCESS_FINE_LOCATION,
-                                    null);
+                                    ACCESS_FINE_LOCATION);
 
                         }
                         break;
@@ -189,13 +202,8 @@ public class Util {
                         if ((data.isSocialness() || data.isMood())) {
                             Log.d(TAG, "scheduledUnscheduledJobs: " + DAILY_QUESTION);
 
-                            checkPermissionsAndSchedule(context,
-                                    DAILY_QUESTION,
-                                    DailyQuestionJobService.class,
-                                    context.getResources().getInteger(R.integer.default_time),
-                                    packageManager,
-                                    null,
-                                    null);
+
+                            Util.scheduleJob(context, DailyQuestionJobService.class, DAILY_QUESTION, context.getResources().getInteger(R.integer.daily_question));
 
                         }
                         break;
@@ -204,29 +212,15 @@ public class Util {
 
                         if (data.isWeather() || data.isSun() || data.isExternal_temp()) {
                             Log.d(TAG, "scheduledUnscheduledJobs: " + WEATHER);
-                            checkPermissionsAndSchedule(context,
-                                    WEATHER,
-                                    WeatherJobService.class,
-                                    context.getResources().getInteger(R.integer.weather),
-                                    packageManager,
-                                    null,
-                                    null);
 
+                            Util.scheduleJob(context, WeatherJobService.class, WEATHER, context.getResources().getInteger(R.integer.weather), JobInfo.NETWORK_TYPE_UNMETERED);
 
                         }
-
 
                         break;
                     case QUESTIONNAIRE:
                         //todo potentially change to hourly?
-                        checkPermissionsAndSchedule(context,
-                                QUESTIONNAIRE,
-                                QuestionnaireJobService.class,
-                                context.getResources().getInteger(R.integer.daily),
-                                packageManager,
-                                null,
-                                null);
-
+                        Util.scheduleJob(context, QuestionnaireJobService.class, QUESTIONNAIRE, context.getResources().getInteger(R.integer.daily));
                         break;
                 }
             }
@@ -237,6 +231,7 @@ public class Util {
 
 
     }
+
 
     public static void checkPermissionsAndSchedule(Context context, int jobID, Class<?> cls, int minutes, PackageManager packageManager, String permission, String feature) {
         if (packageManager.hasSystemFeature(feature) || feature == null) {
@@ -257,6 +252,37 @@ public class Util {
         } else {
             Log.d(TAG, permission + " permission " + false);
         }
+    }
+
+    public static void checkPermissionsAndSchedule(Context context, int jobID, Class<?> cls, int minutes, PackageManager packageManager, String feature) {
+        if (packageManager.hasSystemFeature(feature)) {
+            Log.d(TAG, feature + " feature " + true);
+
+
+            boolean scheduled = Util.scheduleJob(context, cls, jobID, minutes);
+            Log.d(TAG, " scheduled " + scheduled);
+
+        } else {
+            Log.d(TAG, feature + " feature " + false);
+        }
+    }
+
+    public static void checkPermissionsAndSchedule(Context context, int jobID, Class<?> cls, int minutes, String permission) {
+
+
+        if (permission == null) {
+            boolean scheduled = Util.scheduleJob(context, cls, jobID, minutes);
+            Log.d(TAG, "Scheduled " + jobID + " " + scheduled);
+
+        } else if (checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, "Permission " + permission + true);
+            boolean scheduled = Util.scheduleJob(context, cls, jobID, minutes);
+            Log.d(TAG, "Scheduled " + jobID + " " + scheduled);
+        } else {
+            Log.d(TAG, "Permission " + permission + " " + false);
+
+        }
+
     }
 
 
@@ -336,7 +362,7 @@ public class Util {
     }
 
 
-    public static void setToolbarColor(Intelligent_Agent intelligent_agent, Toolbar toolbar, Resources resources){
+    public static void setToolbarColor(Intelligent_Agent intelligent_agent, Toolbar toolbar, Resources resources) {
         if (intelligent_agent != null) {
             String gender = intelligent_agent.getGender();
             if (gender.equals(FEMALE)) {
@@ -353,7 +379,7 @@ public class Util {
         }
     }
 
-    public static void setActivityTheme(Intelligent_Agent intelligent_agent, Activity activity){
+    public static void setActivityTheme(Intelligent_Agent intelligent_agent, Activity activity) {
         if (intelligent_agent != null) {
             String gender = intelligent_agent.getGender();
             if (gender.equals(FEMALE)) {
