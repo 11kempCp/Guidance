@@ -20,6 +20,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.guidance.R;
 import com.example.guidance.ServiceReceiver.onPauseServiceReceiver;
 import com.example.guidance.Util.Util;
+import com.example.guidance.realm.model.Data_Type;
 import com.example.guidance.realm.model.Intelligent_Agent;
 import com.google.android.material.navigation.NavigationView;
 
@@ -28,6 +29,8 @@ import java.util.Date;
 
 import static com.example.guidance.Util.IA.FEMALE;
 import static com.example.guidance.Util.IA.MALE;
+import static com.example.guidance.Util.IA.NO_JUSTIFICATION;
+import static com.example.guidance.Util.Util.navigationViewVisibility;
 import static com.example.guidance.realm.DatabaseFunctions.*;
 import static com.example.guidance.Util.Util.DAILY_QUESTION;
 
@@ -45,7 +48,9 @@ public class DailyQuestionActivity extends AppCompatActivity implements Navigati
     protected void onCreate(Bundle savedInstanceState) {
 
         Intelligent_Agent intelligent_agent = getIntelligentAgent(this);
-
+        Data_Type dataType = getDataType(this);
+        //sets the activityTheme to the gender of the intelligent agent, this is done before the onCreate
+        //so that the user does not see a flash of one colour as it changes to the other
         Util.setActivityTheme(intelligent_agent, this);
 
 
@@ -58,8 +63,14 @@ public class DailyQuestionActivity extends AppCompatActivity implements Navigati
         Toolbar toolbar = findViewById(R.id.toolbar);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+        //hides the navigation items that shouldn't be shown
+        navigationViewVisibility(navigationView,intelligent_agent, dataType);
+
         setSupportActionBar(toolbar);
 
+        //sets the toolbar color to gender of the intelligent agent
         Util.setToolbarColor(intelligent_agent, toolbar, getResources());
 
 

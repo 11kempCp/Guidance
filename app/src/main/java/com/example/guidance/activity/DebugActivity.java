@@ -55,8 +55,10 @@ import static com.example.guidance.Util.IA.MALE;
 import static com.example.guidance.Util.Util.LOCATION;
 import static com.example.guidance.Util.Util.checkPermissionsAndSchedule;
 import static com.example.guidance.Util.Util.getUnscheduledJobs;
+import static com.example.guidance.Util.Util.navigationViewVisibility;
 import static com.example.guidance.Util.Util.scheduledUnscheduledJobs;
 import static com.example.guidance.Util.Util.utilList;
+import static com.example.guidance.realm.DatabaseFunctions.getDataType;
 import static com.example.guidance.realm.DatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.DatabaseFunctions.intelligentAgentEntry;
 import static com.example.guidance.realm.DatabaseFunctions.isIntelligentAgentInitialised;
@@ -72,8 +74,11 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        Intelligent_Agent intelligent_agent = getIntelligentAgent(this);
 
+        Intelligent_Agent intelligent_agent = getIntelligentAgent(this);
+        Data_Type dataType = getDataType(this);
+        //sets the activityTheme to the gender of the intelligent agent, this is done before the onCreate
+        //so that the user does not see a flash of one colour as it changes to the other
         Util.setActivityTheme(intelligent_agent, this);
 
 
@@ -86,17 +91,20 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
 
         realm = Realm.getDefaultInstance();
 
-
         displayTextView = findViewById(R.id.textViewDisplay);
         displayTextView.setMovementMethod(new ScrollingMovementMethod());
-
 
         drawer = findViewById(R.id.drawer_layout_debug_activity);
         Toolbar toolbar = findViewById(R.id.toolbar);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        //hides the navigation items that shouldn't be shown
+        navigationViewVisibility(navigationView, intelligent_agent, dataType);
+
         setSupportActionBar(toolbar);
 
+        //sets the toolbar color to gender of the intelligent agent
         Util.setToolbarColor(intelligent_agent, toolbar, getResources());
 
 

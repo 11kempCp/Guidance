@@ -15,11 +15,12 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.guidance.R;
 import com.example.guidance.ServiceReceiver.onPauseServiceReceiver;
 import com.example.guidance.Util.Util;
+import com.example.guidance.realm.model.Data_Type;
 import com.example.guidance.realm.model.Intelligent_Agent;
 import com.google.android.material.navigation.NavigationView;
 
-import static com.example.guidance.Util.IA.FEMALE;
-import static com.example.guidance.Util.IA.MALE;
+import static com.example.guidance.Util.Util.navigationViewVisibility;
+import static com.example.guidance.realm.DatabaseFunctions.getDataType;
 import static com.example.guidance.realm.DatabaseFunctions.getIntelligentAgent;
 
 public class AdviceActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -34,6 +35,10 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
     protected void onCreate(Bundle savedInstanceState) {
 
         Intelligent_Agent intelligent_agent = getIntelligentAgent(this);
+        Data_Type dataType = getDataType(this);
+
+        //sets the activityTheme to the gender of the intelligent agent, this is done before the onCreate
+        //so that the user does not see a flash of one colour as it changes to the other
         Util.setActivityTheme(intelligent_agent, this);
 
         super.onCreate(savedInstanceState);
@@ -43,9 +48,14 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+
+        //hides the navigation items that shouldn't be shown
+        navigationViewVisibility(navigationView, intelligent_agent, dataType);
+
         setSupportActionBar(toolbar);
 
-        Util.setToolbarColor(intelligent_agent,toolbar, getResources());
+        //sets the toolbar color to gender of the intelligent agent
+        Util.setToolbarColor(intelligent_agent, toolbar, getResources());
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_open);

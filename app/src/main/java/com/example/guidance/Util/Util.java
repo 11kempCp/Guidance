@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Build;
+import android.renderscript.Element;
 import android.util.Log;
 
 import androidx.appcompat.widget.Toolbar;
@@ -24,6 +25,7 @@ import com.example.guidance.jobServices.StepsJobService;
 import com.example.guidance.jobServices.WeatherJobService;
 import com.example.guidance.realm.model.Data_Type;
 import com.example.guidance.realm.model.Intelligent_Agent;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,6 +40,7 @@ import static androidx.core.app.ActivityCompat.requestPermissions;
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 import static com.example.guidance.Util.IA.FEMALE;
 import static com.example.guidance.Util.IA.MALE;
+import static com.example.guidance.Util.IA.NO_JUSTIFICATION;
 import static com.example.guidance.realm.DatabaseFunctions.getDataType;
 import static io.realm.Realm.getApplicationContext;
 
@@ -393,6 +396,28 @@ public class Util {
                 Log.d(TAG, "onCreate: setTheme defaultAppTheme_NoActionBar");
                 activity.setTheme(R.style.defaultAppTheme_NoActionBar);
             }
+        }
+    }
+
+    public static void navigationViewVisibility(NavigationView navigationView, Intelligent_Agent intelligent_agent, Data_Type dataType){
+
+        navigationViewIntelligentAgent(navigationView,intelligent_agent);
+        navigationViewDailyQuestion(navigationView,dataType);
+
+    }
+
+    public static void navigationViewIntelligentAgent(NavigationView navigationView, Intelligent_Agent intelligent_agent){
+        if(intelligent_agent!=null){
+            navigationView.getMenu().findItem(R.id.nav_justification).setVisible(!intelligent_agent.getAdvice().equals(NO_JUSTIFICATION));
+        }
+    }
+    public static void navigationViewDailyQuestion(NavigationView navigationView, Data_Type dataType){
+        if(dataType!=null){
+
+            if(!dataType.isMood() && !dataType.isSocialness()){
+                navigationView.getMenu().findItem(R.id.nav_daily_question).setVisible(false);
+            }
+
         }
     }
 

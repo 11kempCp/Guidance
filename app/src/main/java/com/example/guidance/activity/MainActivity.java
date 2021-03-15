@@ -2,6 +2,7 @@ package com.example.guidance.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.renderscript.Element;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,12 +18,16 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.guidance.R;
 import com.example.guidance.ServiceReceiver.onPauseServiceReceiver;
 import com.example.guidance.Util.Util;
+import com.example.guidance.realm.model.Data_Type;
 import com.example.guidance.realm.model.Intelligent_Agent;
 import com.google.android.material.navigation.NavigationView;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
+import static com.example.guidance.Util.IA.NO_JUSTIFICATION;
+import static com.example.guidance.Util.Util.navigationViewVisibility;
+import static com.example.guidance.realm.DatabaseFunctions.getDataType;
 import static com.example.guidance.realm.DatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.DatabaseFunctions.isIntelligentAgentInitialised;
 import static com.example.guidance.realm.DatabaseFunctions.isQuestionaireAnswered;
@@ -41,9 +46,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
 
         Intelligent_Agent intelligent_agent = getIntelligentAgent(this);
-
+        Data_Type dataType = getDataType(this);
+        //sets the activityTheme to the gender of the intelligent agent, this is done before the onCreate
+        //so that the user does not see a flash of one colour as it changes to the other
         Util.setActivityTheme(intelligent_agent, this);
-
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -51,7 +57,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (!isIntelligentAgentInitialised(this)) {
             Intent intent = new Intent(this, PasscodeActivity.class);
             startActivity(intent);
-
         }
 
 
@@ -60,20 +65,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Realm.setDefaultConfiguration(realmConfiguration);
 
 
-//        requestPerms(this, this);
-
-
         realm = Realm.getDefaultInstance();
         currentAdvice = findViewById(R.id.textViewCurrentAdvice);
         currentGraph = findViewById(R.id.textViewCurrentGraph);
         drawer = findViewById(R.id.drawer_layout_main_activity);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-
+        //hides the navigation items that shouldn't be shown
+        navigationViewVisibility(navigationView,intelligent_agent, dataType);
         setSupportActionBar(toolbar);
 
+        //sets the toolbar color to gender of the intelligent agent
         Util.setToolbarColor(intelligent_agent, toolbar, getResources());
 
 
@@ -158,7 +162,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onResume() {
-        //Todo re-enable questionnaire
         if (isIntelligentAgentInitialised(this) && !isQuestionaireAnswered(this)) {
             Intent intent = new Intent(this, QuestionaireActivity.class);
             startActivity(intent);

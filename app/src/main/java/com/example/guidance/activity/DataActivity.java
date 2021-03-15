@@ -32,17 +32,17 @@ import java.util.Date;
 import io.realm.Realm;
 import io.realm.RealmQuery;
 
-import static com.example.guidance.Util.IA.FEMALE;
-import static com.example.guidance.Util.IA.MALE;
 import static com.example.guidance.Util.Util.AMBIENT_TEMP;
 import static com.example.guidance.Util.Util.DAILY_QUESTION;
 import static com.example.guidance.Util.Util.LOCATION;
 import static com.example.guidance.Util.Util.STEPS;
 import static com.example.guidance.Util.Util.WEATHER;
+import static com.example.guidance.Util.Util.navigationViewVisibility;
 import static com.example.guidance.Util.Util.requestPermsFineLocation;
 import static com.example.guidance.Util.Util.requestPermsSteps;
 import static com.example.guidance.Util.Util.stopBackgroundNotification;
 import static com.example.guidance.Util.Util.unscheduledJob;
+import static com.example.guidance.realm.DatabaseFunctions.getDataType;
 import static com.example.guidance.realm.DatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.DatabaseFunctions.initialiseDataType;
 import static com.example.guidance.realm.DatabaseFunctions.insertDataTypeUsageData;
@@ -57,12 +57,16 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
 
     Switch steps, distance_traveled, location, ambient_temp, screentime, sleep_tracking, weather, external_temp, sun, socialness, mood;
 
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         Intelligent_Agent intelligent_agent = getIntelligentAgent(this);
+        Data_Type dataType = getDataType(this);
 
+        //sets the activityTheme to the gender of the intelligent agent, this is done before the onCreate
+        //so that the user does not see a flash of one colour as it changes to the other
         Util.setActivityTheme(intelligent_agent, this);
 
 
@@ -71,9 +75,15 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         drawer = findViewById(R.id.drawer_layout_data_activity);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        //hides the navigation items that shouldn't be shown
+        navigationViewVisibility(navigationView, intelligent_agent, dataType);
+
         setSupportActionBar(toolbar);
+
+        //sets the toolbar color to gender of the intelligent agent
         Util.setToolbarColor(intelligent_agent, toolbar, getResources());
 
 
@@ -98,7 +108,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         RealmQuery<Data_Type> tasksQuery = realm.where(Data_Type.class);
         Data_Type test = tasksQuery.findFirst();
 
-        if(test!=null){
+        if (test != null) {
             steps.setChecked(test.isSteps());
             distance_traveled.setChecked(test.isDistance_traveled());
             location.setChecked(test.isLocation());
@@ -110,10 +120,9 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
             sun.setChecked(test.isSun());
             socialness.setChecked(test.isSocialness());
             mood.setChecked(test.isMood());
-        }else{
+        } else {
             initialiseDataType(this);
         }
-
 
 
     }
@@ -424,7 +433,9 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
             if (!socialness.isChecked() && !mood.isChecked()) {
                 unscheduledJob(this, DAILY_QUESTION);
                 stopBackgroundNotification(DAILY_QUESTION);
-
+                navigationView.getMenu().findItem(R.id.nav_daily_question).setVisible(false);
+            }else {
+                navigationView.getMenu().findItem(R.id.nav_daily_question).setVisible(true);
             }
 
             realm.executeTransactionAsync(r -> {
@@ -446,6 +457,10 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
             if (!socialness.isChecked() && !mood.isChecked()) {
                 unscheduledJob(this, DAILY_QUESTION);
                 stopBackgroundNotification(DAILY_QUESTION);
+                navigationView.getMenu().findItem(R.id.nav_daily_question).setVisible(false);
+            }else{
+                navigationView.getMenu().findItem(R.id.nav_daily_question).setVisible(true);
+
             }
 
             realm.executeTransactionAsync(r -> {
