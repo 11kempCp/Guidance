@@ -25,7 +25,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.guidance.R;
 import com.example.guidance.ServiceReceiver.onPauseServiceReceiver;
 import com.example.guidance.Util.Util;
-import com.example.guidance.jobServices.WeatherJobService;
+import com.example.guidance.jobServices.LocationJobService;
 import com.example.guidance.realm.DatabaseFunctions;
 import com.example.guidance.realm.model.Ambient_Temperature;
 import com.example.guidance.realm.model.DataTypeUsageData;
@@ -49,16 +49,17 @@ import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.example.guidance.Util.IA.FEMALE;
 import static com.example.guidance.Util.IA.MALE;
+import static com.example.guidance.Util.Util.LOCATION;
+import static com.example.guidance.Util.Util.checkPermissionsAndSchedule;
+import static com.example.guidance.Util.Util.getUnscheduledJobs;
+import static com.example.guidance.Util.Util.scheduledUnscheduledJobs;
+import static com.example.guidance.Util.Util.utilList;
 import static com.example.guidance.realm.DatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.DatabaseFunctions.intelligentAgentEntry;
 import static com.example.guidance.realm.DatabaseFunctions.isIntelligentAgentInitialised;
-import static com.example.guidance.Util.Util.WEATHER;
-import static com.example.guidance.Util.Util.checkPermissionsAndSchedule;
-import static com.example.guidance.Util.Util.scheduledUnscheduledJobs;
-import static com.example.guidance.Util.Util.getUnscheduledJobs;
-import static com.example.guidance.Util.Util.utilList;
 
 public class DebugActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -257,24 +258,24 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
 
         PackageManager packageManager = this.getPackageManager();
 
-//        Log.d(TAG, "scheduledUnscheduledJobs: " + LOCATION);
+        Log.d(TAG, "scheduledUnscheduledJobs: " + LOCATION);
+
+
+        checkPermissionsAndSchedule(this,
+                LOCATION,
+                LocationJobService.class,
+                this.getResources().getInteger(R.integer.location),
+                ACCESS_FINE_LOCATION);
+
+
+//        Log.d(TAG, "scheduledUnscheduledJobs: " + WEATHER);
 //        checkPermissionsAndSchedule(this,
-//                LOCATION,
-//                LocationJobService.class,
+//                WEATHER,
+//                WeatherJobService.class,
 //                this.getResources().getInteger(R.integer.default_time),
 //                packageManager,
 //                null,
 //                null);
-
-
-        Log.d(TAG, "scheduledUnscheduledJobs: " + WEATHER);
-        checkPermissionsAndSchedule(this,
-                WEATHER,
-                WeatherJobService.class,
-                this.getResources().getInteger(R.integer.default_time),
-                packageManager,
-                null,
-                null);
     }
 
 
@@ -468,7 +469,7 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
     }
 
 
-    public void toggleGender(View view){
+    public void toggleGender(View view) {
 
         Intelligent_Agent intelligent_agent = getIntelligentAgent(this);
 
@@ -480,9 +481,9 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
             if (gender.equals(DEFAULT)) {
                 DatabaseFunctions.intelligentAgentSetGender(this, MALE);
             } else if (gender.equals(MALE)) {
-                DatabaseFunctions.intelligentAgentSetGender(this,FEMALE);
+                DatabaseFunctions.intelligentAgentSetGender(this, FEMALE);
             } else {
-                DatabaseFunctions.intelligentAgentSetGender(this,"DEFAULT");
+                DatabaseFunctions.intelligentAgentSetGender(this, "DEFAULT");
             }
         }
 

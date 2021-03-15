@@ -500,11 +500,19 @@ public class DatabaseFunctions {
 
 
         if (task == null) {
+            Log.d(TAG, "task null ");
             return false;
 
         } else {
             long timestamp1 = task.getDateTime().getTime();
+//            Log.d(TAG, "isLocationStoredAlready: timestamp2 " + timestamp1);
             long timestamp2 = currentTime.getTime();
+//            Log.d(TAG, "isLocationStoredAlready: timestamp1 " + timestamp2);
+
+
+//            Log.d(TAG, "isLocationStoredAlready: calculation1 " + Math.abs(timestamp1 - timestamp2));
+//            Log.d(TAG, "isLocationStoredAlready: calculation2 " + TimeUnit.MINUTES.toMillis(context.getResources().getInteger(R.integer.location) / 2));
+
             return Math.abs(timestamp1 - timestamp2) < TimeUnit.MINUTES.toMillis(context.getResources().getInteger(R.integer.location) / 2);
 
         }

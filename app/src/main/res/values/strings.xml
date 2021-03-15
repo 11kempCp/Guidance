@@ -41,7 +41,7 @@
     <string name="stop">Stop</string>
     <string name="isJobRunning">Is Job Running</string>
     <string name="scheduleLocationJobService">schedule LocationJobService</string>
-    <string name="startLocationService">start LocationService</string>
+    <string name="startLocationJobService">start LocationJobService</string>
     <string name="startWeatherJobService">start WeatherJobService</string>
     <string name="startWeatherService">start WeatherService</string>
     <string name="getsteps">get Steps</string>
@@ -157,7 +157,7 @@
 
     <integer name="ambient_temp">60</integer>
     <integer name="steps">120</integer>
-    <integer name="location">30</integer>
+    <integer name="location">45</integer>
     <integer name="daily_question">120</integer>
     <integer name="weather">1440</integer>
     <!--End of Periodic Job Times-->

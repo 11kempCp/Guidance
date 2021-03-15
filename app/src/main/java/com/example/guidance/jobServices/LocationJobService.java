@@ -23,6 +23,7 @@ public class LocationJobService extends JobService {
 
     @Override
     public boolean onStartJob(JobParameters params) {
+        Log.d(TAG, "onStartJob: ");
         Intent serviceIntent = new Intent("CHECK_LOCATION", null, this, LocationService.class);
 
         Date currentTime = Calendar.getInstance().getTime();
