@@ -155,7 +155,7 @@ public class Util {
         return granted;
     }
 
-    public static boolean isPermsLocation(Context context){
+    public static boolean isPermsLocation(Context context) {
         return ContextCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
@@ -240,7 +240,7 @@ public class Util {
                         break;
 
                     case SCREENTIME:
-                        if(data.isScreentime()){
+                        if (data.isScreentime()) {
                             scheduleScreentime(context);
                         }
                         break;
@@ -441,31 +441,31 @@ public class Util {
         }
     }
 
-    public static void scheduleAmbientTemp(Context context){
+    public static void scheduleAmbientTemp(Context context) {
 
     }
 
-    public static void scheduleDailyQuestions(Context context){
-        scheduleJob(context, DailyQuestionJobService.class, DAILY_QUESTION, context.getResources().getInteger(R.integer.daily_question));
+    public static boolean scheduleDailyQuestions(Context context) {
+        return scheduleJob(context, DailyQuestionJobService.class, DAILY_QUESTION, context.getResources().getInteger(R.integer.daily_question));
     }
 
-    public static void scheduleLocation(Context context){
-
-    }
-
-    public static void scheduleQuestionnaire(Context context){
+    public static void scheduleLocation(Context context) {
 
     }
 
-    public static void scheduleScreentime(Context context){
-        scheduleJob(context, ScreentimeJobService.class, SCREENTIME, context.getResources().getInteger(R.integer.default_time));
+    public static void scheduleQuestionnaire(Context context) {
+
     }
 
-    public static void scheduleSteps(Context context){
+    public static boolean scheduleScreentime(Context context) {
+        return scheduleJob(context, ScreentimeJobService.class, SCREENTIME, context.getResources().getInteger(R.integer.default_time));
     }
 
-    public static void scheduleWeather(Context context){
-            scheduleJob(context, WeatherJobService.class, WEATHER, context.getResources().getInteger(R.integer.weather), JobInfo.NETWORK_TYPE_UNMETERED);
+    public static void scheduleSteps(Context context) {
+    }
+
+    public static boolean scheduleWeather(Context context) {
+        return scheduleJob(context, WeatherJobService.class, WEATHER, context.getResources().getInteger(R.integer.weather), JobInfo.NETWORK_TYPE_UNMETERED);
     }
 
 

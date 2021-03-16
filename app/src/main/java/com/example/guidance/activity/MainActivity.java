@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     TextView currentAdvice, currentGraph;
     private DrawerLayout drawer;
+    private boolean questionaire;
 
     //Tag
     private static final String TAG = "MainActivity";
@@ -162,7 +163,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onResume() {
-        if (isIntelligentAgentInitialised(this) && !isQuestionaireAnswered(this)) {
+        if (isIntelligentAgentInitialised(this) && !isQuestionaireAnswered(this) && !questionaire) {
+            questionaire = true;
             Intent intent = new Intent(this, QuestionaireActivity.class);
             startActivity(intent);
         }
