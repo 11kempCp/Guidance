@@ -18,6 +18,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.guidance.R;
 import com.example.guidance.ServiceReceiver.onPauseServiceReceiver;
 import com.example.guidance.Util.Util;
+import com.example.guidance.jobServices.ScreentimeJobService;
 import com.example.guidance.realm.model.Data_Type;
 import com.example.guidance.realm.model.Intelligent_Agent;
 import com.example.guidance.services.AmbientTempService;
@@ -320,7 +321,10 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 if(!isPermsUsageStats(this)){
                     Intent intent = new Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS);
                     startActivity(intent);
+                }else {
+                    scheduleScreentime(this);
                 }
+
             }
 
 //            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

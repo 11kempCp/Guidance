@@ -1,6 +1,7 @@
 package com.example.guidance.realm;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 
 import com.example.guidance.R;
@@ -1038,7 +1039,12 @@ public class DatabaseFunctions {
                         if (ad.getPackageName().equals(app.getPackageName())) {
                             ad.setTotalTimeInForeground(app.getTotalTimeInForeground());
                             ad.setTotalTimeVisible(app.getTotalTimeVisible());
-                            ad.setTotalTimeForegroundServiceUsed(app.getTotalTimeForegroundServiceUsed());
+
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                ad.setTotalTimeForegroundServiceUsed(app.getTotalTimeForegroundServiceUsed());
+                                ad.setTotalTimeVisible(app.getTotalTimeVisible());
+
+                            }
 
                             packageInAppDataAlready = true;
                             break;
@@ -1049,8 +1055,17 @@ public class DatabaseFunctions {
 
                         applicationData.setPackageName(app.getPackageName());
                         applicationData.setTotalTimeInForeground(app.getTotalTimeInForeground());
-                        applicationData.setTotalTimeVisible(app.getTotalTimeVisible());
-                        applicationData.setTotalTimeForegroundServiceUsed(app.getTotalTimeForegroundServiceUsed());
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            applicationData.setTotalTimeVisible(app.getTotalTimeVisible());
+                            applicationData.setTotalTimeForegroundServiceUsed(app.getTotalTimeForegroundServiceUsed());
+                        }else{
+                            applicationData.setTotalTimeVisible(null);
+                            applicationData.setTotalTimeForegroundServiceUsed(null);
+                        }
+
+
+
                         result.getAppData().add(applicationData);
 
                     }
@@ -1093,8 +1108,14 @@ public class DatabaseFunctions {
 
                 applicationData.setPackageName(app.getPackageName());
                 applicationData.setTotalTimeInForeground(app.getTotalTimeInForeground());
-                applicationData.setTotalTimeVisible(app.getTotalTimeVisible());
-                applicationData.setTotalTimeForegroundServiceUsed(app.getTotalTimeForegroundServiceUsed());
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    applicationData.setTotalTimeVisible(app.getTotalTimeVisible());
+                    applicationData.setTotalTimeForegroundServiceUsed(app.getTotalTimeForegroundServiceUsed());
+                }else{
+                    applicationData.setTotalTimeVisible(null);
+                    applicationData.setTotalTimeForegroundServiceUsed(null);
+                }
 
                 init.getAppData().add(applicationData);
             }

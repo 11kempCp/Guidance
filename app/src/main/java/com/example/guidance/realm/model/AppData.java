@@ -14,14 +14,14 @@ public class AppData extends RealmObject {
     @PrimaryKey
     private ObjectId _id;
     private String packageName;
-    private long totalTimeInForeground;
-    private long totalTimeVisible;
-    private long totalTimeForegroundServiceUsed;
+    private Long totalTimeInForeground;
+    private Long totalTimeVisible;
+    private Long totalTimeForegroundServiceUsed;
 
     public AppData(){
     }
 
-    public AppData(ObjectId _id, String packageName, long totalTimeInForeground, long totalTimeVisible, long totalTimeForegroundServiceUsed) {
+    public AppData(ObjectId _id, String packageName, Long totalTimeInForeground, Long totalTimeVisible, Long totalTimeForegroundServiceUsed) {
         this._id = _id;
         this.packageName = packageName;
         this.totalTimeInForeground = totalTimeInForeground;
@@ -45,27 +45,27 @@ public class AppData extends RealmObject {
         this.packageName = packageName;
     }
 
-    public long getTotalTimeInForeground() {
+    public Long getTotalTimeInForeground() {
         return totalTimeInForeground;
     }
 
-    public void setTotalTimeInForeground(long totalTimeInForeground) {
+    public void setTotalTimeInForeground(Long totalTimeInForeground) {
         this.totalTimeInForeground = totalTimeInForeground;
     }
 
-    public long getTotalTimeVisible() {
+    public Long getTotalTimeVisible() {
         return totalTimeVisible;
     }
 
-    public void setTotalTimeVisible(long totalTimeVisible) {
+    public void setTotalTimeVisible(Long totalTimeVisible) {
         this.totalTimeVisible = totalTimeVisible;
     }
 
-    public long getTotalTimeForegroundServiceUsed() {
+    public Long getTotalTimeForegroundServiceUsed() {
         return totalTimeForegroundServiceUsed;
     }
 
-    public void setTotalTimeForegroundServiceUsed(long totalTimeForegroundServiceUsed) {
+    public void setTotalTimeForegroundServiceUsed(Long totalTimeForegroundServiceUsed) {
         this.totalTimeForegroundServiceUsed = totalTimeForegroundServiceUsed;
     }
 }

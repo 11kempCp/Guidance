@@ -21,6 +21,7 @@ import com.example.guidance.jobServices.AmbientTempJobService;
 import com.example.guidance.jobServices.DailyQuestionJobService;
 import com.example.guidance.jobServices.LocationJobService;
 import com.example.guidance.jobServices.QuestionnaireJobService;
+import com.example.guidance.jobServices.ScreentimeJobService;
 import com.example.guidance.jobServices.StepsJobService;
 import com.example.guidance.jobServices.WeatherJobService;
 import com.example.guidance.realm.model.Data_Type;
@@ -251,6 +252,14 @@ public class Util {
                         //todo potentially change to hourly?
                         Util.scheduleJob(context, QuestionnaireJobService.class, QUESTIONNAIRE, context.getResources().getInteger(R.integer.daily));
                         break;
+
+                    case SCREENTIME:
+                        if(data.isScreentime()){
+
+                            Util.scheduleJob(context, ScreentimeJobService.class, SCREENTIME, context.getResources().getInteger(R.integer.daily));
+
+                        }
+                        break;
                 }
             }
 
@@ -447,5 +456,32 @@ public class Util {
 
         }
     }
+
+    public static void scheduleAmbientTemp(Context context){
+
+    }
+
+    public static void scheduleDailyQuestions(Context context){
+
+    }
+
+    public static void scheduleLocation(Context context){
+
+    }
+
+    public static void scheduleQuestionnaire(Context context){
+
+    }
+
+    public static void scheduleScreentime(Context context){
+        scheduleJob(context, ScreentimeJobService.class, SCREENTIME, context.getResources().getInteger(R.integer.default_time));
+    }
+
+    public static void scheduleSteps(Context context){
+    }
+
+    public static void scheduleWeather(Context context){
+    }
+
 
 }

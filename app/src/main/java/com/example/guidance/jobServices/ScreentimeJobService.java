@@ -4,6 +4,7 @@ import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
+import android.os.Build;
 import android.util.Log;
 
 import com.example.guidance.realm.model.AppData;
@@ -48,8 +49,15 @@ public class ScreentimeJobService extends JobService {
 
                     appData.setPackageName(us.getPackageName());
                     appData.setTotalTimeInForeground(us.getTotalTimeInForeground());
-                    appData.setTotalTimeVisible(us.getTotalTimeVisible());
-                    appData.setTotalTimeForegroundServiceUsed(us.getTotalTimeForegroundServiceUsed());
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        appData.setTotalTimeVisible(us.getTotalTimeVisible());
+                        appData.setTotalTimeForegroundServiceUsed(us.getTotalTimeForegroundServiceUsed());
+                    }else{
+                        appData.setTotalTimeVisible(null);
+                        appData.setTotalTimeForegroundServiceUsed(null);
+                    }
+
 
                     appDataList.add(appData);
 
