@@ -168,15 +168,7 @@ public class Util {
 
         List<Integer> unscheduledJobs = getUnscheduledJobs(context);
 
-        //TODO remove this implementation in favour of passcode implementation
-//        Data_Type data;
-//        if (!isDataTypeInitialised(context)) {
-//            initialiseDataType(context);
-//        }
-
         Data_Type data = getDataType(context);
-
-        Date currentTime = Calendar.getInstance().getTime();
 
         if (data != null) {
 
@@ -227,14 +219,9 @@ public class Util {
                         break;
 
                     case DAILY_QUESTION:
-                        //TODO DAILY_QUESTION not working
-                        //TODO change default time
                         if ((data.isSocialness() || data.isMood())) {
                             Log.d(TAG, "scheduledUnscheduledJobs: " + DAILY_QUESTION);
-
-
-                            Util.scheduleJob(context, DailyQuestionJobService.class, DAILY_QUESTION, context.getResources().getInteger(R.integer.daily_question));
-
+                            scheduleDailyQuestions(context);
                         }
                         break;
 
@@ -243,21 +230,18 @@ public class Util {
                         if (data.isWeather() || data.isSun() || data.isExternal_temp()) {
                             Log.d(TAG, "scheduledUnscheduledJobs: " + WEATHER);
 
-                            Util.scheduleJob(context, WeatherJobService.class, WEATHER, context.getResources().getInteger(R.integer.weather), JobInfo.NETWORK_TYPE_UNMETERED);
-
+                            scheduleWeather(context);
                         }
 
                         break;
                     case QUESTIONNAIRE:
                         //todo potentially change to hourly?
-                        Util.scheduleJob(context, QuestionnaireJobService.class, QUESTIONNAIRE, context.getResources().getInteger(R.integer.daily));
+                        scheduleJob(context, QuestionnaireJobService.class, QUESTIONNAIRE, context.getResources().getInteger(R.integer.daily));
                         break;
 
                     case SCREENTIME:
                         if(data.isScreentime()){
-
-                            Util.scheduleJob(context, ScreentimeJobService.class, SCREENTIME, context.getResources().getInteger(R.integer.daily));
-
+                            scheduleScreentime(context);
                         }
                         break;
                 }
@@ -328,7 +312,7 @@ public class Util {
         final JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
 //        Log.d(TAG, "scheduleUnscheduledJobs: ");
-        List<Integer> temp = new ArrayList<>();
+        List<Integer> unscheduledJobs = new ArrayList<>();
         List<Integer> scheduledJobs = new ArrayList<>();
 
         for (JobInfo jobInfo : jobScheduler.getAllPendingJobs()) {
@@ -340,14 +324,14 @@ public class Util {
 
             if (jobScheduler.getPendingJob(jobId) == null) {
                 if (!scheduledJobs.contains(jobId)) {
-                    temp.add(jobId);
+                    unscheduledJobs.add(jobId);
                 }
             }
 
 
         }
 
-        return temp;
+        return unscheduledJobs;
     }
 
 
@@ -462,7 +446,7 @@ public class Util {
     }
 
     public static void scheduleDailyQuestions(Context context){
-
+        scheduleJob(context, DailyQuestionJobService.class, DAILY_QUESTION, context.getResources().getInteger(R.integer.daily_question));
     }
 
     public static void scheduleLocation(Context context){
@@ -481,6 +465,7 @@ public class Util {
     }
 
     public static void scheduleWeather(Context context){
+            scheduleJob(context, WeatherJobService.class, WEATHER, context.getResources().getInteger(R.integer.weather), JobInfo.NETWORK_TYPE_UNMETERED);
     }
 
 

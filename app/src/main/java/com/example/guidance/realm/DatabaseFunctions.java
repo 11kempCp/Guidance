@@ -557,7 +557,7 @@ public class DatabaseFunctions {
 
         Data_Type dataType = getDataType(context);
 
-        if (!isExistingWeather(context, currentTime)) {
+        if (!isExistingWeatherWeek(context, currentTime)) {
             insertWeather(context, currentTime, weather, sunrise, sunset,
                     feels_like_morn, feels_like_day, feels_like_eve,
                     feels_like_night, temp_max, temp_min, dataType.isWeather(), dataType.isExternal_temp(), dataType.isSun());
@@ -569,7 +569,7 @@ public class DatabaseFunctions {
 
     }
 
-    public static boolean isExistingWeather(Context context, Date currentTime) {
+    public static boolean isExistingWeatherToday(Context context, Date currentTime) {
         Realm.init(context);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
@@ -578,14 +578,34 @@ public class DatabaseFunctions {
 
         RealmQuery<Weather> query = realm.where(Weather.class).equalTo("dateTime", currentTime);
         Weather task = query.sort("dateTime", Sort.DESCENDING).findFirst();
+//        Log.d(TAG, "isExistingWeather: " + task);
+
+        Log.d(TAG, "isExistingWeatherToday: " + (task != null));
+        return task != null;
+
+    }
+
+    public static boolean isExistingWeatherWeek(Context context, Date currentTime) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
 
 
-        if (task == null) {
-            Log.d(TAG, "isThereAnEntryToday: false");
-            return false;
-        } else
-            return task.getDateTime().getDate() == currentTime.getDate() && task.getDateTime().getMonth() == currentTime.getMonth() &&
-                    task.getDateTime().getYear() == currentTime.getYear();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(currentTime);
+        cal.add(Calendar.DATE, 7);
+        Date end_date = cal.getTime();
+
+        RealmQuery<Weather> query = realm.where(Weather.class).between("dateTime", currentTime, end_date);
+
+        Weather task = query.sort("dateTime", Sort.DESCENDING).findFirst();
+//        Log.d(TAG, "isExistingWeather: " + task);
+
+
+
+        Log.d(TAG, "isExistingWeatherWeek: " + (task != null));
+        return task != null;
     }
 
 
@@ -1059,11 +1079,10 @@ public class DatabaseFunctions {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                             applicationData.setTotalTimeVisible(app.getTotalTimeVisible());
                             applicationData.setTotalTimeForegroundServiceUsed(app.getTotalTimeForegroundServiceUsed());
-                        }else{
+                        } else {
                             applicationData.setTotalTimeVisible(null);
                             applicationData.setTotalTimeForegroundServiceUsed(null);
                         }
-
 
 
                         result.getAppData().add(applicationData);
@@ -1112,7 +1131,7 @@ public class DatabaseFunctions {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     applicationData.setTotalTimeVisible(app.getTotalTimeVisible());
                     applicationData.setTotalTimeForegroundServiceUsed(app.getTotalTimeForegroundServiceUsed());
-                }else{
+                } else {
                     applicationData.setTotalTimeVisible(null);
                     applicationData.setTotalTimeForegroundServiceUsed(null);
                 }

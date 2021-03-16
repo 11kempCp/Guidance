@@ -7,7 +7,6 @@ import android.os.Build;
 import android.util.Log;
 
 import com.example.guidance.realm.model.Data_Type;
-import com.example.guidance.services.StepsService;
 import com.example.guidance.services.WeatherService;
 
 import java.util.Calendar;
@@ -29,6 +28,7 @@ public class WeatherJobService extends JobService {
 
         if (data.isWeather() || data.isSun() || data.isExternal_temp()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
                 startForegroundService(serviceIntent);
             } else {
                 startService(serviceIntent);
