@@ -2,6 +2,7 @@ package com.example.guidance.Util;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.AppOpsManager;
 import android.app.NotificationManager;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
@@ -10,7 +11,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Build;
-import android.renderscript.Element;
 import android.util.Log;
 
 import androidx.appcompat.widget.Toolbar;
@@ -59,11 +59,12 @@ public class Util {
     public static final int DAILY_QUESTION = 4;
     public static final int WEATHER = 5;
     public static final int QUESTIONNAIRE = 6;
+    public static final int SCREENTIME = 7;
 
     //  todo change back so that WEATHER is called
 
-    //    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, WEATHER, QUESTIONNAIRE);
-    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, QUESTIONNAIRE);
+    //    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, WEATHER, QUESTIONNAIRE, SCREENTIME);
+    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, QUESTIONNAIRE, SCREENTIME);
 
     public static boolean scheduleJob(Context context, Class<?> serviceClass, int jobId, int minutes) {
         Date currentTime = Calendar.getInstance().getTime();
@@ -109,15 +110,14 @@ public class Util {
 
 
     public static void requestPerms(Context context, Activity activity) {
-//        ACTIVITY_RECOGNITION Request, needed for Step Counter
 
         requestPermsSteps(context, activity);
         requestPermsFineLocation(context, activity);
-
-
     }
 
     public static void requestPermsSteps(Context context, Activity activity) {
+        Log.d(TAG, "requestPermsSteps: " + activity.getPackageName());
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             if (ContextCompat.checkSelfPermission(context, ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_DENIED) {
                 //ask for permission
@@ -127,6 +127,8 @@ public class Util {
     }
 
     public static void requestPermsFineLocation(Context context, Activity activity) {
+        Log.d(TAG, "requestPermsFineLocation: " + activity.getPackageName());
+
         //TODO improve, refer to LocationUpdatesForegroundService github repo,
         // specifically MainActivity requestPermissions function
         if (ContextCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION)
@@ -134,6 +136,30 @@ public class Util {
             //ask for permission
             requestPermissions(activity, new String[]{ACCESS_FINE_LOCATION}, LOCATION);
         }
+    }
+
+    public static boolean isPermsUsageStats(Context context) {
+
+        boolean granted;
+        AppOpsManager appOps = (AppOpsManager) context
+                .getSystemService(Context.APP_OPS_SERVICE);
+        int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+                android.os.Process.myUid(), context.getPackageName());
+
+        if (mode == AppOpsManager.MODE_DEFAULT) {
+            granted = (context.checkCallingOrSelfPermission(android.Manifest.permission.PACKAGE_USAGE_STATS) == PackageManager.PERMISSION_GRANTED);
+        } else {
+            granted = (mode == AppOpsManager.MODE_ALLOWED);
+        }
+        return granted;
+    }
+
+    public static boolean isPermsLocation(Context context){
+        return ContextCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public static boolean isPermsSteps(Context context) {
+        return ContextCompat.checkSelfPermission(context, ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED;
     }
 
 
@@ -399,22 +425,23 @@ public class Util {
         }
     }
 
-    public static void navigationViewVisibility(NavigationView navigationView, Intelligent_Agent intelligent_agent, Data_Type dataType){
+    public static void navigationViewVisibility(NavigationView navigationView, Intelligent_Agent intelligent_agent, Data_Type dataType) {
 
-        navigationViewIntelligentAgent(navigationView,intelligent_agent);
-        navigationViewDailyQuestion(navigationView,dataType);
+        navigationViewIntelligentAgent(navigationView, intelligent_agent);
+        navigationViewDailyQuestion(navigationView, dataType);
 
     }
 
-    public static void navigationViewIntelligentAgent(NavigationView navigationView, Intelligent_Agent intelligent_agent){
-        if(intelligent_agent!=null){
+    public static void navigationViewIntelligentAgent(NavigationView navigationView, Intelligent_Agent intelligent_agent) {
+        if (intelligent_agent != null) {
             navigationView.getMenu().findItem(R.id.nav_justification).setVisible(!intelligent_agent.getAdvice().equals(NO_JUSTIFICATION));
         }
     }
-    public static void navigationViewDailyQuestion(NavigationView navigationView, Data_Type dataType){
-        if(dataType!=null){
 
-            if(!dataType.isMood() && !dataType.isSocialness()){
+    public static void navigationViewDailyQuestion(NavigationView navigationView, Data_Type dataType) {
+        if (dataType != null) {
+
+            if (!dataType.isMood() && !dataType.isSocialness()) {
                 navigationView.getMenu().findItem(R.id.nav_daily_question).setVisible(false);
             }
 

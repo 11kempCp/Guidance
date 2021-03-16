@@ -30,18 +30,9 @@ import java.util.Calendar;
 import java.util.Date;
 
 import io.realm.Realm;
-import io.realm.RealmQuery;
 
-import static com.example.guidance.Util.Util.AMBIENT_TEMP;
-import static com.example.guidance.Util.Util.DAILY_QUESTION;
-import static com.example.guidance.Util.Util.LOCATION;
-import static com.example.guidance.Util.Util.STEPS;
-import static com.example.guidance.Util.Util.WEATHER;
-import static com.example.guidance.Util.Util.navigationViewVisibility;
-import static com.example.guidance.Util.Util.requestPermsFineLocation;
-import static com.example.guidance.Util.Util.requestPermsSteps;
-import static com.example.guidance.Util.Util.stopBackgroundNotification;
-import static com.example.guidance.Util.Util.unscheduledJob;
+import static com.example.guidance.Util.Util.*;
+import static com.example.guidance.Util.Util.isPermsUsageStats;
 import static com.example.guidance.realm.DatabaseFunctions.getDataType;
 import static com.example.guidance.realm.DatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.DatabaseFunctions.initialiseDataType;
@@ -107,15 +98,36 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         Data_Type data_type = getDataType(this);
 
         if (data_type != null) {
-            steps.setChecked(data_type.isSteps());
+            if(isPermsSteps(this)){
+                steps.setChecked(data_type.isSteps());
+            }else{
+                steps.setChecked(false);
+            }
+
+
             distance_traveled.setChecked(data_type.isDistance_traveled());
-            location.setChecked(data_type.isLocation());
+
+            if(isPermsLocation(this)){
+                location.setChecked(data_type.isLocation());
+            }else{
+                location.setChecked(false);
+            }
+
             ambient_temp.setChecked(data_type.isAmbient_temp());
-            screentime.setChecked(data_type.isScreentime());
+
+            if(isPermsUsageStats(this)){
+                screentime.setChecked(data_type.isScreentime());
+            }else{
+                screentime.setChecked(false);
+            }
+
             sleep_tracking.setChecked(data_type.isSleep_tracking());
+
+            //todo if internet access not given?
             weather.setChecked(data_type.isWeather());
             external_temp.setChecked(data_type.isExternal_temp());
             sun.setChecked(data_type.isSun());
+
             socialness.setChecked(data_type.isSocialness());
             mood.setChecked(data_type.isMood());
         } else {
@@ -300,11 +312,17 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
 
         //todo uncomment
 
-//            if(!screentime.isChecked()){
-//                unscheduledJob(this,SCREENTIME);
+            if(!screentime.isChecked()){
+                Log.d(TAG, "switchScreentime: unscheduledJob SCREENTIME" );
+                unscheduledJob(this,SCREENTIME);
 //                stopBackgroundNotification(SCREENTIME);
-//            }
-//
+            }else{
+                if(!isPermsUsageStats(this)){
+                    Intent intent = new Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS);
+                    startActivity(intent);
+                }
+            }
+
 //            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 //                if (Util.isMyServiceRunning(ScreentimeService.class)) {
 //                    Intent serviceIntent = new Intent(this, ScreentimeService.class);

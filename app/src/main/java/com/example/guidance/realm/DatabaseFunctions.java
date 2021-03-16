@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.example.guidance.R;
 import com.example.guidance.realm.model.Ambient_Temperature;
+import com.example.guidance.realm.model.AppData;
 import com.example.guidance.realm.model.DataTypeUsageData;
 import com.example.guidance.realm.model.Data_Type;
 import com.example.guidance.realm.model.Intelligent_Agent;
@@ -12,12 +13,14 @@ import com.example.guidance.realm.model.Location;
 import com.example.guidance.realm.model.Mood;
 import com.example.guidance.realm.model.Question;
 import com.example.guidance.realm.model.Questionnaire;
+import com.example.guidance.realm.model.Screentime;
 import com.example.guidance.realm.model.Socialness;
 import com.example.guidance.realm.model.Step;
 import com.example.guidance.realm.model.Weather;
 
 import org.bson.types.ObjectId;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -174,13 +177,13 @@ public class DatabaseFunctions {
         }, new Realm.Transaction.OnSuccess() {
             @Override
             public void onSuccess() {
-                Log.d(TAG, "executed transaction : saveMoodToDatabase" + currentTime);
+                Log.d(TAG, "executed transaction : insertMood" + currentTime);
             }
         }, new Realm.Transaction.OnError() {
             @Override
             public void onError(Throwable error) {
                 // Transaction failed and was automatically canceled.
-                Log.e(TAG, "saveMoodToDatabase transaction failed: ", error);
+                Log.e(TAG, "insertMood transaction failed: ", error);
 
             }
         });
@@ -604,7 +607,7 @@ public class DatabaseFunctions {
 
             if (isWeather) {
                 init.setWeather(weather);
-            }else {
+            } else {
                 init.setWeather(null);
 
             }
@@ -613,7 +616,7 @@ public class DatabaseFunctions {
             if (isSun) {
                 init.setSunRise(sunrise);
                 init.setSunSet(sunset);
-            }else{
+            } else {
                 init.setSunRise(null);
                 init.setSunSet(null);
             }
@@ -625,7 +628,7 @@ public class DatabaseFunctions {
                 init.setFeels_like_night(feels_like_night);
                 init.setTemp_max(temp_max);
                 init.setTemp_min(temp_min);
-            }else {
+            } else {
                 init.setFeels_like_morn(null);
                 init.setFeels_like_day(null);
                 init.setFeels_like_eve(null);
@@ -679,7 +682,7 @@ public class DatabaseFunctions {
 
                 if (isWeather) {
                     result.setWeather(weather);
-                }else {
+                } else {
                     result.setWeather(null);
 
                 }
@@ -688,7 +691,7 @@ public class DatabaseFunctions {
                 if (isSun) {
                     result.setSunRise(sunrise);
                     result.setSunSet(sunset);
-                }else{
+                } else {
                     result.setSunRise(null);
                     result.setSunSet(null);
                 }
@@ -700,7 +703,7 @@ public class DatabaseFunctions {
                     result.setFeels_like_night(feels_like_night);
                     result.setTemp_max(temp_max);
                     result.setTemp_min(temp_min);
-                }else {
+                } else {
                     result.setFeels_like_morn(null);
                     result.setFeels_like_day(null);
                     result.setFeels_like_eve(null);
@@ -984,6 +987,133 @@ public class DatabaseFunctions {
             }
         });
         realm.close();
+    }
+
+    public static void screentimeEntry(Context context, Date currentTime, int interval_type, ArrayList<AppData> appData) {
+
+        if (isScreentimeEntryToday(context, currentTime)) {
+            updateScreentimeToday(context, currentTime, interval_type, appData);
+        } else {
+            insertScreentime(context, currentTime, interval_type, appData);
+        }
+    }
+
+    public static boolean isScreentimeEntryToday(Context context, Date currentTime) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+        RealmQuery<Screentime> query = realm.where(Screentime.class).lessThan("dateTime", currentTime);
+        Screentime task = query.sort("dateTime", Sort.DESCENDING).findFirst();
+        if (task == null) {
+            Log.d(TAG, "isScreentimeEntryToday: false");
+            return false;
+        } else
+            return task.getDateTime().getDate() == currentTime.getDate() && task.getDateTime().getMonth() == currentTime.getMonth() &&
+                    task.getDateTime().getYear() == currentTime.getYear();
+    }
+
+    public static void updateScreentimeToday(Context context, Date currentTime, int interval_type, ArrayList<AppData> appData) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+        realm.executeTransactionAsync(r -> {
+            // Sort chronologically? because realm is lazily searched there is no
+            // guarantee that it will return the last entry inputted
+            RealmQuery<Screentime> query = r.where(Screentime.class).lessThan("dateTime", currentTime);
+            Screentime result = query.sort("dateTime", Sort.DESCENDING).findFirst();
+
+            if (result == null) {
+                Log.d(TAG, "updateScreentimeToday: ERROR");
+            } else {
+                result.setDateTime(currentTime);
+                result.setInterval_type(interval_type);
+                boolean packageInAppDataAlready;
+                for (AppData app : appData) {
+                    packageInAppDataAlready = false;
+                    for (AppData ad : result.getAppData()) {
+
+                        if (ad.getPackageName().equals(app.getPackageName())) {
+                            ad.setTotalTimeInForeground(app.getTotalTimeInForeground());
+                            ad.setTotalTimeVisible(app.getTotalTimeVisible());
+                            ad.setTotalTimeForegroundServiceUsed(app.getTotalTimeForegroundServiceUsed());
+
+                            packageInAppDataAlready = true;
+                            break;
+                        }
+                    }
+                    if (!packageInAppDataAlready) {
+                        AppData applicationData = r.createObject(AppData.class, new ObjectId());
+
+                        applicationData.setPackageName(app.getPackageName());
+                        applicationData.setTotalTimeInForeground(app.getTotalTimeInForeground());
+                        applicationData.setTotalTimeVisible(app.getTotalTimeVisible());
+                        applicationData.setTotalTimeForegroundServiceUsed(app.getTotalTimeForegroundServiceUsed());
+                        result.getAppData().add(applicationData);
+
+                    }
+                }
+
+                r.insertOrUpdate(result);
+            }
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+//                Log.d(TAG, "updateSteps onSuccess:");
+                Log.d(TAG, "executed transaction : updateScreentimeToday" + currentTime);
+
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                // Transaction failed and was automatically canceled.
+                Log.e(TAG, "updateScreentimeToday transaction failed: ", error);
+
+            }
+        });
+
+        realm.close();
+    }
+
+    private static void insertScreentime(Context context, Date currentTime, int interval_type, ArrayList<AppData> appData) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+        realm.executeTransactionAsync(r -> {
+            Screentime init = r.createObject(Screentime.class, new ObjectId());
+            init.setDateTime(currentTime);
+            init.setInterval_type(interval_type);
+
+            for (AppData app : appData) {
+                AppData applicationData = r.createObject(AppData.class, new ObjectId());
+
+                applicationData.setPackageName(app.getPackageName());
+                applicationData.setTotalTimeInForeground(app.getTotalTimeInForeground());
+                applicationData.setTotalTimeVisible(app.getTotalTimeVisible());
+                applicationData.setTotalTimeForegroundServiceUsed(app.getTotalTimeForegroundServiceUsed());
+
+                init.getAppData().add(applicationData);
+            }
+
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                Log.d(TAG, "executed transaction : insertScreentime" + currentTime);
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                // Transaction failed and was automatically canceled.
+                Log.e(TAG, "insertScreentime transaction failed: ", error);
+
+            }
+        });
+        realm.close();
+
     }
 
 }

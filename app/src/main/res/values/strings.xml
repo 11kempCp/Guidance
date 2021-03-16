@@ -36,6 +36,7 @@
     <string name="display_weather">Display All Weather</string>
     <string name="display_intelligent_agent">Display IA</string>
     <string name="display_questionaire">Display Questionnaire</string>
+    <string name="display_screentime">Display Screentime</string>
     <string name="datatype_usage_data">Display DataTypeUsageData</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
@@ -43,6 +44,7 @@
     <string name="scheduleLocationJobService">schedule LocationJobService</string>
     <string name="startLocationJobService">start LocationJobService</string>
     <string name="startWeatherJobService">start WeatherJobService</string>
+    <string name="startScreentimeJobService">start startScreentimeJobService</string>
     <string name="startWeatherService">start WeatherService</string>
     <string name="getsteps">get Steps</string>
     <string name="resetsensor">Reset Steps Sensor</string>

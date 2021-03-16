@@ -90,8 +90,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:onClick="getSteps"
-                android:text="@string/getsteps"
+                android:onClick="displayScreentime"
+                android:text="@string/display_screentime"
                 app:layout_constraintEnd_toStartOf="@+id/button10"
                 app:layout_constraintStart_toStartOf="@+id/deleteAmbientTemp2"
                 app:layout_constraintTop_toBottomOf="@+id/deleteAmbientTemp2" />
@@ -109,7 +109,7 @@
                 android:id="@+id/button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:onClick="startWeatherJobService"
+                android:onClick="startLocationJobService"
                 android:text="@string/startLocationJobService"
                 app:layout_constraintEnd_toEndOf="@+id/button10"
                 app:layout_constraintTop_toTopOf="@+id/button23" />
@@ -144,8 +144,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:onClick="displayAmbientTemp"
-                android:text="@string/display_ambient_temp"
+                android:onClick="startScreentimeJobService"
+                android:text="@string/startScreentimeJobService"
                 app:layout_constraintEnd_toStartOf="@+id/button3"
                 app:layout_constraintStart_toStartOf="@+id/button23"
                 app:layout_constraintTop_toBottomOf="@+id/button23" />

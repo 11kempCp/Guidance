@@ -2,6 +2,7 @@ package com.example.guidance.activity;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -26,8 +27,11 @@ import com.example.guidance.R;
 import com.example.guidance.ServiceReceiver.onPauseServiceReceiver;
 import com.example.guidance.Util.Util;
 import com.example.guidance.jobServices.LocationJobService;
+import com.example.guidance.jobServices.ScreentimeJobService;
+import com.example.guidance.jobServices.WeatherJobService;
 import com.example.guidance.realm.DatabaseFunctions;
 import com.example.guidance.realm.model.Ambient_Temperature;
+import com.example.guidance.realm.model.AppData;
 import com.example.guidance.realm.model.DataTypeUsageData;
 import com.example.guidance.realm.model.Data_Type;
 import com.example.guidance.realm.model.Intelligent_Agent;
@@ -35,6 +39,7 @@ import com.example.guidance.realm.model.Location;
 import com.example.guidance.realm.model.Mood;
 import com.example.guidance.realm.model.Question;
 import com.example.guidance.realm.model.Questionnaire;
+import com.example.guidance.realm.model.Screentime;
 import com.example.guidance.realm.model.Socialness;
 import com.example.guidance.realm.model.Step;
 import com.example.guidance.realm.model.Weather;
@@ -50,14 +55,8 @@ import io.realm.RealmResults;
 import io.realm.Sort;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static com.example.guidance.Util.IA.FEMALE;
-import static com.example.guidance.Util.IA.MALE;
-import static com.example.guidance.Util.Util.LOCATION;
-import static com.example.guidance.Util.Util.checkPermissionsAndSchedule;
-import static com.example.guidance.Util.Util.getUnscheduledJobs;
-import static com.example.guidance.Util.Util.navigationViewVisibility;
-import static com.example.guidance.Util.Util.scheduledUnscheduledJobs;
-import static com.example.guidance.Util.Util.utilList;
+import static com.example.guidance.Util.IA.*;
+import static com.example.guidance.Util.Util.*;
 import static com.example.guidance.realm.DatabaseFunctions.getDataType;
 import static com.example.guidance.realm.DatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.DatabaseFunctions.intelligentAgentEntry;
@@ -162,6 +161,11 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
             r.delete(Questionnaire.class);
         });
 
+        realm.executeTransactionAsync(r -> {
+            Log.d(TAG, "deleted Screentime");
+            r.delete(Screentime.class);
+        });
+
         Toast.makeText(this, "Deleted Everything In Realm", Toast.LENGTH_SHORT).show();
     }
 
@@ -262,7 +266,7 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
 
     }
 
-    public void startWeatherJobService(View view) {
+    public void startLocationJobService(View view) {
 
         PackageManager packageManager = this.getPackageManager();
 
@@ -284,6 +288,20 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
 //                packageManager,
 //                null,
 //                null);
+    }
+
+    public void startWeatherJobService(View view) {
+
+        Log.d(TAG, "scheduledUnscheduledJobs: " + WEATHER);
+        scheduleJob(this, WeatherJobService.class, WEATHER, this.getResources().getInteger(R.integer.weather), JobInfo.NETWORK_TYPE_UNMETERED);
+
+    }
+
+    public void startScreentimeJobService(View view) {
+
+        Log.d(TAG, "scheduledUnscheduledJobs: " + SCREENTIME);
+        scheduleJob(this, ScreentimeJobService.class, SCREENTIME, this.getResources().getInteger(R.integer.default_time));
+
     }
 
 
@@ -435,11 +453,11 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
 
         displayTextView.setText("");
         StringBuilder displayString = new StringBuilder();
-        for (Questionnaire t : questionnaire) {
-            displayString.append(" ").append(t).append("\n");
+        for (Questionnaire quest : questionnaire) {
+            displayString.append(" ").append(quest).append("\n");
             displayString.append(" ").append("\n");
-            for (Question ttt : t.getQuestion()) {
-                displayString.append(" ").append(ttt.getQuestion()).append(" ").append(ttt.getAnswer()).append("\n");
+            for (Question q : quest.getQuestion()) {
+                displayString.append(" ").append(q.getQuestion()).append(" ").append(q.getAnswer()).append("\n");
                 displayString.append(" ").append("\n");
 
             }
@@ -494,6 +512,33 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
                 DatabaseFunctions.intelligentAgentSetGender(this, "DEFAULT");
             }
         }
+
+    }
+
+    public void displayScreentime(View view) {
+
+        RealmQuery<Screentime> screentimeRealmQuery = realm.where(Screentime.class);
+//        RealmResults<Step> step = stepRealmQuery.findAll();
+        RealmResults<Screentime> screentime = screentimeRealmQuery.findAll();
+
+        Log.d(TAG, "displayScreentime " + screentime.size() + " screentime full list: " + screentime);
+
+
+        displayTextView.setText("");
+        StringBuilder displayString = new StringBuilder();
+        for (Screentime st : screentime) {
+            displayString.append(" ").append(st).append("\n");
+            displayString.append(" ").append("\n");
+            for (AppData appData : st.getAppData()) {
+                Log.d(TAG, "appData " + appData);
+                displayString.append(" ").append(appData.getPackageName()).append(" ").append(appData.getTotalTimeInForeground()).append(" ").append(appData.getTotalTimeVisible()).append(" ").append(appData.getTotalTimeForegroundServiceUsed()).append("\n");
+//                displayString.append(" ").append("\n");
+
+            }
+        }
+
+        displayTextView.setText(displayString.toString());
+
 
     }
 

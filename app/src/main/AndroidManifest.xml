@@ -18,6 +18,9 @@
     <!-- Required for making calls to OpenWeather -->
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions"/>
+
 
     <application
         android:name=".app.App"
@@ -62,7 +65,14 @@
         <activity
             android:name=".activity.DebugActivity"
             android:label="@string/debug"
-            android:theme="@style/defaultAppTheme.NoActionBar" />
+            android:theme="@style/defaultAppTheme.NoActionBar" >
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+
+        </activity>
 
         <receiver android:name=".ServiceReceiver.onPauseServiceReceiver">
             <intent-filter>
@@ -142,6 +152,12 @@
             android:name=".jobServices.QuestionnaireJobService"
             android:enabled="true"
             android:label="Questionnaire JobService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <service
+            android:name=".jobServices.ScreentimeJobService"
+            android:enabled="true"
+            android:label="Screentime JobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
 

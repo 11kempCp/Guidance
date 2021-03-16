@@ -62,6 +62,8 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
 
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+
     }
 
     @Override

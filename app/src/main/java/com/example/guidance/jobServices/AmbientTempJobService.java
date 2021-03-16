@@ -36,7 +36,7 @@ public class AmbientTempJobService extends JobService
 
         if (data.isAmbient_temp()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Intent serviceIntent = new Intent(this, AmbientTempService.class);
+                Intent serviceIntent = new Intent(this,  AmbientTempService.class);
                 startForegroundService(serviceIntent);
             } else {
 
