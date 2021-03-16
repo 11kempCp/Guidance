@@ -19,7 +19,9 @@
         <item
             android:id="@+id/nav_justification"
             android:icon="@drawable/ic_justification"
-            android:title="@string/justification" />
+            android:title="@string/justification"
+            android:visible="false"
+            />
 
         <item
             android:id="@+id/nav_data"

@@ -120,10 +120,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onDestroy() {
-        Intent broadcastIntent = new Intent();
-        broadcastIntent.setAction("onPauseServiceReceiver");
-        broadcastIntent.setClass(this, onPauseServiceReceiver.class);
-        this.sendBroadcast(broadcastIntent);
+//        Intent broadcastIntent = new Intent();
+//        broadcastIntent.setAction("onPauseServiceReceiver");
+//        broadcastIntent.setClass(this, onPauseServiceReceiver.class);
+//        this.sendBroadcast(broadcastIntent);
 
         super.onDestroy();
     }
