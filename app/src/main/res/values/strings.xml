@@ -121,12 +121,36 @@
     </string-array>
     <!--End of Questionaire Strings-->
 
+
+    <!--Start of Application Strings-->
+
     <string name="current_advice">Current Advice</string>
     <string name="past_advice">Past Advice</string>
     <string name="graph">Graph</string>
 
     <string name="passcode">Passcode</string>
     <string name="enter_passcode">Enter Passcode</string>
+    <string name="enter_name">Enter Name</string>
+    <string name="enter_name_optional">Enter Name (optional)</string>
+    <string name="enter_age">Enter Age</string>
+    <string name="enter_age_optional">Enter Age (optional)</string>
+    <string name="enter_gender">Enter Gender</string>
+    <string name="enter_gender_optional">Enter Gender (optional)</string>
+    <string name="gender_specify">Please Specify (optional)</string>
+
+    <string-array name="gender">
+        <item>Enter Gender (optional)</item>
+        <item>Male</item>
+        <item>Female</item>
+        <item>Other</item>
+    </string-array>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="other">Other</string>
+
+    <string name="enter_dob">Enter Date Of Birth</string>
+    <string name="enter_dob_optional">Enter Date Of Birth (optional)</string>
+
     <string name="submit">Submit</string>
     <string name="questionnaire">Questionaire</string>
     <string name="answer">Answer</string>
@@ -162,6 +186,7 @@
     <integer name="location">45</integer>
     <integer name="daily_question">120</integer>
     <integer name="weather">1440</integer>
+    <integer name="screentime">60</integer>
     <!--End of Periodic Job Times-->
 
     <!--Start of Daily Questions-->

@@ -458,7 +458,7 @@ public class Util {
     }
 
     public static boolean scheduleScreentime(Context context) {
-        return scheduleJob(context, ScreentimeJobService.class, SCREENTIME, context.getResources().getInteger(R.integer.default_time));
+        return scheduleJob(context, ScreentimeJobService.class, SCREENTIME, context.getResources().getInteger(R.integer.screentime));
     }
 
     public static void scheduleSteps(Context context) {

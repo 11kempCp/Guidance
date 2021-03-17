@@ -17,6 +17,7 @@ import com.example.guidance.realm.model.Questionnaire;
 import com.example.guidance.realm.model.Screentime;
 import com.example.guidance.realm.model.Socialness;
 import com.example.guidance.realm.model.Step;
+import com.example.guidance.realm.model.User_Information;
 import com.example.guidance.realm.model.Weather;
 
 import org.bson.types.ObjectId;
@@ -603,7 +604,6 @@ public class DatabaseFunctions {
 //        Log.d(TAG, "isExistingWeather: " + task);
 
 
-
         Log.d(TAG, "isExistingWeatherWeek: " + (task != null));
         return task != null;
     }
@@ -1156,4 +1156,56 @@ public class DatabaseFunctions {
 
     }
 
+    public static boolean isUserInformationInitialised(Context context) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+        User_Information query = realm.where(User_Information.class).findFirst();
+        Log.d(TAG, "isUserInformationInitialised: query " + query);
+        return query != null;
+    }
+
+
+    public static void userInformationEntry(Context context, String name, Integer age, String gender) {
+        if (!isUserInformationInitialised(context)) {
+            initialiseUserInformation(context, name, age, gender);
+        } else {
+            Log.d(TAG, "userInformationEntry: User Information already entered");
+        }
+    }
+
+    public static void initialiseUserInformation(Context context, String name, Integer age, String gender) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+
+        realm.executeTransactionAsync(r -> {
+            User_Information init = r.createObject(User_Information.class, new ObjectId());
+
+
+            init.setName(name);
+            init.setAge(age);
+            init.setGender(gender);
+
+
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                Date currentTime = Calendar.getInstance().getTime();
+                Log.d(TAG, "executed transaction : initialiseUserInformation" + currentTime);
+
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                // Transaction failed and was automatically canceled.
+                Log.e(TAG, "initialiseUserInformation transaction failed: ", error);
+            }
+        });
+        realm.close();
+    }
 }
