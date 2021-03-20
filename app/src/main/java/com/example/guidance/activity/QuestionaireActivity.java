@@ -17,13 +17,11 @@ import com.example.guidance.realm.model.Intelligent_Agent;
 import java.util.Calendar;
 import java.util.Date;
 
-import static com.example.guidance.Util.IA.FEMALE;
-import static com.example.guidance.Util.IA.MALE;
 import static com.example.guidance.Util.QuestionaireRecyclerViewAdapter.getAmountQuestionsAnswered;
 import static com.example.guidance.Util.QuestionaireRecyclerViewAdapter.getAnswers;
 import static com.example.guidance.Util.QuestionaireRecyclerViewAdapter.getQuestions;
-import static com.example.guidance.realm.DatabaseFunctions.getIntelligentAgent;
-import static com.example.guidance.realm.DatabaseFunctions.insertQuestionnaire;
+import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
+import static com.example.guidance.realm.databasefunctions.QuestionnaireDatabaseFunctions.insertQuestionnaire;
 
 public class QuestionaireActivity extends AppCompatActivity {
 

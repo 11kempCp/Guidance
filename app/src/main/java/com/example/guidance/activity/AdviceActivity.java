@@ -20,8 +20,8 @@ import com.example.guidance.realm.model.Intelligent_Agent;
 import com.google.android.material.navigation.NavigationView;
 
 import static com.example.guidance.Util.Util.navigationViewVisibility;
-import static com.example.guidance.realm.DatabaseFunctions.getDataType;
-import static com.example.guidance.realm.DatabaseFunctions.getIntelligentAgent;
+import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
+import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
 
 public class AdviceActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 

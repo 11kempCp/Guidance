@@ -15,8 +15,8 @@ import java.util.Date;
 import java.util.List;
 
 import static com.example.guidance.Util.Util.isPermsUsageStats;
-import static com.example.guidance.realm.DatabaseFunctions.getDataType;
-import static com.example.guidance.realm.DatabaseFunctions.screentimeEntry;
+import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
+import static com.example.guidance.realm.databasefunctions.ScreentimeDatabaseFunctions.screentimeEntry;
 
 /**
  * Created by Conor K on 15/03/2021.

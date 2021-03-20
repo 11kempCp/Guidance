@@ -18,10 +18,10 @@ import com.example.guidance.realm.model.Data_Type;
 import java.util.Calendar;
 import java.util.Date;
 
-import static com.example.guidance.realm.DatabaseFunctions.getDataType;
-import static com.example.guidance.realm.DatabaseFunctions.isMoodEntryToday;
-import static com.example.guidance.realm.DatabaseFunctions.isSocialnessEntryDate;
 import static com.example.guidance.Util.Util.DAILY_QUESTION;
+import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
+import static com.example.guidance.realm.databasefunctions.MoodDatabaseFunctions.isMoodEntryToday;
+import static com.example.guidance.realm.databasefunctions.SocialnessDatabaseFunctions.isSocialnessEntryDate;
 
 /**
  * Created by Conor K on 22/02/2021.

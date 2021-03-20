@@ -17,6 +17,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 import com.example.guidance.R;
+import com.example.guidance.jobServices.AdviceJobService;
 import com.example.guidance.jobServices.AmbientTempJobService;
 import com.example.guidance.jobServices.DailyQuestionJobService;
 import com.example.guidance.jobServices.LocationJobService;
@@ -42,7 +43,7 @@ import static androidx.core.content.ContextCompat.checkSelfPermission;
 import static com.example.guidance.Util.IA.FEMALE;
 import static com.example.guidance.Util.IA.MALE;
 import static com.example.guidance.Util.IA.NO_JUSTIFICATION;
-import static com.example.guidance.realm.DatabaseFunctions.getDataType;
+import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
 import static io.realm.Realm.getApplicationContext;
 
 
@@ -61,11 +62,12 @@ public class Util {
     public static final int WEATHER = 5;
     public static final int QUESTIONNAIRE = 6;
     public static final int SCREENTIME = 7;
+    public static final int ADVICE = 8;
 
     //  todo change back so that WEATHER is called
 
-    //    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, WEATHER, QUESTIONNAIRE, SCREENTIME);
-    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, QUESTIONNAIRE, SCREENTIME);
+//        public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, WEATHER, QUESTIONNAIRE, SCREENTIME, ADVICE);
+    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, QUESTIONNAIRE, SCREENTIME, ADVICE);
 
     public static boolean scheduleJob(Context context, Class<?> serviceClass, int jobId, int minutes) {
         Date currentTime = Calendar.getInstance().getTime();
@@ -243,6 +245,9 @@ public class Util {
                         if (data.isScreentime()) {
                             scheduleScreentime(context);
                         }
+                        break;
+                    case ADVICE:
+                        scheduleAdvice(context);
                         break;
                 }
             }
@@ -466,6 +471,11 @@ public class Util {
 
     public static boolean scheduleWeather(Context context) {
         return scheduleJob(context, WeatherJobService.class, WEATHER, context.getResources().getInteger(R.integer.weather), JobInfo.NETWORK_TYPE_UNMETERED);
+    }
+
+    public static boolean scheduleAdvice(Context context) {
+        //todo change from default time
+        return scheduleJob(context, AdviceJobService.class, ADVICE, context.getResources().getInteger(R.integer.default_time));
     }
 
 

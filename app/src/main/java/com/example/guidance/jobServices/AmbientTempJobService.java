@@ -12,12 +12,12 @@ import android.util.Log;
 
 import com.example.guidance.realm.model.Data_Type;
 import com.example.guidance.services.AmbientTempService;
-import com.example.guidance.realm.DatabaseFunctions;
 
 import java.util.Calendar;
 import java.util.Date;
 
-import static com.example.guidance.realm.DatabaseFunctions.getDataType;
+import static com.example.guidance.realm.databasefunctions.AmbientTempDatabaseFunctions.insertAmbientTemp;
+import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
 
 /**
  * Created by Conor K on 14/02/2021.
@@ -72,7 +72,7 @@ public class AmbientTempJobService extends JobService
         Date currentTime = Calendar.getInstance().getTime();
         Log.d(TAG, "onSensorChanged: " + sensorValue);
 //        Toast.makeText(this, "Ambient Temp Sensor Changed " + sensorValue, Toast.LENGTH_SHORT).show();
-        DatabaseFunctions.insertAmbientTemp(getApplicationContext(), sensorValue, currentTime);
+        insertAmbientTemp(getApplicationContext(), sensorValue, currentTime);
         // stop the sensor and service
         mSensorManager.unregisterListener(this);
         stopSelf();

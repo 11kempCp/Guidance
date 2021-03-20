@@ -28,7 +28,7 @@ import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import static com.example.guidance.realm.DatabaseFunctions.locationEntry;
+import static com.example.guidance.realm.databasefunctions.LocationDatabaseFunctions.locationEntry;
 import static com.example.guidance.Util.Util.LOCATION;
 
 /**

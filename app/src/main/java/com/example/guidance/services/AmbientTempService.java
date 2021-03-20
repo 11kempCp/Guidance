@@ -17,12 +17,12 @@ import androidx.core.app.NotificationCompat;
 import com.example.guidance.R;
 import com.example.guidance.activity.MainActivity;
 import com.example.guidance.app.App;
-import com.example.guidance.realm.DatabaseFunctions;
 
 import java.util.Calendar;
 import java.util.Date;
 
 import static com.example.guidance.Util.Util.AMBIENT_TEMP;
+import static com.example.guidance.realm.databasefunctions.AmbientTempDatabaseFunctions.insertAmbientTemp;
 
 /**
  * Created by Conor K on 16/02/2021.
@@ -62,7 +62,7 @@ public class AmbientTempService extends Service implements SensorEventListener {
         float sensorValue = event.values[0];
         Date currentTime = Calendar.getInstance().getTime();
         Log.d(TAG, "Temp Sensor Changed: " + sensorValue + " currentTime " + currentTime);
-        DatabaseFunctions.insertAmbientTemp(getApplicationContext(), sensorValue, currentTime);
+        insertAmbientTemp(getApplicationContext(), sensorValue, currentTime);
         // stop the sensor and service
         mSensorManager.unregisterListener(this);
         stopForeground(true);

@@ -29,7 +29,6 @@ import com.example.guidance.Util.Util;
 import com.example.guidance.jobServices.LocationJobService;
 import com.example.guidance.jobServices.ScreentimeJobService;
 import com.example.guidance.jobServices.WeatherJobService;
-import com.example.guidance.realm.DatabaseFunctions;
 import com.example.guidance.realm.model.Ambient_Temperature;
 import com.example.guidance.realm.model.AppData;
 import com.example.guidance.realm.model.DataTypeUsageData;
@@ -55,12 +54,22 @@ import io.realm.RealmResults;
 import io.realm.Sort;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static com.example.guidance.Util.IA.*;
-import static com.example.guidance.Util.Util.*;
-import static com.example.guidance.realm.DatabaseFunctions.getDataType;
-import static com.example.guidance.realm.DatabaseFunctions.getIntelligentAgent;
-import static com.example.guidance.realm.DatabaseFunctions.intelligentAgentEntry;
-import static com.example.guidance.realm.DatabaseFunctions.isIntelligentAgentInitialised;
+import static com.example.guidance.Util.IA.FEMALE;
+import static com.example.guidance.Util.IA.MALE;
+import static com.example.guidance.Util.Util.LOCATION;
+import static com.example.guidance.Util.Util.SCREENTIME;
+import static com.example.guidance.Util.Util.WEATHER;
+import static com.example.guidance.Util.Util.checkPermissionsAndSchedule;
+import static com.example.guidance.Util.Util.getUnscheduledJobs;
+import static com.example.guidance.Util.Util.navigationViewVisibility;
+import static com.example.guidance.Util.Util.scheduleJob;
+import static com.example.guidance.Util.Util.scheduledUnscheduledJobs;
+import static com.example.guidance.Util.Util.utilList;
+import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
+import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
+import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.intelligentAgentEntry;
+import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.intelligentAgentSetGender;
+import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.isIntelligentAgentInitialised;
 
 public class DebugActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -505,11 +514,11 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
             String gender = intelligent_agent.getGender();
             String DEFAULT = "DEFAULT";
             if (gender.equals(DEFAULT)) {
-                DatabaseFunctions.intelligentAgentSetGender(this, MALE);
+                intelligentAgentSetGender(this, MALE);
             } else if (gender.equals(MALE)) {
-                DatabaseFunctions.intelligentAgentSetGender(this, FEMALE);
+                intelligentAgentSetGender(this, FEMALE);
             } else {
-                DatabaseFunctions.intelligentAgentSetGender(this, "DEFAULT");
+                intelligentAgentSetGender(this, "DEFAULT");
             }
         }
 

@@ -27,12 +27,16 @@ import com.google.android.material.navigation.NavigationView;
 import java.util.Calendar;
 import java.util.Date;
 
-import static com.example.guidance.Util.IA.FEMALE;
-import static com.example.guidance.Util.IA.MALE;
-import static com.example.guidance.Util.IA.NO_JUSTIFICATION;
-import static com.example.guidance.Util.Util.navigationViewVisibility;
-import static com.example.guidance.realm.DatabaseFunctions.*;
 import static com.example.guidance.Util.Util.DAILY_QUESTION;
+import static com.example.guidance.Util.Util.navigationViewVisibility;
+import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
+import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
+import static com.example.guidance.realm.databasefunctions.MoodDatabaseFunctions.getTodaysMoodEntry;
+import static com.example.guidance.realm.databasefunctions.MoodDatabaseFunctions.isMoodEntryToday;
+import static com.example.guidance.realm.databasefunctions.MoodDatabaseFunctions.moodEntry;
+import static com.example.guidance.realm.databasefunctions.SocialnessDatabaseFunctions.getSocialnessDateRating;
+import static com.example.guidance.realm.databasefunctions.SocialnessDatabaseFunctions.isSocialnessEntryDate;
+import static com.example.guidance.realm.databasefunctions.SocialnessDatabaseFunctions.socialnessEntry;
 
 public class DailyQuestionActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 

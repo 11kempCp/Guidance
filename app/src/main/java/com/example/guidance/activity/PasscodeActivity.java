@@ -24,11 +24,11 @@ import static com.example.guidance.Util.IA.Gender;
 import static com.example.guidance.Util.IA.Interaction;
 import static com.example.guidance.Util.IA.Output;
 import static com.example.guidance.Util.Util.requestPerms;
-import static com.example.guidance.realm.DatabaseFunctions.getIntelligentAgent;
-import static com.example.guidance.realm.DatabaseFunctions.initialiseDataType;
-import static com.example.guidance.realm.DatabaseFunctions.intelligentAgentEntry;
-import static com.example.guidance.realm.DatabaseFunctions.isDataTypeInitialised;
-import static com.example.guidance.realm.DatabaseFunctions.userInformationEntry;
+import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
+import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.initialiseDataType;
+import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.intelligentAgentEntry;
+import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.isDataTypeInitialised;
+import static com.example.guidance.realm.databasefunctions.UserInformationDatabaseFunctions.userInformationEntry;
 
 public class PasscodeActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 

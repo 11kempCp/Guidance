@@ -11,19 +11,16 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.example.guidance.R;
-import com.example.guidance.activity.DailyQuestionActivity;
 import com.example.guidance.activity.QuestionaireActivity;
 import com.example.guidance.app.App;
-import com.example.guidance.realm.model.Intelligent_Agent;
 import com.example.guidance.realm.model.Questionnaire;
 
 import java.util.Calendar;
 import java.util.Date;
 
-import static com.example.guidance.Util.Util.DAILY_QUESTION;
 import static com.example.guidance.Util.Util.QUESTIONNAIRE;
-import static com.example.guidance.realm.DatabaseFunctions.getIntelligentAgent;
-import static com.example.guidance.realm.DatabaseFunctions.getQuestionnaire;
+import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
+import static com.example.guidance.realm.databasefunctions.QuestionnaireDatabaseFunctions.getQuestionnaire;
 
 /**
  * Created by Conor K on 10/03/2021.

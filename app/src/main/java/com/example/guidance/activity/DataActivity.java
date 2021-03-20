@@ -48,11 +48,11 @@ import static com.example.guidance.Util.Util.scheduleScreentime;
 import static com.example.guidance.Util.Util.scheduleWeather;
 import static com.example.guidance.Util.Util.stopBackgroundNotification;
 import static com.example.guidance.Util.Util.unscheduledJob;
-import static com.example.guidance.realm.DatabaseFunctions.getDataType;
-import static com.example.guidance.realm.DatabaseFunctions.getIntelligentAgent;
-import static com.example.guidance.realm.DatabaseFunctions.initialiseDataType;
-import static com.example.guidance.realm.DatabaseFunctions.insertDataTypeUsageData;
-import static com.example.guidance.realm.DatabaseFunctions.isExistingWeatherWeek;
+import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
+import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.initialiseDataType;
+import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.insertDataTypeUsageData;
+import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
+import static com.example.guidance.realm.databasefunctions.WeatherDatabaseFunctions.isExistingWeatherWeek;
 
 public class DataActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     static Realm realm;

@@ -5,7 +5,6 @@ import android.app.job.JobService;
 import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.guidance.realm.model.Data_Type;
 import com.example.guidance.services.StepsService;
@@ -13,10 +12,10 @@ import com.example.guidance.services.StepsService;
 import java.util.Calendar;
 import java.util.Date;
 
-import static com.example.guidance.realm.DatabaseFunctions.getDataType;
-import static com.example.guidance.realm.DatabaseFunctions.isStepEntryDate;
-import static com.example.guidance.realm.DatabaseFunctions.insertStepsCounter;
-import static com.example.guidance.realm.DatabaseFunctions.updateStepToday;
+import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
+import static com.example.guidance.realm.databasefunctions.StepsDatabaseFunctions.insertStepsCounter;
+import static com.example.guidance.realm.databasefunctions.StepsDatabaseFunctions.isStepEntryDate;
+import static com.example.guidance.realm.databasefunctions.StepsDatabaseFunctions.updateStepToday;
 
 /**
  * Created by Conor K on 14/02/2021.

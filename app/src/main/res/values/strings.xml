@@ -182,8 +182,8 @@
 
 
     <integer name="ambient_temp">60</integer>
-    <integer name="steps">120</integer>
-    <integer name="location">45</integer>
+    <integer name="steps">60</integer>
+    <integer name="location">35</integer>
     <integer name="daily_question">120</integer>
     <integer name="weather">1440</integer>
     <integer name="screentime">60</integer>

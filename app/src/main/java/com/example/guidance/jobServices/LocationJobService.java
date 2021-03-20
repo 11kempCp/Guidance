@@ -12,7 +12,7 @@ import com.example.guidance.services.LocationService;
 import java.util.Calendar;
 import java.util.Date;
 
-import static com.example.guidance.realm.DatabaseFunctions.getDataType;
+import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
 
 /**
  * Created by Conor K on 25/02/2021.
