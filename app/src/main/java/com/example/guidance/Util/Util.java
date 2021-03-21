@@ -66,7 +66,7 @@ public class Util {
 
     //  todo change back so that WEATHER is called
 
-//        public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, WEATHER, QUESTIONNAIRE, SCREENTIME, ADVICE);
+    //        public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, WEATHER, QUESTIONNAIRE, SCREENTIME, ADVICE);
     public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, QUESTIONNAIRE, SCREENTIME, ADVICE);
 
     public static boolean scheduleJob(Context context, Class<?> serviceClass, int jobId, int minutes) {
@@ -455,7 +455,10 @@ public class Util {
     }
 
     public static void scheduleLocation(Context context) {
-
+        checkPermissionsAndSchedule(context, LOCATION,
+                LocationJobService.class,
+                context.getResources().getInteger(R.integer.location),
+                ACCESS_FINE_LOCATION);
     }
 
     public static void scheduleQuestionnaire(Context context) {
@@ -476,6 +479,11 @@ public class Util {
     public static boolean scheduleAdvice(Context context) {
         //todo change from default time
         return scheduleJob(context, AdviceJobService.class, ADVICE, context.getResources().getInteger(R.integer.default_time));
+    }
+
+    public static boolean isSameDate(Date firstDate, Date secondDate){
+        return firstDate.getDate() == secondDate.getDate() && firstDate.getMonth() == secondDate.getMonth() &&
+                firstDate.getYear() == secondDate.getYear();
     }
 
 

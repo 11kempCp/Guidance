@@ -5,15 +5,18 @@ import android.util.Log;
 
 import com.example.guidance.R;
 import com.example.guidance.realm.model.Location;
+import com.google.android.gms.tasks.Task;
 
 import org.bson.types.ObjectId;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmQuery;
+import io.realm.RealmResults;
 import io.realm.Sort;
 
 /**
@@ -74,6 +77,7 @@ public class LocationDatabaseFunctions {
         //Finds the last entry at the specified coordinates
         Location task = query.sort("dateTime", Sort.DESCENDING).findFirst();
 
+        Log.d(TAG, "isLocationStoredAlready: "  + task + " lat " + latitude  + " lon " + longitude);
 
         if (task == null) {
             Log.d(TAG, "task null ");
@@ -81,14 +85,7 @@ public class LocationDatabaseFunctions {
 
         } else {
             long timestamp1 = task.getDateTime().getTime();
-//            Log.d(TAG, "isLocationStoredAlready: timestamp2 " + timestamp1);
             long timestamp2 = currentTime.getTime();
-//            Log.d(TAG, "isLocationStoredAlready: timestamp1 " + timestamp2);
-
-
-//            Log.d(TAG, "isLocationStoredAlready: calculation1 " + Math.abs(timestamp1 - timestamp2));
-//            Log.d(TAG, "isLocationStoredAlready: calculation2 " + TimeUnit.MINUTES.toMillis(context.getResources().getInteger(R.integer.location) / 2));
-
             return Math.abs(timestamp1 - timestamp2) < TimeUnit.MINUTES.toMillis(context.getResources().getInteger(R.integer.location) / 2);
 
         }
@@ -104,6 +101,27 @@ public class LocationDatabaseFunctions {
         RealmQuery<Location> query = realm.where(Location.class).lessThan("dateTime", currentTime);
 
         return query.sort("dateTime", Sort.DESCENDING).findFirst();
+    }
+
+
+
+    public static RealmResults<Location> getLocationOverPreviousDays(Context context, Date currentTime, int day) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(currentTime);
+        int Day = -day;
+        cal.add(Calendar.DATE, Day);
+        Date to = cal.getTime();
+
+//        RealmQuery<Location> query = realm.where(Location.class).lessThan("dateTime", currentTime);
+        RealmQuery<Location> query = realm.where(Location.class).between("dateTime", to, currentTime);
+
+        return query.sort("dateTime", Sort.DESCENDING).findAll();
     }
 
 }

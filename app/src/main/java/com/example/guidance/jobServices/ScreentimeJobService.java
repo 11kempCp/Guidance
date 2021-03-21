@@ -30,16 +30,24 @@ public class ScreentimeJobService extends JobService {
         Log.d(TAG, "onStartJob: ");
 
         if (getDataType(this).isScreentime() && isPermsUsageStats(this)) {
-            Calendar time = Calendar.getInstance();
-            //todo decide starttime and endtime
-            long f = 1 * 24 * 60 * 60 * 1000;
-            time.setTimeInMillis(time.getTimeInMillis() - f);
-            long startTime = time.getTimeInMillis();
-            long endTime = Calendar.getInstance().getTimeInMillis();
-            int interval_type = UsageStatsManager.INTERVAL_WEEKLY;
+            Calendar startTime = Calendar.getInstance();
+            Calendar endTime = Calendar.getInstance();
+//            long f = 1 * 24 * 60 * 60 * 1000;
+//            time.setTimeInMillis(time.getTimeInMillis() - f);
+            startTime.set(startTime.get(Calendar.YEAR),startTime.get(Calendar.MONTH),startTime.get(Calendar.DAY_OF_MONTH),0,0);
+            endTime.set(endTime.get(Calendar.YEAR),endTime.get(Calendar.MONTH),endTime.get(Calendar.DAY_OF_MONTH),23,59);
+
+
+
+            long start = startTime.getTimeInMillis();
+            long end = endTime.getTimeInMillis();
+
+
+
+            int interval_type = UsageStatsManager.INTERVAL_BEST;
 
             UsageStatsManager usageStatsManager = (UsageStatsManager) this.getSystemService(USAGE_STATS_SERVICE);
-            List<UsageStats> queryUsageStats = usageStatsManager.queryUsageStats(interval_type, startTime, endTime);
+            List<UsageStats> queryUsageStats = usageStatsManager.queryUsageStats(interval_type, start, end);
 
             ArrayList<AppData> appDataList = new ArrayList<>();
             for (UsageStats us : queryUsageStats) {

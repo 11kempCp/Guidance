@@ -63,6 +63,7 @@ import static com.example.guidance.Util.Util.checkPermissionsAndSchedule;
 import static com.example.guidance.Util.Util.getUnscheduledJobs;
 import static com.example.guidance.Util.Util.navigationViewVisibility;
 import static com.example.guidance.Util.Util.scheduleJob;
+import static com.example.guidance.Util.Util.scheduleLocation;
 import static com.example.guidance.Util.Util.scheduledUnscheduledJobs;
 import static com.example.guidance.Util.Util.utilList;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
@@ -141,12 +142,12 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
         });
 
         realm.executeTransactionAsync(r -> {
-            Log.d(TAG, "deleted Data_Storing");
+            Log.d(TAG, "deleted Location");
             r.delete(Location.class);
         });
 
         realm.executeTransactionAsync(r -> {
-            Log.d(TAG, "deleted Data_Storing");
+            Log.d(TAG, "deleted Weather");
             r.delete(Weather.class);
         });
 
@@ -282,12 +283,13 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
         Log.d(TAG, "scheduledUnscheduledJobs: " + LOCATION);
 
 
-        checkPermissionsAndSchedule(this,
-                LOCATION,
-                LocationJobService.class,
-                this.getResources().getInteger(R.integer.location),
-                ACCESS_FINE_LOCATION);
+//        checkPermissionsAndSchedule(this,
+//                LOCATION,
+//                LocationJobService.class,
+//                this.getResources().getInteger(R.integer.location),
+//                ACCESS_FINE_LOCATION);
 
+        scheduleLocation(this);
 
 //        Log.d(TAG, "scheduledUnscheduledJobs: " + WEATHER);
 //        checkPermissionsAndSchedule(this,
@@ -538,12 +540,14 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
         for (Screentime st : screentime) {
             displayString.append(" ").append(st).append("\n");
             displayString.append(" ").append("\n");
+            Log.d(TAG, "Screentime " + st);
+
             for (AppData appData : st.getAppData()) {
                 Log.d(TAG, "appData " + appData);
                 displayString.append(" ").append(appData.getPackageName()).append(" ").append(appData.getTotalTimeInForeground()).append(" ").append(appData.getTotalTimeVisible()).append(" ").append(appData.getTotalTimeForegroundServiceUsed()).append("\n");
 //                displayString.append(" ").append("\n");
-
             }
+            Log.d(TAG, "                                   ");
         }
 
         displayTextView.setText(displayString.toString());

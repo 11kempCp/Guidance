@@ -103,7 +103,7 @@ public class LocationService extends Service {
     }
 
     private void startLocationUpdates() {
-//        Log.d(TAG, "startLocationUpdates: ");
+        Log.d(TAG, "startLocationUpdates: ");
         receivingUpdates = true;
         try {
 
@@ -177,7 +177,7 @@ public class LocationService extends Service {
     private void onNewLocation(Context context, LocationResult location) {
         mLocation = location.getLastLocation();
         currentTime = Calendar.getInstance().getTime();
-//        Log.d(TAG, "New location: " + mLocation.getLatitude() + " " + mLocation.getLongitude() + " " + currentTime);
+        Log.d(TAG, "New location: " + mLocation.getLatitude() + " " + mLocation.getLongitude() + " " + currentTime);
         locationEntry(context, currentTime, truncate(mLocation.getLatitude()), truncate(mLocation.getLongitude()));
 
         stopForeground(true);
@@ -198,6 +198,7 @@ public class LocationService extends Service {
         DecimalFormat df;
         //TODO potentially change to 3dp
         df = new DecimalFormat("##.####");
+//        df = new DecimalFormat("###.######");
         df.setRoundingMode(RoundingMode.DOWN);
         return Double.parseDouble(df.format(coordinate));
     }

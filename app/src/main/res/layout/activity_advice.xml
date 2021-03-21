@@ -8,6 +8,7 @@
     android:fitsSystemWindows="true"
     tools:context=".activity.AdviceActivity">
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -28,6 +29,75 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+            <Button
+                android:id="@+id/button14"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:onClick="startAdviceJobService"
+                android:text="@string/startAdviceJobService"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+
+            <Button
+                android:id="@+id/buttonLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:onClick="startLocationJobService"
+                android:text="@string/startLocationJobService"
+                app:layout_constraintEnd_toStartOf="@+id/button15"
+                app:layout_constraintStart_toStartOf="@+id/button14"
+                app:layout_constraintTop_toBottomOf="@+id/button14" />
+
+            <Button
+                android:id="@+id/button15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="displayLocationsss"
+                android:text="@string/display_location"
+                app:layout_constraintEnd_toEndOf="@+id/button14"
+                app:layout_constraintTop_toTopOf="@+id/buttonLocation" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/display"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/button17" />
+
+            <Button
+                android:id="@+id/button16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:onClick="deleteLocation"
+                android:text="@string/delete_location"
+                app:layout_constraintEnd_toEndOf="@+id/button15"
+                app:layout_constraintStart_toEndOf="@+id/button17"
+                app:layout_constraintTop_toTopOf="@+id/button17" />
+
+            <Button
+                android:id="@+id/button17"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:onClick="deleteScreentime"
+                android:text="@string/delete_screentime"
+                app:layout_constraintStart_toStartOf="@+id/buttonLocation"
+                app:layout_constraintTop_toBottomOf="@+id/buttonLocation" />
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <FrameLayout

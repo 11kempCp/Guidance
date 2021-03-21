@@ -16,7 +16,7 @@ import io.realm.RealmConfiguration;
 import io.realm.RealmQuery;
 import io.realm.Sort;
 
-import static com.example.guidance.realm.databasefunctions.DatabaseFunctions.getDataType;
+import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
 
 /**
  * Created by Conor K on 20/03/2021.

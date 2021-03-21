@@ -28,6 +28,8 @@
     <string name="display">Display</string>
     <string name="delete">Delete</string>
     <string name="delete_ambient_temp">Delete All Ambient Temp</string>
+    <string name="delete_screentime">Delete All Screentime</string>
+    <string name="delete_location">Delete All Location</string>
     <string name="display_ambient_temp">Display All Ambient Temp</string>
     <string name="display_mood">Display All Mood</string>
     <string name="display_socialness">Display All Socialness</string>
@@ -54,6 +56,7 @@
     <string name="clearText">Clear Text</string>
     <string name="init_intelligent_agent">Initialise IA</string>
     <string name="intelligent_agent_not_initialised">"Intelligent Agent Not Initialised "</string>
+    <string name="startAdviceJobService">Start AdviceJobService</string>
 
     <!--End of Debug Strings-->
 
@@ -181,12 +184,12 @@
     <integer name="daily">1440</integer>
 
 
-    <integer name="ambient_temp">60</integer>
-    <integer name="steps">60</integer>
+    <integer name="ambient_temp">45</integer>
+    <integer name="steps">45</integer>
     <integer name="location">35</integer>
     <integer name="daily_question">120</integer>
     <integer name="weather">1440</integer>
-    <integer name="screentime">60</integer>
+    <integer name="screentime">15</integer>
     <!--End of Periodic Job Times-->
 
     <!--Start of Daily Questions-->
