@@ -39,10 +39,24 @@ public class QuestionaireActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_questionaire);
         RecyclerView recyclerView = findViewById(R.id.recyclerViewQuestionaire);
-        //gets the question string-array from strings.xml
-        String[] question = getResources().getStringArray(R.array.questions);
-        //gets the answers array of string arrays from strings.xml
-        TypedArray question_answers = getResources().obtainTypedArray(R.array.answers);
+
+        Date currentTime = Calendar.getInstance().getTime();
+        String[] question;
+        TypedArray question_answers;
+        if (currentTime.after(intelligent_agent.getEnd_Date())) {
+
+            //gets the question string-array from strings.xml
+            question = getResources().getStringArray(R.array.end_questions);
+            //gets the answers array of string arrays from strings.xml
+            question_answers = getResources().obtainTypedArray(R.array.end_answers);
+
+        } else {
+
+            //gets the question string-array from strings.xml
+            question = getResources().getStringArray(R.array.questions);
+            //gets the answers array of string arrays from strings.xml
+            question_answers = getResources().obtainTypedArray(R.array.answers);
+        }
 
 
         QuestionaireRecyclerViewAdapter questionaireRecyclerViewAdapter = new QuestionaireRecyclerViewAdapter(this, question, question_answers, getResources());

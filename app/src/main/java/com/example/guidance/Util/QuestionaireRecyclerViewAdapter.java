@@ -72,8 +72,10 @@ public class QuestionaireRecyclerViewAdapter extends RecyclerView.Adapter<Questi
 
         //Displays the question from the appropriate position
         // in the questions String-Array from Strings.xml
+
         holder.question.setText(questions[position]);
-        holder.radioGroupAnswer.setOrientation(LinearLayout.HORIZONTAL);
+        holder.radioGroupAnswer.setOrientation(LinearLayout.VERTICAL);
+        holder.radioGroupAnswer.removeAllViews();
 
         //TODO potentially change the radioButton's textsize
 

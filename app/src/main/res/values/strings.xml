@@ -73,6 +73,21 @@
 
     </array>
 
+    <array name="end_answers">
+        <item>@array/end_answer_1</item>
+        <item>@array/end_answer_2</item>
+        <item>@array/end_answer_3</item>
+        <item>@array/end_answer_4</item>
+        <item>@array/end_answer_5</item>
+        <item>@array/end_answer_6</item>
+        <item>@array/end_answer_7</item>
+        <item>@array/end_answer_8</item>
+        <item>@array/end_answer_9</item>
+        <item>@array/end_answer_10</item>
+        <item>@array/end_answer_11</item>
+
+    </array>
+
     <!--Each question will have answers these should be put here and then the array in the above
     array "answers"-->
     <string-array name="answer_1">
@@ -111,6 +126,70 @@
         <item>No</item>
     </string-array>
 
+
+    <string-array name="end_answer_1">
+        <item>Very Likely</item>
+        <item>Likely</item>
+        <item>Unlikely</item>
+        <item>Very Unlikely</item>
+    </string-array>
+
+    <string-array name="end_answer_2">
+        <item>Once Per Day</item>
+        <item>Twice Per Day</item>
+        <item>Four Times Per Day</item>
+    </string-array>
+
+    <string-array name="end_answer_3">
+        <item>Male</item>
+        <item>Female</item>
+        <item>Neutral</item>
+
+    </string-array>
+
+    <string-array name="end_answer_4">
+        <item>Text</item>
+        <item>Speech</item>
+        <item>Text and Speech</item>
+    </string-array>
+
+    <string-array name="end_answer_5">
+        <item>Yes</item>
+        <item>No</item>
+    </string-array>
+
+    <string-array name="end_answer_6">
+        <item>Yes</item>
+        <item>No</item>
+    </string-array>
+
+    <string-array name="end_answer_7">
+        <item>Yes</item>
+        <item>No</item>
+    </string-array>
+
+    <string-array name="end_answer_8">
+        <item>Comfortable</item>
+        <item>Uncomfortable</item>
+    </string-array>
+
+    <string-array name="end_answer_9">
+        <item>Comfortable</item>
+        <item>Uncomfortable</item>
+    </string-array>
+
+    <string-array name="end_answer_10">
+        <item>None Of It</item>
+        <item>Nearly None Of It</item>
+        <item>Most Of It</item>
+        <item>All Of It</item>
+    </string-array>
+
+    <string-array name="end_answer_11">
+        <item>Yes</item>
+        <item>No</item>
+    </string-array>
+
     <!--Questions for the questionnaire should go here,
      each question should have a answer_ string-array-->
 
@@ -121,6 +200,20 @@
         <item>What method of communication would you prefer the Intelligent Agent to use?</item>
         <item>Are you likely to follow advice given by this Intelligent Agent if a reason for the advice is given?</item>
         <item>Do you trust applications that have machine learning implemented?</item>
+    </string-array>
+
+    <string-array name="end_questions">
+        <item>How likely would you to continue to follow the advice given by this IntelligentAgent?</item>
+        <item>How often would you have liked to receive advice from the Intelligent Agent during the study?</item>
+        <item>What gender would you have preferred the Intelligent Agent to be over the course of the study period?</item>
+        <item>What method of communication would you prefer the Intelligent Agent to have used during the study period?</item>
+        <item>Did you trust the advice given by the Intelligent Agent?</item>
+        <item>Do you trust applications that have machine learning implemented? (Machine learning refers to algorithms that improve themselves overtime through experience and data acquisition.)</item>
+        <item>Did you determine that the Intelligent Agent was not using machine learning? (Machine learning refers to algorithms that improve themselves overtime through experience and data acquisition.)</item>
+        <item>How do you feel about the Intelligent Agent using traditional programming techniques instead of machine learning to provide advice? (Machine learning refers to algorithms that improve themselves overtime through experience and data acquisition.)</item>
+        <item>How did you feel about the device monitoring you 24/7?</item>
+        <item>How much of the advice do you think you followed?</item>
+        <item>Would you prefer to follow advice given by a human over advice given by the Intelligent Agent in this application?</item>
     </string-array>
     <!--End of Questionaire Strings-->
 
