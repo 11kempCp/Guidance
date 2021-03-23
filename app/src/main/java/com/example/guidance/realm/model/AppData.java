@@ -68,4 +68,8 @@ public class AppData extends RealmObject {
     public void setTotalTimeForegroundServiceUsed(Long totalTimeForegroundServiceUsed) {
         this.totalTimeForegroundServiceUsed = totalTimeForegroundServiceUsed;
     }
+
+
+
+
 }

@@ -3,15 +3,18 @@ package com.example.guidance.realm.databasefunctions;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.guidance.realm.model.Screentime;
 import com.example.guidance.realm.model.Socialness;
 
 import org.bson.types.ObjectId;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmQuery;
+import io.realm.RealmResults;
 import io.realm.Sort;
 
 /**
@@ -129,4 +132,23 @@ public class SocialnessDatabaseFunctions {
         realm.close();
         return task.getRating();
     }
+
+    public static RealmResults<Socialness> getSocialnessOverPreviousDays(Context context, Date currentTime, int day) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(currentTime);
+        int Day = -day;
+        cal.add(Calendar.DATE, Day);
+        Date to = cal.getTime();
+
+        RealmQuery<Socialness> query = realm.where(Socialness.class).between("dateTime", to, currentTime);
+
+        return query.sort("dateTime", Sort.DESCENDING).findAll();
+    }
+
 }

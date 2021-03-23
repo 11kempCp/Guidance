@@ -3,15 +3,18 @@ package com.example.guidance.realm.databasefunctions;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.guidance.realm.model.Screentime;
 import com.example.guidance.realm.model.Step;
 
 import org.bson.types.ObjectId;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmQuery;
+import io.realm.RealmResults;
 import io.realm.Sort;
 
 /**
@@ -109,6 +112,45 @@ public class StepsDatabaseFunctions {
         });
         realm.close();
 
+    }
+
+    public static RealmResults<Step> getStepOverPreviousDays(Context context, Date currentTime, int day) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(currentTime);
+        int Day = -day;
+        cal.add(Calendar.DATE, Day);
+        Date to = cal.getTime();
+
+        RealmQuery<Step> query = realm.where(Step.class).between("dateTime", to, currentTime);
+
+        return query.sort("dateTime", Sort.DESCENDING).findAll();
+    }
+
+    public static Step getStepPreviousDay(Context context, Date currentTime, int day) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(currentTime);
+        int Day = -day;
+        cal.add(Calendar.DATE, Day);
+        cal.set(cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),cal.get(Calendar.DATE),23,59,59);
+        Date previousDay = cal.getTime();
+
+        Log.d(TAG, "getScreentimePreviousDay: " + previousDay);
+
+        RealmQuery<Step> query = realm.where(Step.class).lessThan("dateTime", previousDay);
+
+        return query.sort("dateTime", Sort.DESCENDING).findFirst();
     }
 
 }

@@ -5,7 +5,6 @@ import android.os.Build;
 import android.util.Log;
 
 import com.example.guidance.realm.model.AppData;
-import com.example.guidance.realm.model.Location;
 import com.example.guidance.realm.model.Screentime;
 
 import org.bson.types.ObjectId;
@@ -190,5 +189,26 @@ public class ScreentimeDatabaseFunctions {
         RealmQuery<Screentime> query = realm.where(Screentime.class).between("dateTime", to, currentTime);
 
         return query.sort("dateTime", Sort.DESCENDING).findAll();
+    }
+
+    public static Screentime getScreentimePreviousDay(Context context, Date currentTime, int day) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(currentTime);
+        int Day = -day;
+        cal.add(Calendar.DATE, Day);
+        cal.set(cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),cal.get(Calendar.DATE),23,59,59);
+        Date previousDay = cal.getTime();
+
+        Log.d(TAG, "getScreentimePreviousDay: " + previousDay);
+
+        RealmQuery<Screentime> query = realm.where(Screentime.class).lessThan("dateTime", previousDay);
+
+        return query.sort("dateTime", Sort.DESCENDING).findFirst();
     }
 }
