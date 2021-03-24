@@ -169,7 +169,7 @@ public class IntelligentAgentDatabaseFunctions {
             @Override
             public void onError(Throwable error) {
                 // Transaction failed and was automatically canceled.
-                Log.e(TAG, "updateStepToday transaction failed: ", error);
+                Log.e(TAG, "intelligentAgentSetGender transaction failed: ", error);
 
             }
         });

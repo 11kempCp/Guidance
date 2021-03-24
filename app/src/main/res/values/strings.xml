@@ -248,6 +248,7 @@
     <string name="enter_dob_optional">Enter Date Of Birth (optional)</string>
 
     <string name="submit">Submit</string>
+    <string name="save_ranking_pereference">Save Ranking Preference</string>
     <string name="questionnaire">Questionaire</string>
     <string name="answer">Answer</string>
 
@@ -270,6 +271,7 @@
     <string name="data">Data Used</string>
     <string name="justification">Justification</string>
     <string name="daily_question">Daily Questions</string>
+    <string name="ranking">Advice Ranking</string>
     <!--End of Activity Name Strings-->
 
     <!--Start of Periodic Job Times-->
@@ -299,6 +301,23 @@
     <string name="four">4</string>
     <string name="title_activity_testing_location">TestingLocation</string>
     <!--End of Daily Questions-->
+
+
+    <!--Start of Advice Ranking-->
+    <string name="idealStepCount">Ideal Step Count</string>
+    <string name="idealScreentimeCount">Screentime Limit</string>
+
+    <!--    // todo add more-->
+    <string-array name="advice_ranking_list">
+        <item>Step</item>
+        <item>Screentime</item>
+        <item>Location</item>
+        <item>Socialness</item>
+        <item>Mood</item>
+
+    </string-array>
+
+    <!--End of Advice Ranking-->
 
 
     <!--Location Testing Strings MUST DELETE-->

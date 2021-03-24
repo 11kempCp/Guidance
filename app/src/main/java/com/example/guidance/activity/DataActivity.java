@@ -189,6 +189,10 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 myIntent = new Intent(this, DailyQuestionActivity.class);
                 startActivity(myIntent);
                 break;
+            case R.id.nav_ranking:
+                myIntent = new Intent(this, RankingActivity.class);
+                startActivity(myIntent);
+                break;
         }
 
 
@@ -326,7 +330,6 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
     public void switchScreentime(View view) {
         Date currentTime = Calendar.getInstance().getTime();
 
-        //todo uncomment
 
         if (!screentime.isChecked()) {
             Log.d(TAG, "switchScreentime: unscheduledJob SCREENTIME");

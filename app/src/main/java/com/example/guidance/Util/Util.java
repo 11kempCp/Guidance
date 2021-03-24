@@ -6,17 +6,26 @@ import android.app.AppOpsManager;
 import android.app.NotificationManager;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
+import android.content.ClipData;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Build;
 import android.util.Log;
+import android.view.MenuItem;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 import com.example.guidance.R;
+import com.example.guidance.activity.AdviceActivity;
+import com.example.guidance.activity.DailyQuestionActivity;
+import com.example.guidance.activity.DataActivity;
+import com.example.guidance.activity.DebugActivity;
+import com.example.guidance.activity.JustificationActivity;
+import com.example.guidance.activity.MainActivity;
 import com.example.guidance.jobServices.AdviceJobService;
 import com.example.guidance.jobServices.AmbientTempJobService;
 import com.example.guidance.jobServices.DailyQuestionJobService;
@@ -486,6 +495,8 @@ public class Util {
         return firstDate.getDate() == secondDate.getDate() && firstDate.getMonth() == secondDate.getMonth() &&
                 firstDate.getYear() == secondDate.getYear();
     }
+
+
 
 
 }

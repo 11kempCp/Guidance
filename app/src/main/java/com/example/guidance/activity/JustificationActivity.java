@@ -102,6 +102,10 @@ public class JustificationActivity extends AppCompatActivity implements Navigati
                 myIntent = new Intent(this, DailyQuestionActivity.class);
                 startActivity(myIntent);
                 break;
+            case R.id.nav_ranking:
+                myIntent = new Intent(this, RankingActivity.class);
+                startActivity(myIntent);
+                break;
         }
         return true;
     }

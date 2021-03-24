@@ -28,6 +28,8 @@ import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatab
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.initialiseDataType;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.intelligentAgentEntry;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.isDataTypeInitialised;
+import static com.example.guidance.realm.databasefunctions.RankingDatabaseFunctions.initialiseRanking;
+import static com.example.guidance.realm.databasefunctions.RankingDatabaseFunctions.isRankingInitialised;
 import static com.example.guidance.realm.databasefunctions.UserInformationDatabaseFunctions.userInformationEntry;
 
 public class PasscodeActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -108,6 +110,12 @@ public class PasscodeActivity extends AppCompatActivity implements AdapterView.O
                 initialiseDataType(PasscodeActivity.this);
             } else {
                 Log.d(TAG, "dataType already initialised");
+            }
+
+            if (!isRankingInitialised(this)) {
+                initialiseRanking(this, 0,1,2,3,4, 3000,60);
+            } else {
+                Log.d(TAG, "ranking already initialised");
             }
 
             requestPerms(this, PasscodeActivity.this);

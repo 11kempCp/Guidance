@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -26,6 +25,7 @@ import io.realm.RealmResults;
 import static com.example.guidance.Util.Util.isSameDate;
 import static com.example.guidance.realm.databasefunctions.LocationDatabaseFunctions.getLocationOverPreviousDays;
 import static com.example.guidance.realm.databasefunctions.MoodDatabaseFunctions.getMoodOverPreviousDays;
+import static com.example.guidance.realm.databasefunctions.RankingDatabaseFunctions.*;
 import static com.example.guidance.realm.databasefunctions.ScreentimeDatabaseFunctions.getScreentimePreviousDay;
 import static com.example.guidance.realm.databasefunctions.SocialnessDatabaseFunctions.getSocialnessOverPreviousDays;
 import static com.example.guidance.realm.databasefunctions.StepsDatabaseFunctions.getStepPreviousDay;
@@ -36,9 +36,11 @@ import static com.example.guidance.realm.databasefunctions.StepsDatabaseFunction
 public class AdviceJobService extends JobService {
 
     private static final String TAG = "AdviceJobService";
+
     private static boolean adviceLocation = false;
     private static boolean adviceSteps = false;
     private static boolean adviceScreentime = false;
+
 
     private static final int idealStepcount = 3000; //steps
     private static final int idealScreentimeUsage = 60; //minutes
@@ -47,11 +49,11 @@ public class AdviceJobService extends JobService {
     private static final double idealSocialness = 2.5; //average of more than this
 
 
-    private static final String step = "Step";
-    private static final String screentime = "Screentime";
-    private static final String location = "Location";
-    private static final String socialness = "Socialness";
-    private static final String mood = "Mood";
+//    private static final String step = "Step";
+//    private static final String screentime = "Screentime";
+//    private static final String location = "Location";
+//    private static final String socialness = "Socialness";
+//    private static final String mood = "Mood";
 
     private static final int days = 3;
 
@@ -139,12 +141,7 @@ public class AdviceJobService extends JobService {
 //                Log.d(TAG, "adviceLocation: distanceInMeters " + distanceInMeters);
 
 
-                if (distanceInMeters <= idealThresholdDistance) {
-//                    adviceLocation = adviceLocation * temp;
-//                    underThreshold++;
-                } else {
-//                    overThreshold++;
-//                    adviceLocation = true;
+                if (!(distanceInMeters <= idealThresholdDistance)) {
                     ranking.put(location, true);
                     skipThisDay = loc.getDateTime();
                 }
@@ -155,12 +152,6 @@ public class AdviceJobService extends JobService {
             previous_location.setLatitude(loc.getLatitude());
             previous_location.setLongitude(loc.getLongitude());
         }
-
-//        Log.d(TAG, "adviceLocation: adviceLocation " + adviceLocation);
-//        Log.d(TAG, "adviceLocation: underThreshold " + underThreshold);
-//        Log.d(TAG, "adviceLocation: overThreshold " + overThreshold);
-
-
     }
 
     public void adviceScreentime() {
@@ -169,13 +160,10 @@ public class AdviceJobService extends JobService {
         Screentime screentimePreviousDay = getScreentimePreviousDay(this, currentTime, 1);
 
 
-        AppData[] appDataList = new AppData[0];
-        Screentime most_visible_screentime = null;
+        AppData[] appDataList;
+        Screentime most_visible_screentime;
         boolean sort = false;
 
-//        Log.d(TAG, "previousDaysScreentime size : " + previousDaysScreentime.size());
-
-//        for (Screentime screentime : previousDaysScreentime) {
         Log.d(TAG, "adviceScreentime: " + screentimePreviousDay)
         ;
         Log.d(TAG, "adviceScreentime date: " + screentimePreviousDay.getDateTime());
@@ -208,7 +196,6 @@ public class AdviceJobService extends JobService {
                 }
             }
         }
-//        }
 
         int i = 0;
         for (AppData appData : appDataList) {
@@ -231,13 +218,9 @@ public class AdviceJobService extends JobService {
 
         Log.d(TAG, "THIS : " + dataList);
 
-        Collections.sort(dataList, new Comparator<AppData>() {
-                    @Override
-                    public int compare(AppData o1, AppData o2) {
-                        Log.d(TAG, "compare: " + dataList);
-                        return o1.getTotalTimeInForeground().compareTo(o2.getTotalTimeInForeground());
-
-                    }
+        Collections.sort(dataList, (o1, o2) -> {
+                    Log.d(TAG, "compare: " + dataList);
+                    return o1.getTotalTimeInForeground().compareTo(o2.getTotalTimeInForeground());
                 }
         );
 
@@ -248,7 +231,7 @@ public class AdviceJobService extends JobService {
 
     public void adviceStep() {
         Date currentTime = Calendar.getInstance().getTime();
-        float stepCountPreviousDay = 0;
+        float stepCountPreviousDay;
 
         Step stepPreviousDay = getStepPreviousDay(this, currentTime, 1);
         stepCountPreviousDay = stepPreviousDay.getStepCount();
@@ -270,7 +253,7 @@ public class AdviceJobService extends JobService {
             stepTotalOverPreviousDays += social.getRating();
         }
 
-        float average =  (stepTotalOverPreviousDays / socialnessOverPreviousDays.size());
+        float average = (stepTotalOverPreviousDays / socialnessOverPreviousDays.size());
         if (idealSocialness > average) {
             ranking.put(socialness, true);
         }
@@ -286,7 +269,7 @@ public class AdviceJobService extends JobService {
         for (Mood mood : moodOverPreviousDays) {
             moodTotalOverPreviousDays += mood.getRating();
         }
-        float average =  (moodTotalOverPreviousDays / moodOverPreviousDays.size());
+        float average = (moodTotalOverPreviousDays / moodOverPreviousDays.size());
         if (idealMood > average) {
             ranking.put(mood, true);
         }

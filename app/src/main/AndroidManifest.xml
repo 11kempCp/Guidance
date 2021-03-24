@@ -7,20 +7,18 @@
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" /> <!-- Required for all JobServices -->
     <permission android:name="android.permission.BIND_JOB_SERVICE" />
 
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <!-- Provides location accuracy to within a city block. -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <!-- REMOVE ACCESS_FINE_LOCATION -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> <!-- Provides location accuracy to within a city block. -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- REMOVE ACCESS_FINE_LOCATION -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <!-- Required only when requesting background location access on
-      Android 10 (API level 29) and higher. -->
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-    <!-- Required for making calls to OpenWeather -->
+    <!--
+ Required only when requesting background location access on
+      Android 10 (API level 29) and higher.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> <!-- Required for making calls to OpenWeather -->
     <uses-permission android:name="android.permission.INTERNET" />
-
-    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
-        tools:ignore="ProtectedPermissions"/>
-
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
 
     <application
         android:name=".app.App"
@@ -29,30 +27,40 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Guidance">
-        <activity android:name=".activity.QuestionaireActivity"
-            android:theme="@style/defaultAppTheme.NoActionBar">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
 
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+        <activity android:name=".activity.RankingActivity"
+            android:label="@string/ranking"
+
+            android:theme="@style/defaultAppTheme.NoActionBar">
+
 
         </activity>
 
 
         <activity
-            android:name=".activity.PasscodeActivity"
-            android:theme="@style/defaultAppTheme.NoActionBar" >
+            android:name=".activity.QuestionaireActivity"
+            android:theme="@style/defaultAppTheme.NoActionBar">
 
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
 
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
 
         </activity>
+        <activity
+            android:name=".activity.PasscodeActivity"
+            android:theme="@style/defaultAppTheme.NoActionBar">
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
 
 
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+
+        </activity>
         <activity
             android:name=".activity.LocationTestingActivity"
             android:parentActivityName=".activity.MainActivity" />
@@ -61,16 +69,17 @@
             android:label="@string/daily_question"
             android:parentActivityName=".activity.MainActivity"
             android:theme="@style/defaultAppTheme.NoActionBar" />
-
         <activity
             android:name=".activity.DebugActivity"
             android:label="@string/debug"
-            android:theme="@style/defaultAppTheme.NoActionBar" >
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
+            android:theme="@style/defaultAppTheme.NoActionBar">
 
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
 
         </activity>
 
@@ -83,25 +92,24 @@
         <activity
             android:name=".activity.AdviceActivity"
             android:label="@string/advice"
-            android:theme="@style/defaultAppTheme.NoActionBar" >
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
+            android:theme="@style/defaultAppTheme.NoActionBar">
 
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
 
         </activity>
-
         <activity
             android:name=".activity.JustificationActivity"
             android:label="@string/justification"
             android:theme="@style/defaultAppTheme.NoActionBar" />
-
         <activity
             android:name=".activity.DataActivity"
             android:label="@string/data"
             android:theme="@style/defaultAppTheme.NoActionBar" />
-
         <activity
             android:name=".activity.MainActivity"
             android:theme="@style/defaultAppTheme.NoActionBar">
@@ -111,10 +119,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
-
-
 
         <service
             android:name=".jobServices.StepsJobService"
@@ -137,43 +141,36 @@
         <service
             android:name=".jobServices.LocationJobService"
             android:enabled="true"
-            android:label="Location JobService"
             android:foregroundServiceType="location"
+            android:label="Location JobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-
         <service
             android:name=".services.LocationService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="location"
             tools:node="merge" />
-
         <service
             android:name=".jobServices.WeatherJobService"
             android:enabled="true"
             android:label="Weather Job Service"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service android:name=".services.WeatherService" />
-
         <service
             android:name=".jobServices.QuestionnaireJobService"
             android:enabled="true"
             android:label="Questionnaire JobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-
         <service
             android:name=".jobServices.ScreentimeJobService"
             android:enabled="true"
             android:label="Screentime JobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-
-
         <service
             android:name=".jobServices.AdviceJobService"
             android:enabled="true"
             android:label="Advice JobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-
     </application>
 
 </manifest>
