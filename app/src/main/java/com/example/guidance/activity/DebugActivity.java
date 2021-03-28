@@ -26,7 +26,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.guidance.R;
 import com.example.guidance.ServiceReceiver.onPauseServiceReceiver;
 import com.example.guidance.Util.Util;
-import com.example.guidance.jobServices.LocationJobService;
 import com.example.guidance.jobServices.ScreentimeJobService;
 import com.example.guidance.jobServices.WeatherJobService;
 import com.example.guidance.realm.model.Ambient_Temperature;
@@ -53,13 +52,11 @@ import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.example.guidance.Util.IA.FEMALE;
 import static com.example.guidance.Util.IA.MALE;
 import static com.example.guidance.Util.Util.LOCATION;
 import static com.example.guidance.Util.Util.SCREENTIME;
 import static com.example.guidance.Util.Util.WEATHER;
-import static com.example.guidance.Util.Util.checkPermissionsAndSchedule;
 import static com.example.guidance.Util.Util.getUnscheduledJobs;
 import static com.example.guidance.Util.Util.navigationViewVisibility;
 import static com.example.guidance.Util.Util.scheduleJob;
@@ -251,6 +248,10 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
                 break;
             case R.id.nav_ranking:
                 myIntent = new Intent(this, RankingActivity.class);
+                startActivity(myIntent);
+                break;
+            case R.id.nav_intelligent_agent_properties:
+                myIntent = new Intent(this, IntelligentAgentPropertiesActivity.class);
                 startActivity(myIntent);
                 break;
         }

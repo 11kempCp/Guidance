@@ -29,9 +29,7 @@ import java.util.Date;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
-import io.realm.RealmQuery;
 import io.realm.RealmResults;
-import io.realm.Sort;
 
 import static com.example.guidance.Util.Util.navigationViewVisibility;
 import static com.example.guidance.Util.Util.scheduleAdvice;
@@ -139,6 +137,10 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
                 myIntent = new Intent(this, RankingActivity.class);
                 startActivity(myIntent);
                 break;
+            case R.id.nav_intelligent_agent_properties:
+                myIntent = new Intent(this, IntelligentAgentPropertiesActivity.class);
+                startActivity(myIntent);
+                break;
         }
 
 
@@ -210,7 +212,7 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
     public void displayDataType(View view) {
         Data_Type dataType = getDataType(this);
 
-        Log.d(TAG, "displayDataType "  + " DataTypeUsageData full list: " + dataType);
+        Log.d(TAG, "displayDataType " + " DataTypeUsageData full list: " + dataType);
 
         this.view.setText("");
 

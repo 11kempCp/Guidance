@@ -273,6 +273,16 @@
     <string name="justification">Justification</string>
     <string name="daily_question">Daily Questions</string>
     <string name="ranking">Advice Ranking</string>
+    <string name="intelligent_agent_properties">Intelligent Agent Properties</string>
+    <!--End of Activity Name Strings-->
+
+    <!--End of Activity Name Strings-->
+    <string name="intelligent_agent_data_analysis_type">Intelligent Agent Data Analysis Method: </string>
+    <string name="intelligent_agent_advice_type">Intelligent Agent Advice Type: </string>
+    <string name="intelligent_agent_gender">Intelligent Agent Gender: </string>
+    <string name="intelligent_agent_interaction_amount">Intelligent Agent Interaction Amount: </string>
+    <string name="intelligent_agent_output">Intelligent Agent Output Method: </string>
+
     <!--End of Activity Name Strings-->
 
     <!--Start of Periodic Job Times-->

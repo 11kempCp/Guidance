@@ -70,7 +70,7 @@ public class DailyQuestionActivity extends AppCompatActivity implements Navigati
 
 
         //hides the navigation items that shouldn't be shown
-        navigationViewVisibility(navigationView,intelligent_agent, dataType);
+        navigationViewVisibility(navigationView, intelligent_agent, dataType);
 
         setSupportActionBar(toolbar);
 
@@ -89,7 +89,7 @@ public class DailyQuestionActivity extends AppCompatActivity implements Navigati
         dailyQuestionOne = findViewById(R.id.textViewDailyQuestionOne);
         dailyQuestionTwo = findViewById(R.id.textViewDailyQuestionTwo);
         clarificationOne = findViewById(R.id.textViewClarificationOne);
-        clarificationTwo= findViewById(R.id.textViewClarificationTwo);
+        clarificationTwo = findViewById(R.id.textViewClarificationTwo);
 
         radioGroupOne = findViewById(R.id.radioGroupDailyQuestionOne);
         radioGroupTwo = findViewById(R.id.radioGroupDailyQuestionTwo);
@@ -113,23 +113,22 @@ public class DailyQuestionActivity extends AppCompatActivity implements Navigati
 
         Date ct = Calendar.getInstance().getTime();
 
-        if(isMoodEntryToday(this, ct)){
+        if (isMoodEntryToday(this, ct)) {
             int value = getTodaysMoodEntry(this, ct);
 
-            ((RadioButton)radioGroupTwo.getChildAt(value-1)).setChecked(true);
+            ((RadioButton) radioGroupTwo.getChildAt(value - 1)).setChecked(true);
         }
 
-        if(isSocialnessEntryDate(this, ct)){
+        if (isSocialnessEntryDate(this, ct)) {
             int value = getSocialnessDateRating(this, ct);
 
-            ((RadioButton)radioGroupOne.getChildAt(value-1)).setChecked(true);
+            ((RadioButton) radioGroupOne.getChildAt(value - 1)).setChecked(true);
         }
-
 
 
         radioGroupOne.setOnCheckedChangeListener((group, checkedId) -> {
             Util.stopBackgroundNotification(DAILY_QUESTION);
-            switch (checkedId){
+            switch (checkedId) {
                 case R.id.radioButton1QuestionOne:
                     Date currentTime = Calendar.getInstance().getTime();
                     socialnessEntry(this, currentTime, Integer.parseInt(String.valueOf(q1b1.getText())));
@@ -159,7 +158,7 @@ public class DailyQuestionActivity extends AppCompatActivity implements Navigati
 
         radioGroupTwo.setOnCheckedChangeListener((group, checkedId) -> {
             Util.stopBackgroundNotification(DAILY_QUESTION);
-            switch (checkedId){
+            switch (checkedId) {
                 case R.id.radioButton1QuestionTwo:
                     Date currentTime = Calendar.getInstance().getTime();
                     moodEntry(this, currentTime, Integer.parseInt(String.valueOf(q2b1.getText())));
@@ -198,8 +197,6 @@ public class DailyQuestionActivity extends AppCompatActivity implements Navigati
     }
 
 
-
-
     @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -230,6 +227,10 @@ public class DailyQuestionActivity extends AppCompatActivity implements Navigati
                 break;
             case R.id.nav_ranking:
                 myIntent = new Intent(this, RankingActivity.class);
+                startActivity(myIntent);
+                break;
+            case R.id.nav_intelligent_agent_properties:
+                myIntent = new Intent(this, IntelligentAgentPropertiesActivity.class);
                 startActivity(myIntent);
                 break;
         }

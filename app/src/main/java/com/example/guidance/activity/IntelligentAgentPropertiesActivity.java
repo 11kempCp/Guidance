@@ -1,12 +1,5 @@
 package com.example.guidance.activity;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,31 +7,28 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.widget.TextView;
+
 import com.example.guidance.R;
-import com.example.guidance.ServiceReceiver.onPauseServiceReceiver;
 import com.example.guidance.Util.Util;
 import com.example.guidance.realm.model.Data_Type;
 import com.example.guidance.realm.model.Intelligent_Agent;
 import com.google.android.material.navigation.NavigationView;
 
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
-
+import static com.example.guidance.Util.IA.*;
 import static com.example.guidance.Util.Util.navigationViewVisibility;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.isIntelligentAgentInitialised;
-import static com.example.guidance.realm.databasefunctions.QuestionnaireDatabaseFunctions.isQuestionaireAnswered;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    static Realm realm;
-
-    TextView currentAdvice, currentGraph;
-    private DrawerLayout drawer;
-    private boolean questionaire;
+public class IntelligentAgentPropertiesActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     //Tag
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "IntelligentAgentPropertiesActivity";
+    private DrawerLayout drawer;
 
 
     @Override
@@ -46,34 +36,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Intelligent_Agent intelligent_agent = getIntelligentAgent(this);
         Data_Type dataType = getDataType(this);
+
         //sets the activityTheme to the gender of the intelligent agent, this is done before the onCreate
         //so that the user does not see a flash of one colour as it changes to the other
         Util.setActivityTheme(intelligent_agent, this);
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_intelligent_agent_properties);
 
         if (!isIntelligentAgentInitialised(this)) {
             Intent intent = new Intent(this, PasscodeActivity.class);
             startActivity(intent);
         }
+//        drawer = findViewById(R.id.drawer_layout_main_activity);
+        drawer = findViewById(R.id.drawer_layout_intelligent_agent_properties_activity);
+
+        TextView analysis = findViewById(R.id.textViewAnalysis);
+        TextView advice = findViewById(R.id.textViewAdvice);
+        TextView gender = findViewById(R.id.textViewGender);
+        TextView interaction = findViewById(R.id.textViewInteraction);
 
 
-        Realm.init(this);
-        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
-        Realm.setDefaultConfiguration(realmConfiguration);
-
-
-        realm = Realm.getDefaultInstance();
-        currentAdvice = findViewById(R.id.textViewCurrentAdvice);
-        currentGraph = findViewById(R.id.textViewCurrentGraph);
-        drawer = findViewById(R.id.drawer_layout_main_activity);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         //hides the navigation items that shouldn't be shown
-        navigationViewVisibility(navigationView, intelligent_agent, dataType);
+        navigationViewVisibility(navigationView,intelligent_agent, dataType);
         setSupportActionBar(toolbar);
 
         //sets the toolbar color to gender of the intelligent agent
@@ -85,6 +74,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+
+        if(intelligent_agent.getAnalysis().equals(MACHINE_LEARNING)){
+            analysis.setText(TEXT_MACHINE_LEARNING);
+        }else if (intelligent_agent.getAnalysis().equals(TRADITIONAL_PROGRAMMING)){
+            analysis.setText(TEXT_TRADITIONAL_PROGRAMMING);
+        }
+
+        if(intelligent_agent.getAdvice().equals(WITH_JUSTIFICATION)){
+            advice.setText(TEXT_WITH_JUSTIFICATION);
+        }else if (intelligent_agent.getAdvice().equals(NO_JUSTIFICATION)){
+            advice.setText(TEXT_NO_JUSTIFICATION);
+        }
+
+        if(intelligent_agent.getGender().equals(MALE)){
+            gender.setText(TEXT_MALE);
+        }else if (intelligent_agent.getGender().equals(FEMALE)){
+            gender.setText(TEXT_FEMALE);
+        }
+
+        if(intelligent_agent.getInteraction().equals(HIGH)){
+            interaction.setText(TEXT_HIGH);
+        }else if (intelligent_agent.getInteraction().equals(LOW)){
+            interaction.setText(TEXT_LOW);
+        }
+
+
+
     }
 
     @Override
@@ -94,37 +111,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             super.onBackPressed();
         }
-    }
-
-    public void goToAdviceActivity(View view) {
-        Intent myIntent = new Intent(this, AdviceActivity.class);
-        startActivity(myIntent);
-
-    }
-
-    public void goToJustificationActivity(View view) {
-        Intent myIntent = new Intent(this, JustificationActivity.class);
-        startActivity(myIntent);
-    }
-
-    @Override
-    protected void onPause() {
-        Log.d(TAG, "onPause:");
-        Intent broadcastIntent = new Intent();
-        broadcastIntent.setAction("onPauseServiceReceiver");
-        broadcastIntent.setClass(this, onPauseServiceReceiver.class);
-        this.sendBroadcast(broadcastIntent);
-        super.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-//        Intent broadcastIntent = new Intent();
-//        broadcastIntent.setAction("onPauseServiceReceiver");
-//        broadcastIntent.setClass(this, onPauseServiceReceiver.class);
-//        this.sendBroadcast(broadcastIntent);
-
-        super.onDestroy();
     }
 
     @Override
@@ -167,14 +153,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    @Override
-    protected void onResume() {
-        if (isIntelligentAgentInitialised(this) && !isQuestionaireAnswered(this) && !questionaire) {
-            questionaire = true;
-            Intent intent = new Intent(this, QuestionaireActivity.class);
-            startActivity(intent);
-        }
-
-        super.onResume();
-    }
 }

@@ -1,4 +1,4 @@
-package com.example.guidance.activity;
+package com.example.guidance.Util;
 
 import android.graphics.Rect;
 import android.view.View;

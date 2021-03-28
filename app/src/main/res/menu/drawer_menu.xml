@@ -14,6 +14,10 @@
             android:id="@+id/nav_advice"
             android:icon="@drawable/ic_advice"
             android:title="@string/advice" />
+        <item
+            android:id="@+id/nav_intelligent_agent_properties"
+            android:icon="@drawable/ic_intelligent_agent_properties"
+            android:title="@string/intelligent_agent_properties" />
 
 
         <item

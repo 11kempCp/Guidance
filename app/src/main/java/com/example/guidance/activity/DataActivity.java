@@ -193,6 +193,10 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 myIntent = new Intent(this, RankingActivity.class);
                 startActivity(myIntent);
                 break;
+            case R.id.nav_intelligent_agent_properties:
+                myIntent = new Intent(this, IntelligentAgentPropertiesActivity.class);
+                startActivity(myIntent);
+                break;
         }
 
 

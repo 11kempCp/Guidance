@@ -26,6 +26,18 @@ public class IA {
     public static final String SPEECH = "SP";
     public static final String TEXT = "TE";
 
+
+    public static final String TEXT_MACHINE_LEARNING = "Machine Learning";
+    public static final String TEXT_TRADITIONAL_PROGRAMMING = "Traditional Programming";
+    public static final String TEXT_NO_JUSTIFICATION = "Without Justification";
+    public static final String TEXT_WITH_JUSTIFICATION = "With Justification";
+    public static final String TEXT_MALE = "Male";
+    public static final String TEXT_FEMALE = "Female";
+    public static final String TEXT_HIGH = "High";
+    public static final String TEXT_LOW = "Low";
+    public static final String TEXT_SPEECH = "Speech";
+    public static final String TEXT_TEXT = "Text";
+
     public static final List<String> Analysis = Arrays.asList(MACHINE_LEARNING, TRADITIONAL_PROGRAMMING);
     public static final List<String> Advice = Arrays.asList(NO_JUSTIFICATION, WITH_JUSTIFICATION);
     public static final List<String> Gender = Arrays.asList(MALE, FEMALE);

@@ -28,14 +28,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Guidance">
 
-        <activity android:name=".activity.RankingActivity"
-            android:label="@string/ranking"
-
+        <activity
+            android:name=".activity.IntelligentAgentPropertiesActivity"
+            android:label="@string/intelligent_agent_properties"
             android:theme="@style/defaultAppTheme.NoActionBar">
-
 
         </activity>
 
+        <activity
+            android:name=".activity.RankingActivity"
+            android:label="@string/ranking"
+            android:theme="@style/defaultAppTheme.NoActionBar" />
 
         <activity
             android:name=".activity.QuestionaireActivity"

@@ -50,7 +50,7 @@ public class JustificationActivity extends AppCompatActivity implements Navigati
         navigationView.setNavigationItemSelectedListener(this);
 
         //hides the navigation items that shouldn't be shown
-        navigationViewVisibility(navigationView,intelligent_agent, dataType);
+        navigationViewVisibility(navigationView, intelligent_agent, dataType);
 
         //sets the toolbar color to gender of the intelligent agent
         Util.setToolbarColor(intelligent_agent, toolbar, getResources());
@@ -58,7 +58,7 @@ public class JustificationActivity extends AppCompatActivity implements Navigati
         setSupportActionBar(toolbar);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
-                R.string.navigation_drawer_open,R.string.navigation_drawer_open);
+                R.string.navigation_drawer_open, R.string.navigation_drawer_open);
 
         drawer.addDrawerListener(toggle);
         toggle.syncState();
@@ -68,9 +68,9 @@ public class JustificationActivity extends AppCompatActivity implements Navigati
 
     @Override
     public void onBackPressed() {
-        if(drawer.isDrawerOpen(GravityCompat.START)){
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }else {
+        } else {
             super.onBackPressed();
         }
     }
@@ -104,6 +104,10 @@ public class JustificationActivity extends AppCompatActivity implements Navigati
                 break;
             case R.id.nav_ranking:
                 myIntent = new Intent(this, RankingActivity.class);
+                startActivity(myIntent);
+                break;
+            case R.id.nav_intelligent_agent_properties:
+                myIntent = new Intent(this, IntelligentAgentPropertiesActivity.class);
                 startActivity(myIntent);
                 break;
         }

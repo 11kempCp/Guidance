@@ -22,6 +22,7 @@ import com.example.guidance.ServiceReceiver.onPauseServiceReceiver;
 import com.example.guidance.Util.MyItemTouchHelper;
 import com.example.guidance.Util.RankingRecyclerAdapter;
 import com.example.guidance.Util.Util;
+import com.example.guidance.Util.VerticalSpacingItemDecorator;
 import com.example.guidance.realm.model.Data_Type;
 import com.example.guidance.realm.model.Intelligent_Agent;
 import com.example.guidance.realm.model.Ranking;
@@ -121,7 +122,7 @@ public class RankingActivity extends AppCompatActivity implements NavigationView
             idealSteps.setVisibility(View.VISIBLE);
             idealStepsLayout.setVisibility(View.VISIBLE);
             idealSteps.setText(String.valueOf(ranking.getIdealStepCount()));
-        }else{
+        } else {
             idealSteps.setVisibility(View.INVISIBLE);
             idealStepsLayout.setVisibility(View.INVISIBLE);
         }
@@ -131,7 +132,7 @@ public class RankingActivity extends AppCompatActivity implements NavigationView
             screentimeLimitLayout.setVisibility(View.VISIBLE);
             screentimeLimit.setText(String.valueOf(ranking.getScreentimeLimit()));
 
-        }else{
+        } else {
             screentimeLimit.setVisibility(View.INVISIBLE);
             screentimeLimitLayout.setVisibility(View.INVISIBLE);
         }
@@ -177,6 +178,10 @@ public class RankingActivity extends AppCompatActivity implements NavigationView
                 break;
             case R.id.nav_ranking:
                 myIntent = new Intent(this, RankingActivity.class);
+                startActivity(myIntent);
+                break;
+            case R.id.nav_intelligent_agent_properties:
+                myIntent = new Intent(this, IntelligentAgentPropertiesActivity.class);
                 startActivity(myIntent);
                 break;
         }
@@ -290,7 +295,7 @@ public class RankingActivity extends AppCompatActivity implements NavigationView
         Date currentTime = Calendar.getInstance().getTime();
         if (rankingInit) {
             updateRanking(this, pos_step, pos_location, pos_screentime, pos_socialness, pos_mood, pos_idealStepCount, pos_screentimeLimit);
-            insertRankingUsageData(this,currentTime, pos_step, pos_location, pos_screentime, pos_socialness, pos_mood, pos_idealStepCount, pos_screentimeLimit);
+            insertRankingUsageData(this, currentTime, pos_step, pos_location, pos_screentime, pos_socialness, pos_mood, pos_idealStepCount, pos_screentimeLimit);
         }
 
     }
