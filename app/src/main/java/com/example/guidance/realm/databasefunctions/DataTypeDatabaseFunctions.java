@@ -44,17 +44,17 @@ public class DataTypeDatabaseFunctions {
             // Instantiate the class using the factory function.
             Data_Type init = r.createObject(Data_Type.class, new ObjectId());
             // Configure the instance.
-            init.setSteps(true);
-            init.setDistance_traveled(true);
-            init.setLocation(true);
-            init.setAmbient_temp(true);
-            init.setScreentime(true);
-            init.setSleep_tracking(true);
-            init.setWeather(true);
-            init.setExternal_temp(true);
-            init.setSun(true);
-            init.setSocialness(true);
-            init.setMood(true);
+            init.setSteps(false);
+            init.setDistance_traveled(false);
+            init.setLocation(false);
+            init.setAmbient_temp(false);
+            init.setScreentime(false);
+            init.setSleep_tracking(false);
+            init.setWeather(false);
+            init.setExternal_temp(false);
+            init.setSun(false);
+            init.setSocialness(false);
+            init.setMood(false);
         }, new Realm.Transaction.OnSuccess() {
             @Override
             public void onSuccess() {

@@ -206,4 +206,17 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
         Log.d(TAG, "deleteScreentime: ");
 
     }
+
+    public void displayDataType(View view) {
+        Data_Type dataType = getDataType(this);
+
+        Log.d(TAG, "displayDataType "  + " DataTypeUsageData full list: " + dataType);
+
+        this.view.setText("");
+
+        String displayString = " " + dataType + "\n" + " " + "\n";
+        this.view.setText(displayString);
+
+
+    }
 }

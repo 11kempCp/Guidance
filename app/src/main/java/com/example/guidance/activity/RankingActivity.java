@@ -30,12 +30,15 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import static com.example.guidance.Util.Util.navigationViewVisibility;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.databasefunctions.RankingDatabaseFunctions.getRanking;
 import static com.example.guidance.realm.databasefunctions.RankingDatabaseFunctions.getRankingList;
+import static com.example.guidance.realm.databasefunctions.RankingDatabaseFunctions.insertRankingUsageData;
 import static com.example.guidance.realm.databasefunctions.RankingDatabaseFunctions.isRankingInitialised;
 import static com.example.guidance.realm.databasefunctions.RankingDatabaseFunctions.location;
 import static com.example.guidance.realm.databasefunctions.RankingDatabaseFunctions.mood;
@@ -284,10 +287,10 @@ public class RankingActivity extends AppCompatActivity implements NavigationView
 //        Log.d(TAG, "pos_mood: " + pos_mood);
 
 
-
+        Date currentTime = Calendar.getInstance().getTime();
         if (rankingInit) {
             updateRanking(this, pos_step, pos_location, pos_screentime, pos_socialness, pos_mood, pos_idealStepCount, pos_screentimeLimit);
-
+            insertRankingUsageData(this,currentTime, pos_step, pos_location, pos_screentime, pos_socialness, pos_mood, pos_idealStepCount, pos_screentimeLimit);
         }
 
     }

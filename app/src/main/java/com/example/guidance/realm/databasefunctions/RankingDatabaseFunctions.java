@@ -50,8 +50,8 @@ public class RankingDatabaseFunctions {
         Ranking ranking = getRanking(context);
         Data_Type dataType = getDataType(context);
 
-        Log.d(TAG, "getRankingList:  getDataType " + dataType);
-        Log.d(TAG, "getRankingList:  getRanking " + ranking);
+//        Log.d(TAG, "getRankingList:  getDataType " + dataType);
+//        Log.d(TAG, "getRankingList:  getRanking " + ranking);
 
 
         LinkedHashMap<String, Integer> rankingList = new LinkedHashMap<>();
@@ -76,12 +76,12 @@ public class RankingDatabaseFunctions {
 
 
 //        HashMap<String, Integer> temp = sortbykey(rankingList);
-        Log.d(TAG, "getRankingList:  rankingListSize " + rankingListSize);
-        Log.d(TAG, "getRankingList: dataType.isSteps() " + dataType.isSteps());
-        Log.d(TAG, "getRankingList: dataType.isLocation() " + dataType.isLocation());
-        Log.d(TAG, "getRankingList: dataType.isScreentime() " + dataType.isScreentime());
-        Log.d(TAG, "getRankingList: dataType.isMood() " + dataType.isMood());
-        Log.d(TAG, "getRankingList: dataType.isSocialness() " + dataType.isSocialness());
+//        Log.d(TAG, "getRankingList:  rankingListSize " + rankingListSize);
+//        Log.d(TAG, "getRankingList: dataType.isSteps() " + dataType.isSteps());
+//        Log.d(TAG, "getRankingList: dataType.isLocation() " + dataType.isLocation());
+//        Log.d(TAG, "getRankingList: dataType.isScreentime() " + dataType.isScreentime());
+//        Log.d(TAG, "getRankingList: dataType.isMood() " + dataType.isMood());
+//        Log.d(TAG, "getRankingList: dataType.isSocialness() " + dataType.isSocialness());
 
 
 //        ArrayList<String> result = new ArrayList<>(5);
@@ -164,16 +164,16 @@ public class RankingDatabaseFunctions {
             }
         }
 
-        ArrayList<String> test = new ArrayList<>();
+        ArrayList<String> removeNull = new ArrayList<>();
         for(String res: result){
             if(res!=null){
-                test.add(res);
+                removeNull.add(res);
             }
         }
 
-        Log.d(TAG, "getRankingList:  result " + Arrays.toString(result));
-        Log.d(TAG, "getRankingList:  test " + test);
-        return test;
+//        Log.d(TAG, "getRankingList:  result " + Arrays.toString(result));
+//        Log.d(TAG, "getRankingList:  test " + test);
+        return removeNull;
 
     }
 
@@ -181,7 +181,7 @@ public class RankingDatabaseFunctions {
         int i = 0;
         for (String pos : result) {
             if (pos == null) {
-                Log.d(TAG, "getFirstAvailableSpace: " + i);
+//                Log.d(TAG, "getFirstAvailableSpace: " + i);
                 return i;
             }
             i++;

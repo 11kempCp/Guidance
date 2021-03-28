@@ -86,6 +86,17 @@
                 app:layout_constraintStart_toStartOf="@+id/buttonLocation"
                 app:layout_constraintTop_toBottomOf="@+id/buttonLocation" />
 
+            <Button
+                android:id="@+id/button16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/display_data_type"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/button17"
+                app:layout_constraintTop_toTopOf="@+id/button17"
+                android:onClick="displayDataType"
+                />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -3,6 +3,7 @@ package com.example.guidance.realm.databasefunctions;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.guidance.realm.model.Intelligent_Agent;
 import com.example.guidance.realm.model.User_Information;
 
 import org.bson.types.ObjectId;
@@ -12,6 +13,7 @@ import java.util.Date;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmQuery;
 
 /**
  * Created by Conor K on 20/03/2021.
@@ -73,5 +75,17 @@ public class UserInformationDatabaseFunctions {
         });
         realm.close();
     }
+
+    public static User_Information getUserInformation(Context context) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+        RealmQuery<User_Information> tasksQuery = realm.where(User_Information.class);
+//        realm.close();
+
+        return tasksQuery.findFirst();
+    }
+
 
 }

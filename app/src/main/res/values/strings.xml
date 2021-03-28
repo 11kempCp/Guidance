@@ -34,6 +34,7 @@
     <string name="display_mood">Display All Mood</string>
     <string name="display_socialness">Display All Socialness</string>
     <string name="display_location">Display All Location</string>
+    <string name="display_data_type">Display All DataType</string>
     <string name="display_steps">Display All Steps</string>
     <string name="display_weather">Display All Weather</string>
     <string name="display_intelligent_agent">Display IA</string>
@@ -305,7 +306,7 @@
 
     <!--Start of Advice Ranking-->
     <string name="idealStepCount">Ideal Step Count</string>
-    <string name="idealScreentimeCount">Screentime Limit</string>
+    <string name="idealScreentimeCount">Screentime Limit (Minutes)</string>
 
     <!--    // todo add more-->
     <string-array name="advice_ranking_list">
