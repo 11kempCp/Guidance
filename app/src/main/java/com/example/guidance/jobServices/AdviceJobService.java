@@ -41,7 +41,7 @@ import static com.example.guidance.Util.Advice.getMoodAdvice;
 import static com.example.guidance.Util.Advice.getScreentimeAdvice;
 import static com.example.guidance.Util.Advice.getSocialnessAdvice;
 import static com.example.guidance.Util.Advice.getStepAdvice;
-import static com.example.guidance.Util.IA.NO_JUSTIFICATION;
+import static com.example.guidance.Util.IA.*;
 import static com.example.guidance.Util.IA.WITH_JUSTIFICATION;
 import static com.example.guidance.Util.Util.ADVICE;
 import static com.example.guidance.Util.Util.isSameDate;
@@ -461,28 +461,33 @@ public class AdviceJobService extends JobService {
         String text = "";
         Intelligent_Agent intelligent_agent = getIntelligentAgent(this);
         User_Information user_information = getUserInformation(this);
+        String name = "";
+        boolean nameExists = false;
+
+        if (user_information.getName() != null) {
+            //gets the name
+            name = user_information.getName();
+            nameExists = true;
+        }
 
         if (adviceKey.equals(step)) {
-
             //if the user has provided their name to the IA
-            if (user_information.getName() != null) {
-                //gets the name
-                String name = user_information.getName();
+            if (nameExists) {
                 //if the user is in the WITH_JUSTIFICATION group
-                if (intelligent_agent.getAdvice().equals(WITH_JUSTIFICATION)) {
-
+                if (withJustification(intelligent_agent)) {
                     text = getStepAdvice(0, days, adviceJustification.getJustificationStep().getStepCount(), name);
+
                     //if the user is in the NO_JUSTIFICATION group
-                } else if (intelligent_agent.getAdvice().equals(NO_JUSTIFICATION)) {
+                } else if (noJustification(intelligent_agent)) {
                     text = getStepAdvice(0, name);
                 }
             } else {
                 //if the user is in the WITH_JUSTIFICATION group
-                if (intelligent_agent.getAdvice().equals(WITH_JUSTIFICATION)) {
+                if (withJustification(intelligent_agent)) {
                     text = getStepAdvice(0, days, adviceJustification.getJustificationStep().getStepCount());
 
                     //if the user is in the NO_JUSTIFICATION group
-                } else if (intelligent_agent.getAdvice().equals(NO_JUSTIFICATION)) {
+                } else if (noJustification(intelligent_agent)) {
                     text = getStepAdvice(0);
                 }
             }
@@ -494,27 +499,24 @@ public class AdviceJobService extends JobService {
         if (adviceKey.equals(screentime)) {
             AppData[] screentime = adviceJustification.getJustificationScreentime();
 
-
             //if the user has provided their name to the IA
-            if (user_information.getName() != null) {
-                //gets the name
-                String name = user_information.getName();
+            if (nameExists) {
                 //if the user is in the WITH_JUSTIFICATION group
-                if (intelligent_agent.getAdvice().equals(WITH_JUSTIFICATION)) {
+                if (withJustification(intelligent_agent)) {
 
-                    text = getScreentimeAdvice(0, screentime[0].getPackageName(), screentime[0].getTotalTimeInForeground(), name);
+                    text = getScreentimeAdvice(1, screentime[0].getPackageName(), screentime[0].getTotalTimeInForeground(), name);
                     //if the user is in the NO_JUSTIFICATION group
-                } else if (intelligent_agent.getAdvice().equals(NO_JUSTIFICATION)) {
-                    text = getScreentimeAdvice(0, screentime[0].getPackageName(), name);
+                } else if (noJustification(intelligent_agent)) {
+                    text = getScreentimeAdvice(1, screentime[0].getPackageName(), name);
                 }
             } else {
                 //if the user is in the WITH_JUSTIFICATION group
-                if (intelligent_agent.getAdvice().equals(WITH_JUSTIFICATION)) {
-                    text = getScreentimeAdvice(0, screentime[0].getPackageName(), screentime[0].getTotalTimeInForeground());
+                if (withJustification(intelligent_agent)) {
+                    text = getScreentimeAdvice(1, screentime[0].getPackageName(), screentime[0].getTotalTimeInForeground());
 
                     //if the user is in the NO_JUSTIFICATION group
-                } else if (intelligent_agent.getAdvice().equals(NO_JUSTIFICATION)) {
-                    text = getScreentimeAdvice(0, screentime[0].getPackageName());
+                } else if (noJustification(intelligent_agent)) {
+                    text = getScreentimeAdvice(1, screentime[0].getPackageName());
                 }
             }
 
@@ -522,29 +524,24 @@ public class AdviceJobService extends JobService {
 
 
         if (adviceKey.equals(location)) {
-            adviceJustification.getJustificationScreentime();
-
-
             //if the user has provided their name to the IA
-            if (user_information.getName() != null) {
-                //gets the name
-                String name = user_information.getName();
+            if (nameExists) {
                 //if the user is in the WITH_JUSTIFICATION group
-                if (intelligent_agent.getAdvice().equals(WITH_JUSTIFICATION)) {
+                if (withJustification(intelligent_agent)) {
                     //todo location days is not the same (potentially)
                     text = getLocationAdvice(0, days, name);
                     //if the user is in the NO_JUSTIFICATION group
-                } else if (intelligent_agent.getAdvice().equals(NO_JUSTIFICATION)) {
+                } else if (noJustification(intelligent_agent)) {
                     text = getLocationAdvice(0, name);
                 }
             } else {
                 //if the user is in the WITH_JUSTIFICATION group
-                if (intelligent_agent.getAdvice().equals(WITH_JUSTIFICATION)) {
+                if (withJustification(intelligent_agent)) {
                     //todo location days is not the same (potentially)
                     text = getLocationAdvice(0, days);
 
                     //if the user is in the NO_JUSTIFICATION group
-                } else if (intelligent_agent.getAdvice().equals(NO_JUSTIFICATION)) {
+                } else if (noJustification(intelligent_agent)) {
                     text = getLocationAdvice(0);
                 }
             }
@@ -566,24 +563,22 @@ public class AdviceJobService extends JobService {
 
 
             //if the user has provided their name to the IA
-            if (user_information.getName() != null) {
-                //gets the name
-                String name = user_information.getName();
+            if (nameExists) {
                 //if the user is in the WITH_JUSTIFICATION group
-                if (intelligent_agent.getAdvice().equals(WITH_JUSTIFICATION)) {
+                if (withJustification(intelligent_agent)) {
 
                     text = getSocialnessAdvice(0, days, averageSocialness, name);
                     //if the user is in the NO_JUSTIFICATION group
-                } else if (intelligent_agent.getAdvice().equals(NO_JUSTIFICATION)) {
+                } else if (noJustification(intelligent_agent)) {
                     text = getSocialnessAdvice(0, days, name);
                 }
             } else {
                 //if the user is in the WITH_JUSTIFICATION group
-                if (intelligent_agent.getAdvice().equals(WITH_JUSTIFICATION)) {
+                if (withJustification(intelligent_agent)) {
                     text = getSocialnessAdvice(0, days, averageSocialness);
 
                     //if the user is in the NO_JUSTIFICATION group
-                } else if (intelligent_agent.getAdvice().equals(NO_JUSTIFICATION)) {
+                } else if (noJustification(intelligent_agent)) {
                     text = getSocialnessAdvice(0, days);
                 }
             }
@@ -606,24 +601,22 @@ public class AdviceJobService extends JobService {
 
 
             //if the user has provided their name to the IA
-            if (user_information.getName() != null) {
-                //gets the name
-                String name = user_information.getName();
+            if (nameExists) {
                 //if the user is in the WITH_JUSTIFICATION group
-                if (intelligent_agent.getAdvice().equals(WITH_JUSTIFICATION)) {
+                if (withJustification(intelligent_agent)) {
 
                     text = getMoodAdvice(0, days, averageMood, name);
                     //if the user is in the NO_JUSTIFICATION group
-                } else if (intelligent_agent.getAdvice().equals(NO_JUSTIFICATION)) {
+                } else if (noJustification(intelligent_agent)) {
                     text = getMoodAdvice(0, days, name);
                 }
             } else {
                 //if the user is in the WITH_JUSTIFICATION group
-                if (intelligent_agent.getAdvice().equals(WITH_JUSTIFICATION)) {
+                if (withJustification(intelligent_agent)) {
                     text = getMoodAdvice(0, days, averageMood);
 
                     //if the user is in the NO_JUSTIFICATION group
-                } else if (intelligent_agent.getAdvice().equals(NO_JUSTIFICATION)) {
+                } else if (noJustification(intelligent_agent)) {
                     text = getMoodAdvice(0, days);
                 }
             }

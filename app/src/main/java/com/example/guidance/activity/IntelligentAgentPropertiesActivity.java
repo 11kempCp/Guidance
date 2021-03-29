@@ -82,9 +82,9 @@ public class IntelligentAgentPropertiesActivity extends AppCompatActivity implem
             analysis.setText(TEXT_TRADITIONAL_PROGRAMMING);
         }
 
-        if(intelligent_agent.getAdvice().equals(WITH_JUSTIFICATION)){
+        if(withJustification(intelligent_agent)){
             advice.setText(TEXT_WITH_JUSTIFICATION);
-        }else if (intelligent_agent.getAdvice().equals(NO_JUSTIFICATION)){
+        }else if (noJustification(intelligent_agent)){
             advice.setText(TEXT_NO_JUSTIFICATION);
         }
 

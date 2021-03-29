@@ -1,9 +1,9 @@
 package com.example.guidance.Util;
 
+import com.example.guidance.realm.model.Intelligent_Agent;
+
 import java.util.Arrays;
 import java.util.List;
-
-import static com.example.guidance.Util.Util.*;
 
 /**
  * Created by Conor K on 08/03/2021.
@@ -49,5 +49,15 @@ public class IA {
 //     MLWJXYHHSP, MLWJXYHHTE, MLWJXYLLSP, MLWJXYLLTE, MLWJXXHHSP, MLWJXXHHTE, MLWJXXLLSP, MLWJXXLLTE,
 //     TPNJXYHHSP, TPNJXYHHTE, TPNJXYLLSP, TPNJXYLLTE, TPNJXXHHSP, TPNJXXHHTE, TPNJXXLLSP, TPNJXXLLTE,
 //     TPWJXYHHSP, TPWJXYHHTE, TPWJXYLLSP, TPWJXYLLTE, TPWJXXHHSP, TPWJXXHHTE, TPWJXXLLSP, TPWJXXLLTE]
+
+
+    public static boolean withJustification(Intelligent_Agent intelligent_agent) {
+        return intelligent_agent.getAdvice().equals(WITH_JUSTIFICATION);
+    }
+
+    public static boolean noJustification(Intelligent_Agent intelligent_agent) {
+        return intelligent_agent.getAdvice().equals(NO_JUSTIFICATION);
+    }
+
 
 }

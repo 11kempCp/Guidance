@@ -442,7 +442,7 @@ public class Util {
 
     public static void navigationViewIntelligentAgent(NavigationView navigationView, Intelligent_Agent intelligent_agent) {
         if (intelligent_agent != null) {
-            navigationView.getMenu().findItem(R.id.nav_justification).setVisible(!intelligent_agent.getAdvice().equals(NO_JUSTIFICATION));
+            navigationView.getMenu().findItem(R.id.nav_justification).setVisible(!noJustification(intelligent_agent));
         }
     }
 
