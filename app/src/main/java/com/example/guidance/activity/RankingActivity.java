@@ -244,45 +244,56 @@ public class RankingActivity extends AppCompatActivity implements NavigationView
         int number = 0;
         if (dataType.isSteps()) {
             number++;
-
-
             pos_idealStepCount = Integer.valueOf(String.valueOf(idealSteps.getText()));
         }
+
         if (dataType.isScreentime()) {
             pos_screentimeLimit = Integer.valueOf(String.valueOf(screentimeLimit.getText()));
 
             number++;
         }
+
         if (dataType.isLocation()) {
             number++;
         }
+
         if (dataType.isSocialness()) {
             number++;
         }
+
         if (dataType.isMood()) {
             number++;
         }
 
 
         for (int i = 0; i < number; i++) {
-            String title = ((TextView) mRecyclerView.findViewHolderForAdapterPosition(i).itemView.findViewById(R.id.ranking_title)).getText().toString();
-            switch (title) {
-                case step:
-                    pos_step = i;
-                    break;
-                case screentime:
-                    pos_screentime = i;
-                    break;
-                case location:
-                    pos_location = i;
-                    break;
-                case socialness:
-                    pos_socialness = i;
-                    break;
-                case mood:
-                    pos_mood = i;
-                    break;
+            Log.d(TAG, "saveRankingPreference: i " + i);
+
+            RecyclerView.ViewHolder test = mRecyclerView.findViewHolderForAdapterPosition(i);
+            if(test!=null){
+                String title = ((TextView) test.itemView.findViewById(R.id.ranking_title)).getText().toString();
+                switch (title) {
+                    case step:
+                        pos_step = i;
+                        break;
+                    case screentime:
+                        pos_screentime = i;
+                        break;
+                    case location:
+                        pos_location = i;
+                        break;
+                    case socialness:
+                        pos_socialness = i;
+                        break;
+                    case mood:
+                        pos_mood = i;
+                        break;
+                }
+            }else{
+                Log.d(TAG, "saveRankingPreference: null");
             }
+
+
 
         }
 
