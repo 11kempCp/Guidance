@@ -26,15 +26,18 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 import static com.example.guidance.Util.Util.DAILY_QUESTION;
 import static com.example.guidance.Util.Util.navigationViewVisibility;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
+import static com.example.guidance.realm.databasefunctions.MoodDatabaseFunctions.getMoodEntryDate;
 import static com.example.guidance.realm.databasefunctions.MoodDatabaseFunctions.getTodaysMoodEntry;
 import static com.example.guidance.realm.databasefunctions.MoodDatabaseFunctions.isMoodEntryToday;
 import static com.example.guidance.realm.databasefunctions.MoodDatabaseFunctions.moodEntry;
 import static com.example.guidance.realm.databasefunctions.SocialnessDatabaseFunctions.getSocialnessDateRating;
+import static com.example.guidance.realm.databasefunctions.SocialnessDatabaseFunctions.getSocialnessEntryDate;
 import static com.example.guidance.realm.databasefunctions.SocialnessDatabaseFunctions.isSocialnessEntryDate;
 import static com.example.guidance.realm.databasefunctions.SocialnessDatabaseFunctions.socialnessEntry;
 
@@ -114,13 +117,13 @@ public class DailyQuestionActivity extends AppCompatActivity implements Navigati
         Date ct = Calendar.getInstance().getTime();
 
         if (isMoodEntryToday(this, ct)) {
-            int value = getTodaysMoodEntry(this, ct);
+            int value = Objects.requireNonNull(getMoodEntryDate(this, ct)).getRating();
 
             ((RadioButton) radioGroupTwo.getChildAt(value - 1)).setChecked(true);
         }
 
         if (isSocialnessEntryDate(this, ct)) {
-            int value = getSocialnessDateRating(this, ct);
+            int value = Objects.requireNonNull(getSocialnessEntryDate(this, ct)).getRating();
 
             ((RadioButton) radioGroupOne.getChildAt(value - 1)).setChecked(true);
         }

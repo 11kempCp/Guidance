@@ -38,6 +38,7 @@ import io.realm.Sort;
 
 import static com.example.guidance.Util.Util.navigationViewVisibility;
 import static com.example.guidance.Util.Util.scheduleAdvice;
+import static com.example.guidance.Util.Util.scheduleAdviceFollowed;
 import static com.example.guidance.Util.Util.scheduleLocation;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
@@ -168,6 +169,12 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
 
     }
 
+    public void startAdviceFollowedJobService(View view) {
+
+        scheduleAdviceFollowed(this);
+
+    }
+
     public void startLocationJobService(View view) {
 
         scheduleLocation(this);
@@ -259,5 +266,13 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
         }
         this.view.setText(displayString);
 
+    }
+
+    public void deleteAdvice(View view) {
+
+        realm.executeTransactionAsync(r -> {
+            Log.d(TAG, "deleted Screentime");
+            r.delete(Advice.class);
+        });
     }
 }

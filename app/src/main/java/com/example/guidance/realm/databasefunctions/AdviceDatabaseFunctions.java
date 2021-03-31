@@ -162,8 +162,10 @@ public class AdviceDatabaseFunctions {
 
     }
 
-    public static void updateAdviceUsageData(Context context, boolean adviceTaken, ObjectId objectId) {
+    public static void updateAdviceUsageData(Context context, Boolean adviceTaken, ObjectId objectId) {
 
+        Log.d(TAG, "updateAdviceUsageData: ");
+        
         Realm.init(context);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
@@ -177,6 +179,7 @@ public class AdviceDatabaseFunctions {
             if (result == null) {
                 Log.d(TAG, "updateAdviceUsageData: ERROR");
             } else {
+                Log.d(TAG, "updateAdviceUsageData: adviceTaken " + adviceTaken );
                 result.setAdviceTaken(adviceTaken);
                 r.insertOrUpdate(result);
             }

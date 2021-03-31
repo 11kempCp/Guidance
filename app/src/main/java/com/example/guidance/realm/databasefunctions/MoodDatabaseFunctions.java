@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.example.guidance.realm.model.Mood;
 import com.example.guidance.realm.model.Socialness;
+import com.example.guidance.realm.model.Step;
 
 import org.bson.types.ObjectId;
 
@@ -54,16 +55,64 @@ public class MoodDatabaseFunctions {
         Realm realm = Realm.getDefaultInstance();
 
 
-        RealmQuery<Mood> query = realm.where(Mood.class).lessThan("dateTime", currentTime);
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(currentTime);
+        cal1.set(cal1.get(Calendar.YEAR),cal1.get(Calendar.MONTH),cal1.get(Calendar.DATE),0,0,0);
+        Date beginningOfDay = cal1.getTime();
+
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(currentTime);
+        cal2.set(cal2.get(Calendar.YEAR),cal2.get(Calendar.MONTH),cal2.get(Calendar.DATE),23,59,59);
+        Date endOfDay = cal2.getTime();
+
+
+//        RealmQuery<Step> query = realm.where(Step.class).lessThan("dateTime", currentTime);
+        RealmQuery<Mood> query = realm.where(Mood.class).between("dateTime", beginningOfDay,endOfDay);
+        Mood task = query.sort("dateTime", Sort.DESCENDING).findFirst();
+
+
+        if (task == null) {
+            Log.d(TAG, "isMoodEntryToday: false");
+            return false;
+        } else
+            return task.getDateTime().getDate() == currentTime.getDate() && task.getDateTime().getMonth() == currentTime.getMonth() &&
+                    task.getDateTime().getYear() == currentTime.getYear();
+    }
+
+    public static Mood getMoodEntryDate(Context context, Date currentTime) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(currentTime);
+        cal1.set(cal1.get(Calendar.YEAR),cal1.get(Calendar.MONTH),cal1.get(Calendar.DATE),0,0,0);
+        Date beginningOfDay = cal1.getTime();
+
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(currentTime);
+        cal2.set(cal2.get(Calendar.YEAR),cal2.get(Calendar.MONTH),cal2.get(Calendar.DATE),23,59,59);
+        Date endOfDay = cal2.getTime();
+
+
+//        RealmQuery<Step> query = realm.where(Step.class).lessThan("dateTime", currentTime);
+        RealmQuery<Mood> query = realm.where(Mood.class).between("dateTime", beginningOfDay,endOfDay);
         Mood task = query.sort("dateTime", Sort.DESCENDING).findFirst();
 
 
         if (task == null) {
             Log.d(TAG, "isThereAnEntryToday: false");
-            return false;
-        } else
-            return task.getDateTime().getDate() == currentTime.getDate() && task.getDateTime().getMonth() == currentTime.getMonth() &&
-                    task.getDateTime().getYear() == currentTime.getYear();
+            return null;
+        } else if (task.getDateTime().getDate() == currentTime.getDate() && task.getDateTime().getMonth() == currentTime.getMonth() &&
+                task.getDateTime().getYear() == currentTime.getYear()) {
+
+            return task;
+
+        } else {
+            return null;
+        }
+
     }
 
     private static void insertMood(Context context, int value, Date currentTime) {

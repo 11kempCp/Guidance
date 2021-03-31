@@ -6,6 +6,8 @@ import android.util.Log;
 
 import com.example.guidance.realm.model.AppData;
 import com.example.guidance.realm.model.Screentime;
+import com.example.guidance.realm.model.Socialness;
+import com.example.guidance.realm.model.Step;
 
 import org.bson.types.ObjectId;
 
@@ -43,10 +45,24 @@ public class ScreentimeDatabaseFunctions {
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
         Realm realm = Realm.getDefaultInstance();
-        RealmQuery<Screentime> query = realm.where(Screentime.class).lessThan("dateTime", currentTime);
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(currentTime);
+        cal1.set(cal1.get(Calendar.YEAR),cal1.get(Calendar.MONTH),cal1.get(Calendar.DATE),0,0,0);
+        Date beginningOfDay = cal1.getTime();
+
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(currentTime);
+        cal2.set(cal2.get(Calendar.YEAR),cal2.get(Calendar.MONTH),cal2.get(Calendar.DATE),23,59,59);
+        Date endOfDay = cal2.getTime();
+
+
+//        RealmQuery<Step> query = realm.where(Step.class).lessThan("dateTime", currentTime);
+        RealmQuery<Screentime> query = realm.where(Screentime.class).between("dateTime", beginningOfDay,endOfDay);
         Screentime task = query.sort("dateTime", Sort.DESCENDING).findFirst();
+
+
         if (task == null) {
-            Log.d(TAG, "isScreentimeEntryToday: false");
+            Log.d(TAG, "isThereAnEntryToday: false");
             return false;
         } else
             return task.getDateTime().getDate() == currentTime.getDate() && task.getDateTime().getMonth() == currentTime.getMonth() &&
@@ -213,5 +229,43 @@ public class ScreentimeDatabaseFunctions {
         RealmQuery<Screentime> query = realm.where(Screentime.class).lessThan("dateTime", previousDay);
 
         return query.sort("dateTime", Sort.DESCENDING).findFirst();
+    }
+
+
+
+    public static Screentime getScreentimeDate(Context context, Date currentTime) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(currentTime);
+        cal1.set(cal1.get(Calendar.YEAR),cal1.get(Calendar.MONTH),cal1.get(Calendar.DATE),0,0,0);
+        Date beginningOfDay = cal1.getTime();
+
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(currentTime);
+        cal2.set(cal2.get(Calendar.YEAR),cal2.get(Calendar.MONTH),cal2.get(Calendar.DATE),23,59,59);
+        Date endOfDay = cal2.getTime();
+
+
+//        RealmQuery<Step> query = realm.where(Step.class).lessThan("dateTime", currentTime);
+        RealmQuery<Screentime> query = realm.where(Screentime.class).between("dateTime", beginningOfDay,endOfDay);
+        Screentime task = query.sort("dateTime", Sort.DESCENDING).findFirst();
+
+
+        if (task == null) {
+            Log.d(TAG, "isThereAnEntryToday: false");
+            return null;
+        } else if (task.getDateTime().getDate() == currentTime.getDate() && task.getDateTime().getMonth() == currentTime.getMonth() &&
+                task.getDateTime().getYear() == currentTime.getYear()) {
+
+            return task;
+
+        } else {
+            return null;
+        }
+
     }
 }

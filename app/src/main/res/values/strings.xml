@@ -30,6 +30,7 @@
     <string name="delete_ambient_temp">Delete All Ambient Temp</string>
     <string name="delete_screentime">Delete All Screentime</string>
     <string name="delete_location">Delete All Location</string>
+    <string name="delete_advice">Delete Advice</string>
     <string name="display_ambient_temp">Display All Ambient Temp</string>
     <string name="display_mood">Display All Mood</string>
     <string name="display_socialness">Display All Socialness</string>
@@ -60,6 +61,7 @@
     <string name="init_intelligent_agent">Initialise IA</string>
     <string name="intelligent_agent_not_initialised">"Intelligent Agent Not Initialised "</string>
     <string name="startAdviceJobService">Start AdviceJobService</string>
+    <string name="startAdviceFollowedJobService">Start startAdviceFollowedJobService</string>
 
     <!--End of Debug Strings-->
 
@@ -298,6 +300,9 @@
     <integer name="daily_question">120</integer>
     <integer name="weather">1440</integer>
     <integer name="screentime">15</integer>
+    <integer name="questionnaire">360</integer>
+    <integer name="advice">180</integer>
+    <integer name="advice_followed">1440</integer>
     <!--End of Periodic Job Times-->
 
     <!--Start of Daily Questions-->

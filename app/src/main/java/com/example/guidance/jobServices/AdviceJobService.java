@@ -1,11 +1,9 @@
 package com.example.guidance.jobServices;
 
-import android.app.Activity;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
-import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
@@ -16,7 +14,6 @@ import androidx.core.app.NotificationManagerCompat;
 import com.example.guidance.R;
 import com.example.guidance.Util.AdviceJustification;
 import com.example.guidance.activity.AdviceActivity;
-import com.example.guidance.activity.MainActivity;
 import com.example.guidance.app.App;
 import com.example.guidance.realm.model.AppData;
 import com.example.guidance.realm.model.Data_Type;
@@ -39,9 +36,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
-import io.realm.RealmList;
 import io.realm.RealmResults;
 
 import static com.example.guidance.Util.Advice.LocationAdvice.getLocationAdvice;
@@ -54,7 +48,10 @@ import static com.example.guidance.Util.IA.withJustification;
 import static com.example.guidance.Util.Util.ADVICE;
 import static com.example.guidance.Util.Util.changeDayBy;
 import static com.example.guidance.Util.Util.isSameDate;
-import static com.example.guidance.realm.databasefunctions.AdviceDatabaseFunctions.*;
+import static com.example.guidance.realm.databasefunctions.AdviceDatabaseFunctions.convertLocationToRealmList;
+import static com.example.guidance.realm.databasefunctions.AdviceDatabaseFunctions.convertMoodToRealmList;
+import static com.example.guidance.realm.databasefunctions.AdviceDatabaseFunctions.convertSocialnessToRealmList;
+import static com.example.guidance.realm.databasefunctions.AdviceDatabaseFunctions.insertAdvice;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.databasefunctions.LocationDatabaseFunctions.getLocationOverPreviousDays;
@@ -80,11 +77,6 @@ public class AdviceJobService extends JobService {
 
     private static final String TAG = "AdviceJobService";
 
-    private static boolean adviceLocation = false;
-    private static boolean adviceSteps = false;
-    private static boolean adviceScreentime = false;
-
-
     private static int idealStepcount = 3000; //steps
     private static int idealScreentimeUsage = 60; //minutes
     private static final int idealThresholdDistance = 50; //meters
@@ -103,121 +95,128 @@ public class AdviceJobService extends JobService {
     @Override
     public boolean onStartJob(JobParameters params) {
         Log.d(TAG, "onStartJob: ");
+        Date currentTime = Calendar.getInstance().getTime();
+        
+        //todo implement Interaction attribute
+        if(currentTime.getHours() >= 9 && currentTime.getHours() <= 20){
+            Ranking ranking = getRanking(this);
+            Data_Type dataType = getDataType(this);
 
-        Ranking ranking = getRanking(this);
-        Data_Type dataType = getDataType(this);
+            if (ranking.getIdealStepCount() != null) {
+                idealStepcount = ranking.getIdealStepCount();
+            }
 
-        if (ranking.getIdealStepCount() != null) {
-            idealStepcount = ranking.getIdealStepCount();
+            if (ranking.getScreentimeLimit() != null) {
+                idealScreentimeUsage = ranking.getScreentimeLimit();
+            }
+
+
+            ArrayList<String> rankingList = getRankingList(this, 5);
+
+            for (String rank : rankingList) {
+
+                if (rank.equals(step)) {
+                    rankingLinkedHashMap.put(step, false);
+                }
+
+                if (rank.equals(screentime)) {
+                    rankingLinkedHashMap.put(screentime, false);
+                }
+
+                if (rank.equals(location)) {
+                    rankingLinkedHashMap.put(location, false);
+                }
+
+                if (rank.equals(socialness)) {
+                    rankingLinkedHashMap.put(socialness, false);
+                }
+                if (rank.equals(mood)) {
+                    rankingLinkedHashMap.put(mood, false);
+                }
+            }
+
+            if (dataType.isLocation()) {
+
+                RealmResults<Location> temp = adviceLocation();
+                if (temp != null) {
+                    adviceJustification.setJustificationLocation(temp);
+                } else {
+                    rankingLinkedHashMap.put(location, false);
+                }
+
+            }
+
+            if (dataType.isScreentime()) {
+
+                AppData[] temp = adviceScreentime();
+                if (temp != null) {
+                    adviceJustification.setJustificationScreentime(temp);
+                } else {
+                    rankingLinkedHashMap.put(screentime, false);
+                }
+
+            }
+
+            if (dataType.isSteps()) {
+
+                Step temp = adviceStep();
+                if (temp != null) {
+                    adviceJustification.setJustificationStep(temp);
+                } else {
+                    rankingLinkedHashMap.put(step, false);
+                }
+
+            }
+
+            if (dataType.isSocialness()) {
+                RealmResults<Socialness> temp = adviceSocialness();
+                if (temp != null) {
+                    adviceJustification.setJustificationSocialness(temp);
+                } else {
+                    rankingLinkedHashMap.put(socialness, false);
+                }
+
+            }
+
+            if (dataType.isMood()) {
+                RealmResults<Mood> temp = adviceMood();
+                if (temp != null) {
+                    adviceJustification.setJustificationMood(temp);
+                } else {
+                    rankingLinkedHashMap.put(mood, false);
+                }
+
+            }
+
+            int i = 0;
+            int noAdvice = 0;
+            for (String f : rankingLinkedHashMap.keySet()) {
+                i++;
+                Log.d(TAG, i + " Entry " + f);
+
+                if (rankingLinkedHashMap.get(f)) {
+                    Log.d(TAG, "ranking " + rankingLinkedHashMap);
+
+                    Log.d(TAG, "AEWS " + "Advice " + f + " as " + rankingLinkedHashMap.get(f) + " " + adviceJustification);
+
+                    giveAdvice(f, adviceJustification);
+
+
+                    break;
+                } else {
+                    noAdvice++;
+                    Log.d(TAG, "No Advice for " + f);
+                }
+            }
+
+            if (noAdvice == rankingLinkedHashMap.size()) {
+                Log.d(TAG, "No Advice Available");
+                Toast.makeText(this, "No Advice Available", Toast.LENGTH_SHORT).show();
+
+            }
         }
 
-        if (ranking.getScreentimeLimit() != null) {
-            idealScreentimeUsage = ranking.getScreentimeLimit();
-        }
 
-
-        ArrayList<String> rankingList = getRankingList(this, 5);
-
-        for (String rank : rankingList) {
-
-            if (rank.equals(step)) {
-                rankingLinkedHashMap.put(step, false);
-            }
-
-            if (rank.equals(screentime)) {
-                rankingLinkedHashMap.put(screentime, false);
-            }
-
-            if (rank.equals(location)) {
-                rankingLinkedHashMap.put(location, false);
-            }
-
-            if (rank.equals(socialness)) {
-                rankingLinkedHashMap.put(socialness, false);
-            }
-            if (rank.equals(mood)) {
-                rankingLinkedHashMap.put(mood, false);
-            }
-        }
-
-        if (dataType.isLocation()) {
-
-            RealmResults<Location> temp = adviceLocation();
-            if (temp != null) {
-                adviceJustification.setJustificationLocation(temp);
-            } else {
-                rankingLinkedHashMap.put(location, false);
-            }
-
-        }
-
-        if (dataType.isScreentime()) {
-
-            AppData[] temp = adviceScreentime();
-            if (temp != null) {
-                adviceJustification.setJustificationScreentime(temp);
-            } else {
-                rankingLinkedHashMap.put(screentime, false);
-            }
-
-        }
-
-        if (dataType.isSteps()) {
-
-            Step temp = adviceStep();
-            if (temp != null) {
-                adviceJustification.setJustificationStep(temp);
-            } else {
-                rankingLinkedHashMap.put(step, false);
-            }
-
-        }
-
-        if (dataType.isSocialness()) {
-            RealmResults<Socialness> temp = adviceSocialness();
-            if (temp != null) {
-                adviceJustification.setJustificationSocialness(temp);
-            } else {
-                rankingLinkedHashMap.put(socialness, false);
-            }
-
-        }
-
-        if (dataType.isMood()) {
-            RealmResults<Mood> temp = adviceMood();
-            if (temp != null) {
-                adviceJustification.setJustificationMood(temp);
-            } else {
-                rankingLinkedHashMap.put(mood, false);
-            }
-
-        }
-
-        int i = 0;
-        int noAdvice = 0;
-        for (String f : rankingLinkedHashMap.keySet()) {
-            i++;
-            Log.d(TAG, i + " Entry " + f);
-            if (rankingLinkedHashMap.get(f)) {
-                Log.d(TAG, "ranking " + rankingLinkedHashMap);
-
-                Log.d(TAG, "AEWS " + "Advice " + f + " as " + rankingLinkedHashMap.get(f) + " " + adviceJustification);
-
-                giveAdvice(f, adviceJustification);
-
-
-                break;
-            } else {
-                noAdvice++;
-                Log.d(TAG, "No Advice for " + f);
-            }
-        }
-
-        if (noAdvice == rankingLinkedHashMap.size()) {
-            Log.d(TAG, "No Advice Available");
-            Toast.makeText(this, "No Advice Available", Toast.LENGTH_SHORT).show();
-
-        }
 
 
         return false;
@@ -400,11 +399,11 @@ public class AdviceJobService extends JobService {
         if (stepCountPreviousDay < idealStepcount) {
 
             rankingLinkedHashMap.put(step, true);
+            return stepPreviousDay;
+
         }
 
-        if (rankingLinkedHashMap.get(step)) {
-            return stepPreviousDay;
-        }
+
 
         return null;
     }
@@ -429,11 +428,11 @@ public class AdviceJobService extends JobService {
         float average = (socialnessTotalOverPreviousDays / socialnessOverPreviousDays.size());
         if (idealSocialness > average) {
             rankingLinkedHashMap.put(socialness, true);
+            return socialnessOverPreviousDays;
+
         }
 
-        if (rankingLinkedHashMap.get(socialness)) {
-            return socialnessOverPreviousDays;
-        }
+
 
         return null;
 
@@ -459,11 +458,11 @@ public class AdviceJobService extends JobService {
         float average = (moodTotalOverPreviousDays / moodOverPreviousDays.size());
         if (idealMood > average) {
             rankingLinkedHashMap.put(mood, true);
+            return moodOverPreviousDays;
+
         }
 
-        if (rankingLinkedHashMap.get(mood)) {
-            return moodOverPreviousDays;
-        }
+
 
         return null;
 

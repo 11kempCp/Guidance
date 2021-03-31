@@ -28,6 +28,7 @@ import com.example.guidance.ServiceReceiver.onPauseServiceReceiver;
 import com.example.guidance.Util.Util;
 import com.example.guidance.jobServices.ScreentimeJobService;
 import com.example.guidance.jobServices.WeatherJobService;
+import com.example.guidance.realm.model.Advice;
 import com.example.guidance.realm.model.Ambient_Temperature;
 import com.example.guidance.realm.model.AppData;
 import com.example.guidance.realm.model.DataTypeUsageData;
@@ -172,6 +173,13 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
             Log.d(TAG, "deleted Screentime");
             r.delete(Screentime.class);
         });
+
+        realm.executeTransactionAsync(r -> {
+            Log.d(TAG, "deleted Screentime");
+            r.delete(Advice.class);
+        });
+
+
 
         Toast.makeText(this, "Deleted Everything In Realm", Toast.LENGTH_SHORT).show();
     }

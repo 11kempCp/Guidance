@@ -26,6 +26,7 @@ import com.example.guidance.activity.DataActivity;
 import com.example.guidance.activity.DebugActivity;
 import com.example.guidance.activity.JustificationActivity;
 import com.example.guidance.activity.MainActivity;
+import com.example.guidance.jobServices.AdviceFollowedJobService;
 import com.example.guidance.jobServices.AdviceJobService;
 import com.example.guidance.jobServices.AmbientTempJobService;
 import com.example.guidance.jobServices.DailyQuestionJobService;
@@ -75,12 +76,11 @@ public class Util {
     public static final int QUESTIONNAIRE = 6;
     public static final int SCREENTIME = 7;
     public static final int ADVICE = 8;
+    public static final int ADVICE_FOLLOWED = 9;
 
     //  todo change back so that WEATHER is called
 
-    //        public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, WEATHER, QUESTIONNAIRE, SCREENTIME, ADVICE);
-//    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, QUESTIONNAIRE, SCREENTIME, ADVICE);
-    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, QUESTIONNAIRE, SCREENTIME);
+    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION,WEATHER, QUESTIONNAIRE, SCREENTIME, ADVICE ,ADVICE_FOLLOWED);
 
     public static boolean scheduleJob(Context context, Class<?> serviceClass, int jobId, int minutes) {
         Date currentTime = Calendar.getInstance().getTime();
@@ -250,8 +250,7 @@ public class Util {
 
                         break;
                     case QUESTIONNAIRE:
-                        //todo potentially change to hourly?
-                        scheduleJob(context, QuestionnaireJobService.class, QUESTIONNAIRE, context.getResources().getInteger(R.integer.daily));
+                        scheduleJob(context, QuestionnaireJobService.class, QUESTIONNAIRE, context.getResources().getInteger(R.integer.questionnaire));
                         break;
 
                     case SCREENTIME:
@@ -261,6 +260,9 @@ public class Util {
                         break;
                     case ADVICE:
                         scheduleAdvice(context);
+                        break;
+                    case ADVICE_FOLLOWED:
+                        scheduleAdviceFollowed(context);
                         break;
                 }
             }
@@ -490,8 +492,11 @@ public class Util {
     }
 
     public static boolean scheduleAdvice(Context context) {
-        //todo change from default time
-        return scheduleJob(context, AdviceJobService.class, ADVICE, context.getResources().getInteger(R.integer.default_time));
+        //todo implement Interaction attribute
+        return scheduleJob(context, AdviceJobService.class, ADVICE, context.getResources().getInteger(R.integer.advice));
+    }
+    public static boolean scheduleAdviceFollowed(Context context) {
+        return scheduleJob(context, AdviceFollowedJobService.class, ADVICE_FOLLOWED, context.getResources().getInteger(R.integer.advice_followed));
     }
 
     public static boolean isSameDate(Date firstDate, Date secondDate){
