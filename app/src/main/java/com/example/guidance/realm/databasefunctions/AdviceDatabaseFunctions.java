@@ -3,21 +3,22 @@ package com.example.guidance.realm.databasefunctions;
 import android.content.Context;
 import android.util.Log;
 
-import com.example.guidance.Util.AdviceJustification;
 import com.example.guidance.realm.model.Advice;
 import com.example.guidance.realm.model.AdviceUsageData;
 import com.example.guidance.realm.model.AppData;
 import com.example.guidance.realm.model.Justification;
 import com.example.guidance.realm.model.Location;
 import com.example.guidance.realm.model.Mood;
-import com.example.guidance.realm.model.Screentime;
 import com.example.guidance.realm.model.Socialness;
+import com.example.guidance.realm.model.Step;
 
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -33,10 +34,12 @@ public class AdviceDatabaseFunctions {
 
     private static final String TAG = "AdviceDatabaseFunctions";
 
-
+    //todo change realmResults into a list
     public static void insertAdvice(Context context, Date dateTimeAdviceGiven, String adviceType
-            , Date dateTimeAdviceFor, Float steps, AppData screentime,
-                                    Float socialness, Float mood, AdviceJustification justification) {
+            , Date dateTimeAdviceFor, Float stepsCount, AppData screentime,
+                                    Float socialness, Float mood, Step step, AppData[] appDataRealmList,
+                                    List<Location> locationRealmList, List<Socialness> socialnessRealmList,
+                                    List<Mood> moodRealmList) {
 
         Realm.init(context);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
@@ -49,7 +52,7 @@ public class AdviceDatabaseFunctions {
             init.setDateTimeAdviceGiven(dateTimeAdviceGiven);
             init.setAdviceType(adviceType);
             init.setDateTimeAdviceFor(dateTimeAdviceFor);
-            init.setSteps(steps);
+            init.setSteps(stepsCount);
             init.setScreentime(screentime);
             init.setSocialness(socialness);
             init.setMood(mood);
@@ -62,25 +65,45 @@ public class AdviceDatabaseFunctions {
             init.setAdviceUsageData(adviceUsageData);
 
             Justification just = r.createObject(Justification.class, new ObjectId());
-            just.setJustificationStep(justification.getJustificationStep());
-            RealmList <AppData> appDataRealmList = new RealmList<>(justification.getJustificationScreentime());
-
-            just.setJustificationScreentime(appDataRealmList);
-
-            RealmList <Location> locationRealmList = new RealmList<>();
-            locationRealmList.addAll(justification.getJustificationLocation().subList(0, justification.getJustificationLocation().size()));
-            just.setJustificationLocation(locationRealmList);
-
-            RealmList <Socialness> socialnessRealmList = new RealmList<>();
-            socialnessRealmList.addAll(justification.getJustificationSocialness().subList(0, justification.getJustificationSocialness().size()));
-            just.setJustificationSocialness(socialnessRealmList);
-
-            RealmList <Mood> moodRealmList = new RealmList<>();
-            moodRealmList.addAll(justification.getJustificationMood().subList(0, justification.getJustificationMood().size()));
-            just.setJustificationMood(moodRealmList);
-
-
+//            Justification just = new Justification();
             init.setJustification(just);
+
+            if (step != null) {
+                just.setJustificationStep(step);
+            }
+
+            if (appDataRealmList != null) {
+                for(AppData a :appDataRealmList){
+//                    just.getJustificationScreentime().add(a);
+                    init.getJustification().getJustificationScreentime().add(a);
+                }
+
+            }
+
+            if (locationRealmList != null) {
+
+                for(Location l :locationRealmList){
+                    init.getJustification().getJustificationLocation().add(l);
+                }
+            }
+
+            if (socialnessRealmList != null) {
+
+                for(Socialness s: socialnessRealmList){
+                    init.getJustification().getJustificationSocialness().add(s);
+
+                }
+            }
+
+            if (moodRealmList != null) {
+
+                for(Mood m: moodRealmList){
+                    init.getJustification().getJustificationMood().add(m);
+
+                }
+            }
+
+
 
         }, new Realm.Transaction.OnSuccess() {
             @Override
@@ -101,6 +124,8 @@ public class AdviceDatabaseFunctions {
 
     }
 
+
+
     public static void insertAdviceUsageData(Context context, Date dateTimeAdviceGiven, String adviceType
             , Date dateTimeAdviceFor, boolean adviceTaken) {
 
@@ -116,7 +141,6 @@ public class AdviceDatabaseFunctions {
             init.setAdviceType(adviceType);
             init.setDateTimeAdviceFor(dateTimeAdviceFor);
             init.setAdviceTaken(adviceTaken);
-
 
 
         }, new Realm.Transaction.OnSuccess() {
@@ -186,9 +210,9 @@ public class AdviceDatabaseFunctions {
         ArrayList<Advice> adviceArrayList = new ArrayList<>();
 
         tasksQuery.sort("dateTimeAdviceGiven", Sort.ASCENDING);
-        for(Advice advice: tasksQuery){
+        for (Advice advice : tasksQuery) {
 
-            if(advice.getAdviceUsageData().getAdviceTaken()==null){
+            if (advice.getAdviceUsageData().getAdviceTaken() == null) {
                 adviceArrayList.add(advice);
             }
 
@@ -205,6 +229,48 @@ public class AdviceDatabaseFunctions {
         return realm.where(AdviceUsageData.class).findAll();
     }
 
+    public static List<Mood> convertMoodToRealmList(Context context, RealmResults<Mood> justificationMood) {
+
+        if (justificationMood == null) {
+            return null;
+        }
+
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+        return  realm.copyFromRealm(justificationMood);
+
+    }
+
+    public static List<Location> convertLocationToRealmList(Context context, RealmResults<Location> justificationLocation) {
+
+        if (justificationLocation == null) {
+            return null;
+        }
+
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+        return  realm.copyFromRealm(justificationLocation);
+
+    }
+
+    public static List<Socialness> convertSocialnessToRealmList(Context context, RealmResults<Socialness> justificationSocialness) {
+
+        if (justificationSocialness == null) {
+            return null;
+        }
+
+
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+        return  realm.copyFromRealm(justificationSocialness);
+
+    }
 
 
 }

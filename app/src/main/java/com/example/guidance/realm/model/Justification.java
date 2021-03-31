@@ -2,9 +2,10 @@ package com.example.guidance.realm.model;
 
 import org.bson.types.ObjectId;
 
+import java.util.List;
+
 import io.realm.RealmList;
 import io.realm.RealmObject;
-import io.realm.RealmResults;
 import io.realm.annotations.PrimaryKey;
 
 /**
@@ -22,15 +23,6 @@ public class Justification extends RealmObject {
 
 
     public Justification() {
-    }
-
-    public Justification(ObjectId _id, Step justificationStep, RealmList<AppData> justificationScreentime, RealmList<Location> justificationLocation, RealmList<Socialness> justificationSocialness, RealmList<Mood> justificationMood) {
-        this._id = _id;
-        this.justificationStep = justificationStep;
-        this.justificationScreentime = justificationScreentime;
-        this.justificationLocation = justificationLocation;
-        this.justificationSocialness = justificationSocialness;
-        this.justificationMood = justificationMood;
     }
 
     public ObjectId get_id() {
