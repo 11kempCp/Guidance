@@ -6,6 +6,7 @@ import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -24,6 +25,7 @@ import com.example.guidance.realm.model.Screentime;
 import com.example.guidance.realm.model.Socialness;
 import com.example.guidance.realm.model.Step;
 import com.example.guidance.realm.model.User_Information;
+import com.example.guidance.realm.model.Weather;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,15 +38,17 @@ import java.util.concurrent.TimeUnit;
 
 import io.realm.RealmResults;
 
-import static com.example.guidance.Util.Advice.getLocationAdvice;
-import static com.example.guidance.Util.Advice.getMoodAdvice;
-import static com.example.guidance.Util.Advice.getScreentimeAdvice;
-import static com.example.guidance.Util.Advice.getSocialnessAdvice;
-import static com.example.guidance.Util.Advice.getStepAdvice;
-import static com.example.guidance.Util.IA.*;
-import static com.example.guidance.Util.IA.WITH_JUSTIFICATION;
+import static com.example.guidance.Util.Advice.LocationAdvice.getLocationAdvice;
+import static com.example.guidance.Util.Advice.MoodAdvice.getMoodAdvice;
+import static com.example.guidance.Util.Advice.ScreentimeAdvice.getScreentimeAdvice;
+import static com.example.guidance.Util.Advice.SocialnessAdvice.getSocialnessAdvice;
+import static com.example.guidance.Util.Advice.StepAdvice.getStepAdvice;
+import static com.example.guidance.Util.IA.noJustification;
+import static com.example.guidance.Util.IA.withJustification;
 import static com.example.guidance.Util.Util.ADVICE;
+import static com.example.guidance.Util.Util.changeDayBy;
 import static com.example.guidance.Util.Util.isSameDate;
+import static com.example.guidance.realm.databasefunctions.AdviceDatabaseFunctions.insertAdvice;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.databasefunctions.LocationDatabaseFunctions.getLocationOverPreviousDays;
@@ -60,6 +64,8 @@ import static com.example.guidance.realm.databasefunctions.ScreentimeDatabaseFun
 import static com.example.guidance.realm.databasefunctions.SocialnessDatabaseFunctions.getSocialnessOverPreviousDays;
 import static com.example.guidance.realm.databasefunctions.StepsDatabaseFunctions.getStepPreviousDay;
 import static com.example.guidance.realm.databasefunctions.UserInformationDatabaseFunctions.getUserInformation;
+import static com.example.guidance.realm.databasefunctions.WeatherDatabaseFunctions.getNextAvailableClearDay;
+import static com.example.guidance.realm.databasefunctions.WeatherDatabaseFunctions.getNextAvailableReasonableTempDay;
 
 /**
  * Created by Conor K on 20/03/2021.
@@ -95,8 +101,13 @@ public class AdviceJobService extends JobService {
         Ranking ranking = getRanking(this);
         Data_Type dataType = getDataType(this);
 
-        idealStepcount = ranking.getIdealStepCount();
-        idealScreentimeUsage = ranking.getScreentimeLimit();
+        if (ranking.getIdealStepCount() != null) {
+            idealStepcount = ranking.getIdealStepCount();
+        }
+
+        if (ranking.getScreentimeLimit() != null) {
+            idealScreentimeUsage = ranking.getScreentimeLimit();
+        }
 
 
         ArrayList<String> rankingList = getRankingList(this, 5);
@@ -198,6 +209,7 @@ public class AdviceJobService extends JobService {
 
         if (noAdvice == rankingLinkedHashMap.size()) {
             Log.d(TAG, "No Advice Available");
+            Toast.makeText(this, "No Advice Available", Toast.LENGTH_SHORT).show();
 
         }
 
@@ -338,13 +350,10 @@ public class AdviceJobService extends JobService {
             Log.d(TAG, i + " + adviceScreentime: date " + most_visible_screentime.getDateTime() + " " + appData.getPackageName() + " TotalTimeInForeground " + TotalTimeInForeground + " TotalTimeVisible " + TotalTimeVisible + " TotalTimeForegroundServiceUsed " + TotalTimeForegroundServiceUsed);
         }
 
-        if (idealScreentimeUsage >= TimeUnit.MILLISECONDS.toMinutes(appDataList[0].getTotalTimeInForeground())) {
+        if (idealScreentimeUsage <= TimeUnit.MILLISECONDS.toMinutes(appDataList[0].getTotalTimeInForeground())) {
             rankingLinkedHashMap.put(screentime, true);
-        }
-
-
-        if (rankingLinkedHashMap.get(screentime)) {
             return appDataList;
+
         }
 
         return null;
@@ -354,10 +363,10 @@ public class AdviceJobService extends JobService {
     public AppData[] sortList(AppData[] appDataList) {
         List<AppData> dataList = new ArrayList<>(Arrays.asList(appDataList));
 
-        Log.d(TAG, "THIS : " + dataList);
+//        Log.d(TAG, "THIS : " + dataList);
 
         Collections.sort(dataList, (o1, o2) -> {
-                    Log.d(TAG, "compare: " + dataList);
+//                    Log.d(TAG, "compare: " + dataList);
                     return o1.getTotalTimeInForeground().compareTo(o2.getTotalTimeInForeground());
                 }
         );
@@ -461,6 +470,19 @@ public class AdviceJobService extends JobService {
         String text = "";
         Intelligent_Agent intelligent_agent = getIntelligentAgent(this);
         User_Information user_information = getUserInformation(this);
+        Date currentTime = Calendar.getInstance().getTime();
+        Data_Type dataType = getDataType(this);
+        Weather weather = null;
+
+        if (dataType.isWeather()) {
+            weather = getNextAvailableClearDay(this, currentTime);
+        }
+
+        if (!dataType.isWeather() && dataType.isExternal_temp()) {
+            weather = getNextAvailableReasonableTempDay(this, currentTime);
+        }
+
+
         String name = "";
         boolean nameExists = false;
 
@@ -471,24 +493,45 @@ public class AdviceJobService extends JobService {
         }
 
         if (adviceKey.equals(step)) {
-            //if the user has provided their name to the IA
-            if (nameExists) {
+            //if the user has provided their name to the IA and the there is a clear day in the realm database
+            if (nameExists && weather != null) {
+                //if the user is in the WITH_JUSTIFICATION group
+                if (withJustification(intelligent_agent)) {
+                    text = getStepAdvice(0, days, adviceJustification.getJustificationStep().getStepCount(), name, weather.getDateTime(), weather.getWeather(), weather.getFeels_like_day(), weather.getSunRise(), weather.getSunSet());
+                    insertAdvice(this, currentTime, step, weather.getDateTime(), adviceJustification.getJustificationStep().getStepCount(), null, null, null, adviceJustification);
+                    //if the user is in the NO_JUSTIFICATION group
+                } else if (noJustification(intelligent_agent)) {
+                    text = getStepAdvice(0, name);
+                    insertAdvice(this, currentTime, step, weather.getDateTime(), adviceJustification.getJustificationStep().getStepCount(), null, null, null, adviceJustification);
+                }
+                //if the user has provided their name to the IA
+            } else if (nameExists) {
                 //if the user is in the WITH_JUSTIFICATION group
                 if (withJustification(intelligent_agent)) {
                     text = getStepAdvice(0, days, adviceJustification.getJustificationStep().getStepCount(), name);
 
+                    insertAdvice(this, currentTime, step, changeDayBy(currentTime, 1), adviceJustification.getJustificationStep().getStepCount(), null, null, null, adviceJustification);
+
                     //if the user is in the NO_JUSTIFICATION group
                 } else if (noJustification(intelligent_agent)) {
                     text = getStepAdvice(0, name);
+
+                    insertAdvice(this, currentTime, step, changeDayBy(currentTime, 1), adviceJustification.getJustificationStep().getStepCount(), null, null, null, adviceJustification);
+
                 }
             } else {
                 //if the user is in the WITH_JUSTIFICATION group
                 if (withJustification(intelligent_agent)) {
                     text = getStepAdvice(0, days, adviceJustification.getJustificationStep().getStepCount());
 
+                    insertAdvice(this, currentTime, step, changeDayBy(currentTime, 1), adviceJustification.getJustificationStep().getStepCount(), null, null, null, adviceJustification);
+
                     //if the user is in the NO_JUSTIFICATION group
                 } else if (noJustification(intelligent_agent)) {
                     text = getStepAdvice(0);
+
+                    insertAdvice(this, currentTime, step, changeDayBy(currentTime, 1), adviceJustification.getJustificationStep().getStepCount(), null, null, null, adviceJustification);
+
                 }
             }
 
@@ -497,26 +540,34 @@ public class AdviceJobService extends JobService {
 
 
         if (adviceKey.equals(screentime)) {
-            AppData[] screentime = adviceJustification.getJustificationScreentime();
+            AppData[] screentimeAppdata = adviceJustification.getJustificationScreentime();
 
             //if the user has provided their name to the IA
             if (nameExists) {
                 //if the user is in the WITH_JUSTIFICATION group
                 if (withJustification(intelligent_agent)) {
 
-                    text = getScreentimeAdvice(1, screentime[0].getPackageName(), screentime[0].getTotalTimeInForeground(), name);
+                    text = getScreentimeAdvice(1, screentimeAppdata[0].getPackageName(), TimeUnit.MILLISECONDS.toMinutes(screentimeAppdata[0].getTotalTimeInForeground()), name);
+
+                    insertAdvice(this, currentTime, screentime, changeDayBy(currentTime, 1), null, screentimeAppdata[0], null, null, adviceJustification);
+
                     //if the user is in the NO_JUSTIFICATION group
                 } else if (noJustification(intelligent_agent)) {
-                    text = getScreentimeAdvice(1, screentime[0].getPackageName(), name);
+                    text = getScreentimeAdvice(1, screentimeAppdata[0].getPackageName(), name);
+
+                    insertAdvice(this, currentTime, screentime, changeDayBy(currentTime, 1), null, screentimeAppdata[0], null, null, adviceJustification);
                 }
             } else {
                 //if the user is in the WITH_JUSTIFICATION group
                 if (withJustification(intelligent_agent)) {
-                    text = getScreentimeAdvice(1, screentime[0].getPackageName(), screentime[0].getTotalTimeInForeground());
+                    text = getScreentimeAdvice(1, screentimeAppdata[0].getPackageName(), TimeUnit.MILLISECONDS.toMinutes(screentimeAppdata[0].getTotalTimeInForeground()));
 
+                    insertAdvice(this, currentTime, screentime, changeDayBy(currentTime, 1), null, screentimeAppdata[0], null, null, adviceJustification);
                     //if the user is in the NO_JUSTIFICATION group
                 } else if (noJustification(intelligent_agent)) {
-                    text = getScreentimeAdvice(1, screentime[0].getPackageName());
+                    text = getScreentimeAdvice(1, screentimeAppdata[0].getPackageName());
+
+                    insertAdvice(this, currentTime, screentime, changeDayBy(currentTime, 1), null, screentimeAppdata[0], null, null, adviceJustification);
                 }
             }
 
@@ -525,11 +576,24 @@ public class AdviceJobService extends JobService {
 
         if (adviceKey.equals(location)) {
             //if the user has provided their name to the IA
-            if (nameExists) {
+            if (nameExists && weather != null) {
+                //if the user is in the WITH_JUSTIFICATION group
+                if (withJustification(intelligent_agent)) {
+                    //todo location days is not the same (potentially)
+                    text = getLocationAdvice(0, days, name, weather.getDateTime(), weather.getWeather(), weather.getFeels_like_day(), weather.getSunRise(), weather.getSunSet());
+                    insertAdvice(this, currentTime, location, weather.getDateTime(), null, null, null, null, adviceJustification);
+                    //if the user is in the NO_JUSTIFICATION group
+                } else if (noJustification(intelligent_agent)) {
+                    text = getLocationAdvice(0, name);
+                }
+            } else if (nameExists) {
                 //if the user is in the WITH_JUSTIFICATION group
                 if (withJustification(intelligent_agent)) {
                     //todo location days is not the same (potentially)
                     text = getLocationAdvice(0, days, name);
+
+                    insertAdvice(this, currentTime, location, changeDayBy(currentTime, 1), null, null, null, null, adviceJustification);
+
                     //if the user is in the NO_JUSTIFICATION group
                 } else if (noJustification(intelligent_agent)) {
                     text = getLocationAdvice(0, name);
@@ -540,9 +604,12 @@ public class AdviceJobService extends JobService {
                     //todo location days is not the same (potentially)
                     text = getLocationAdvice(0, days);
 
+                    insertAdvice(this, currentTime, location, changeDayBy(currentTime, 1), null, null, null, null, adviceJustification);
                     //if the user is in the NO_JUSTIFICATION group
                 } else if (noJustification(intelligent_agent)) {
                     text = getLocationAdvice(0);
+
+                    insertAdvice(this, currentTime, location, changeDayBy(currentTime, 1), null, null, null, null, adviceJustification);
                 }
             }
 
@@ -568,18 +635,24 @@ public class AdviceJobService extends JobService {
                 if (withJustification(intelligent_agent)) {
 
                     text = getSocialnessAdvice(0, days, averageSocialness, name);
+
+                    insertAdvice(this, currentTime, socialness, changeDayBy(currentTime, 1), null, null, averageSocialness, null, adviceJustification);
                     //if the user is in the NO_JUSTIFICATION group
                 } else if (noJustification(intelligent_agent)) {
                     text = getSocialnessAdvice(0, days, name);
+
+                    insertAdvice(this, currentTime, socialness, changeDayBy(currentTime, 1), null, null, averageSocialness, null, adviceJustification);
                 }
             } else {
                 //if the user is in the WITH_JUSTIFICATION group
                 if (withJustification(intelligent_agent)) {
                     text = getSocialnessAdvice(0, days, averageSocialness);
+                    insertAdvice(this, currentTime, socialness, changeDayBy(currentTime, 1), null, null, averageSocialness, null, adviceJustification);
 
                     //if the user is in the NO_JUSTIFICATION group
                 } else if (noJustification(intelligent_agent)) {
                     text = getSocialnessAdvice(0, days);
+                    insertAdvice(this, currentTime, socialness, changeDayBy(currentTime, 1), null, null, averageSocialness, null, adviceJustification);
                 }
             }
 
@@ -606,18 +679,26 @@ public class AdviceJobService extends JobService {
                 if (withJustification(intelligent_agent)) {
 
                     text = getMoodAdvice(0, days, averageMood, name);
+                    insertAdvice(this, currentTime, mood, changeDayBy(currentTime, 1), null, null, null, averageMood, adviceJustification);
+
                     //if the user is in the NO_JUSTIFICATION group
                 } else if (noJustification(intelligent_agent)) {
                     text = getMoodAdvice(0, days, name);
+                    insertAdvice(this, currentTime, mood, changeDayBy(currentTime, 1), null, null, null, averageMood, adviceJustification);
+
                 }
             } else {
                 //if the user is in the WITH_JUSTIFICATION group
                 if (withJustification(intelligent_agent)) {
                     text = getMoodAdvice(0, days, averageMood);
+                    insertAdvice(this, currentTime, mood, changeDayBy(currentTime, 1), null, null, null, averageMood, adviceJustification);
+
 
                     //if the user is in the NO_JUSTIFICATION group
                 } else if (noJustification(intelligent_agent)) {
                     text = getMoodAdvice(0, days);
+                    insertAdvice(this, currentTime, mood, changeDayBy(currentTime, 1), null, null, null, averageMood, adviceJustification);
+
                 }
             }
 
@@ -650,6 +731,8 @@ public class AdviceJobService extends JobService {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         notificationManager.notify(ADVICE, builder.build());
 
+
     }
+
 
 }

@@ -18,9 +18,12 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.guidance.R;
 import com.example.guidance.ServiceReceiver.onPauseServiceReceiver;
 import com.example.guidance.Util.Util;
+import com.example.guidance.realm.model.Advice;
+import com.example.guidance.realm.model.AdviceUsageData;
 import com.example.guidance.realm.model.Data_Type;
 import com.example.guidance.realm.model.Intelligent_Agent;
 import com.example.guidance.realm.model.Location;
+import com.example.guidance.realm.model.Mood;
 import com.example.guidance.realm.model.Screentime;
 import com.google.android.material.navigation.NavigationView;
 
@@ -29,7 +32,9 @@ import java.util.Date;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 import static com.example.guidance.Util.Util.navigationViewVisibility;
 import static com.example.guidance.Util.Util.scheduleAdvice;
@@ -219,6 +224,40 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
         String displayString = " " + dataType + "\n" + " " + "\n";
         this.view.setText(displayString);
 
+
+    }
+
+    public void displayAdvice(View view) {
+        RealmQuery<Advice> adviceRealmQuery = realm.where(Advice.class);
+//        RealmResults<Mood> mood = moodRealmQuery.findAll();
+        RealmResults<Advice> advice = adviceRealmQuery.sort("dateTimeAdviceGiven", Sort.DESCENDING).findAll();
+
+        Log.d(TAG, "displayAdvice " + advice.size() + " advice full list: " + advice);
+        this.view.setText("");
+        StringBuilder displayString = new StringBuilder();
+        for (Advice t : advice) {
+            displayString.append(" ").append(t).append("\n");
+            displayString.append(" ").append("\n");
+
+        }
+        this.view.setText(displayString);
+
+    }
+
+    public void displayAdviceUsageData(View view) {
+        RealmQuery<AdviceUsageData> adviceUsageDataRealmQuery = realm.where(AdviceUsageData.class);
+//        RealmResults<Mood> mood = moodRealmQuery.findAll();
+        RealmResults<AdviceUsageData> adviceUsageData = adviceUsageDataRealmQuery.sort("dateTimeAdviceGiven", Sort.DESCENDING).findAll();
+
+        Log.d(TAG, "displayAdviceUsageData " + adviceUsageData.size() + " adviceUsageData full list: " + adviceUsageData);
+        this.view.setText("");
+        StringBuilder displayString = new StringBuilder();
+        for (AdviceUsageData t : adviceUsageData) {
+            displayString.append(" ").append(t).append("\n");
+            displayString.append(" ").append("\n");
+
+        }
+        this.view.setText(displayString);
 
     }
 }

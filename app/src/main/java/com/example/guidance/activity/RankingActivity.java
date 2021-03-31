@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -294,6 +295,7 @@ public class RankingActivity extends AppCompatActivity implements NavigationView
 
         Date currentTime = Calendar.getInstance().getTime();
         if (rankingInit) {
+            Toast.makeText(this, "Ranking Saved", Toast.LENGTH_SHORT).show();
             updateRanking(this, pos_step, pos_location, pos_screentime, pos_socialness, pos_mood, pos_idealStepCount, pos_screentimeLimit);
             insertRankingUsageData(this, currentTime, pos_step, pos_location, pos_screentime, pos_socialness, pos_mood, pos_idealStepCount, pos_screentimeLimit);
         }

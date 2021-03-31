@@ -8,12 +8,14 @@ import com.example.guidance.realm.model.Weather;
 
 import org.bson.types.ObjectId;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmQuery;
+import io.realm.RealmResults;
 import io.realm.Sort;
 
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
@@ -25,6 +27,8 @@ public class WeatherDatabaseFunctions {
 
     private static final String TAG = "WeatherDatabaseFunctions";
 
+    private static final String[] notClearDayParameters = {"Thunderstorm","Drizzle","Rain","Snow","Atmosphere"};
+    private static final String[] clearDayParameters = {"Clouds","Clear"};
 
     public static void weatherEntry(Context context, Date currentTime, String weather, Date sunrise,
                                     Date sunset, double feels_like_morn, double feels_like_day,
@@ -229,4 +233,48 @@ public class WeatherDatabaseFunctions {
 
         realm.close();
     }
+
+    public static Weather getNextAvailableClearDay(Context context, Date currentTime){
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+//        RealmQuery<Weather> tasksQuery = realm.where(Weather.class);
+//        RealmQuery<Weather> query = realm.where(Weather.class).greaterThan("dateTime", currentTime).equalTo("weather", "Clear");
+        RealmResults<Weather> query = realm.where(Weather.class).greaterThan("dateTime", currentTime).findAll();
+
+        query.sort("dateTime", Sort.ASCENDING);
+
+        for(Weather w: query){
+            if(Arrays.asList(clearDayParameters).contains(w.getWeather())){
+                return w;
+            }
+        }
+        realm.close();
+
+        return null;
+    }
+    public static Weather getNextAvailableReasonableTempDay(Context context, Date currentTime){
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+        RealmResults<Weather> query = realm.where(Weather.class).greaterThan("dateTime", currentTime).findAll();
+
+        query.sort("dateTime", Sort.ASCENDING);
+
+        for(Weather w: query){
+
+            if(w.getTemp_min() >=0 && w.getTemp_max()<=30){
+                return w;
+            }
+
+        }
+        realm.close();
+
+        return null;
+    }
+
+
 }

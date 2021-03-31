@@ -19,6 +19,8 @@ import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
+import static com.example.guidance.Util.Util.changeDayBy;
+
 /**
  * Created by Conor K on 20/03/2021.
  */
@@ -198,12 +200,13 @@ public class ScreentimeDatabaseFunctions {
         Realm realm = Realm.getDefaultInstance();
 
 
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(currentTime);
-        int Day = -day;
-        cal.add(Calendar.DATE, Day);
-        cal.set(cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),cal.get(Calendar.DATE),23,59,59);
-        Date previousDay = cal.getTime();
+//        Calendar cal = Calendar.getInstance();
+//        cal.setTime(currentTime);
+//        int Day = -day;
+//        cal.add(Calendar.DATE, Day);
+//        cal.set(cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),cal.get(Calendar.DATE),23,59,59);
+//        Date previousDay = cal.getTime();
+        Date previousDay = changeDayBy(currentTime,-1);
 
         Log.d(TAG, "getScreentimePreviousDay: " + previousDay);
 

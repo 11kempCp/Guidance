@@ -6,18 +6,24 @@ import com.example.guidance.realm.model.Mood;
 import com.example.guidance.realm.model.Socialness;
 import com.example.guidance.realm.model.Step;
 
+import org.bson.types.ObjectId;
+
+import io.realm.RealmObject;
 import io.realm.RealmResults;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by Conor K on 28/03/2021.
  */
 public class AdviceJustification {
 
+
     private Step justificationStep;
     private AppData[] justificationScreentime;
     private RealmResults<Location> justificationLocation;
     private RealmResults<Socialness> justificationSocialness;
     private RealmResults<Mood> justificationMood;
+
 
     public Step getJustificationStep() {
         return justificationStep;

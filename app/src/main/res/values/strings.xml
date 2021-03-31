@@ -41,6 +41,8 @@
     <string name="display_questionaire">Display Questionnaire</string>
     <string name="display_screentime">Display Screentime</string>
     <string name="datatype_usage_data">Display DataTypeUsageData</string>
+    <string name="display_advice">Display Advice</string>
+    <string name="display_advice_usage_data">Display Advice Usage Data</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
     <string name="isJobRunning">Is Job Running</string>

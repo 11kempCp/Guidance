@@ -36,6 +36,7 @@ import com.example.guidance.jobServices.StepsJobService;
 import com.example.guidance.jobServices.WeatherJobService;
 import com.example.guidance.realm.model.Data_Type;
 import com.example.guidance.realm.model.Intelligent_Agent;
+import com.example.guidance.realm.model.Justification;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
@@ -52,6 +53,8 @@ import static androidx.core.content.ContextCompat.checkSelfPermission;
 import static com.example.guidance.Util.IA.FEMALE;
 import static com.example.guidance.Util.IA.MALE;
 import static com.example.guidance.Util.IA.NO_JUSTIFICATION;
+import static com.example.guidance.Util.IA.noJustification;
+import static com.example.guidance.Util.IA.withJustification;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
 import static io.realm.Realm.getApplicationContext;
 
@@ -442,7 +445,7 @@ public class Util {
 
     public static void navigationViewIntelligentAgent(NavigationView navigationView, Intelligent_Agent intelligent_agent) {
         if (intelligent_agent != null) {
-            navigationView.getMenu().findItem(R.id.nav_justification).setVisible(!noJustification(intelligent_agent));
+            navigationView.getMenu().findItem(R.id.nav_justification).setVisible(withJustification(intelligent_agent));
         }
     }
 
@@ -496,6 +499,16 @@ public class Util {
                 firstDate.getYear() == secondDate.getYear();
     }
 
+    public static Date changeDayBy(Date currentTime, int day){
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(currentTime);
+        cal.add(Calendar.DATE, day);
+        cal.set(cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),cal.get(Calendar.DATE),23,59,59);
+        return cal.getTime();
+
+
+    }
 
 
 

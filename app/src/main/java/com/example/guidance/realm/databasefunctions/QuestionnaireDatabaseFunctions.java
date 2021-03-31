@@ -46,7 +46,6 @@ public class QuestionnaireDatabaseFunctions {
         }, new Realm.Transaction.OnSuccess() {
             @Override
             public void onSuccess() {
-//                Log.d(TAG, "AmbientTemp onSuccess:");
                 Date currentTime = Calendar.getInstance().getTime();
                 Log.d(TAG, "executed transaction : insertQuestionaire" + currentTime);
 
