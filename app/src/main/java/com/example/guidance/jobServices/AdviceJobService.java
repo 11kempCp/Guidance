@@ -1,5 +1,6 @@
 package com.example.guidance.jobServices;
 
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.app.job.JobParameters;
@@ -14,6 +15,7 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.example.guidance.R;
 import com.example.guidance.Util.AdviceJustification;
+import com.example.guidance.activity.AdviceActivity;
 import com.example.guidance.activity.MainActivity;
 import com.example.guidance.app.App;
 import com.example.guidance.realm.model.AppData;
@@ -732,7 +734,7 @@ public class AdviceJobService extends JobService {
 
 
         //Create an Intent for the activity you want to start
-        Intent resultIntent = new Intent(this, MainActivity.class);
+        Intent resultIntent = new Intent(this, AdviceActivity.class);
         // Create the TaskStackBuilder and add the intent, which inflates the back stack
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addNextIntentWithParentStack(resultIntent);
