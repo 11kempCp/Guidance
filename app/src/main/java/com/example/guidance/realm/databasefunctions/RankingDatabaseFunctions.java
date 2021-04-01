@@ -34,6 +34,7 @@ public class RankingDatabaseFunctions {
     public static final String location = "Location";
     public static final String socialness = "Socialness";
     public static final String mood = "Mood";
+    public static final String noAdvice = "noAdvice";
 
     public static Ranking getRanking(Context context) {
         Realm.init(context);

@@ -27,6 +27,8 @@ import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
+import static com.example.guidance.realm.databasefunctions.RankingDatabaseFunctions.noAdvice;
+
 /**
  * Created by Conor K on 30/03/2021.
  */
@@ -34,10 +36,9 @@ public class AdviceDatabaseFunctions {
 
     private static final String TAG = "AdviceDatabaseFunctions";
 
-    //todo change realmResults into a list
     public static void insertAdvice(Context context, Date dateTimeAdviceGiven, String adviceType
             , Date dateTimeAdviceFor, Float stepsCount, AppData screentime,
-                                    Float socialness, Float mood, Step step, AppData[] appDataRealmList,
+                                    Float socialness, Float mood, List<Step> stepRealmList, AppData[] appDataRealmList,
                                     List<Location> locationRealmList, List<Socialness> socialnessRealmList,
                                     List<Mood> moodRealmList) {
 
@@ -68,8 +69,13 @@ public class AdviceDatabaseFunctions {
 //            Justification just = new Justification();
             init.setJustification(just);
 
-            if (step != null) {
-                just.setJustificationStep(step);
+            if (stepRealmList != null) {
+//                just.setJustificationStep(step);
+
+                for(Step st :stepRealmList){
+//                    just.getJustificationScreentime().add(a);
+                    init.getJustification().getJustificationStep().add(st);
+                }
             }
 
             if (appDataRealmList != null) {
@@ -215,13 +221,34 @@ public class AdviceDatabaseFunctions {
         tasksQuery.sort("dateTimeAdviceGiven", Sort.ASCENDING);
         for (Advice advice : tasksQuery) {
 
-            if (advice.getAdviceUsageData().getAdviceTaken() == null) {
+            if (!advice.getAdviceType().equals(noAdvice) && advice.getAdviceUsageData().getAdviceTaken() == null) {
                 adviceArrayList.add(advice);
             }
 
         }
-
         return adviceArrayList;
+    }
+
+    public static int getInteractionAmountForDate(Context context, Date currentTime){
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(currentTime);
+        cal1.set(cal1.get(Calendar.YEAR),cal1.get(Calendar.MONTH),cal1.get(Calendar.DATE),0,0,0);
+        Date beginningOfDay = cal1.getTime();
+
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(currentTime);
+        cal2.set(cal2.get(Calendar.YEAR),cal2.get(Calendar.MONTH),cal2.get(Calendar.DATE),23,59,59);
+        Date endOfDay = cal2.getTime();
+
+
+//        RealmQuery<Step> query = realm.where(Step.class).lessThan("dateTime", currentTime);
+        RealmQuery<Advice> query = realm.where(Advice.class).between("dateTimeAdviceGiven", beginningOfDay,endOfDay);
+        return query.sort("dateTimeAdviceGiven", Sort.DESCENDING).findAll().size();
     }
 
     public static RealmResults<AdviceUsageData> getAdviceUsageData(Context context) {

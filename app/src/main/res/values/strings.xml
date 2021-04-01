@@ -3,7 +3,7 @@
     <!--Start of Core Strings-->
     <string name="app_name">Guidance</string>
     <string name="contact">KempCP@cardiff.ac.uk</string>
-    <integer name="study_period_length_days">14</integer>
+    <integer name="study_period_length_days">7</integer>
     <!--End of Core Strings-->
 
 

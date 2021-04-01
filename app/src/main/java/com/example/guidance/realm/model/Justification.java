@@ -15,7 +15,7 @@ public class Justification extends RealmObject {
 
     @PrimaryKey
     private ObjectId _id;
-    private Step justificationStep;
+    private RealmList<Step> justificationStep;
     private RealmList<AppData> justificationScreentime;
     private RealmList<Location> justificationLocation;
     private RealmList<Socialness> justificationSocialness;
@@ -33,11 +33,11 @@ public class Justification extends RealmObject {
         this._id = _id;
     }
 
-    public Step getJustificationStep() {
+    public RealmList<Step> getJustificationStep() {
         return justificationStep;
     }
 
-    public void setJustificationStep(Step justificationStep) {
+    public void setJustificationStep(RealmList<Step> justificationStep) {
         this.justificationStep = justificationStep;
     }
 
