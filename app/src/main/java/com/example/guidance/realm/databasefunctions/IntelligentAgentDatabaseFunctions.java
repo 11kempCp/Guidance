@@ -134,7 +134,7 @@ public class IntelligentAgentDatabaseFunctions {
         Realm realm = Realm.getDefaultInstance();
 
         Intelligent_Agent query = realm.where(Intelligent_Agent.class).findFirst();
-        Log.d(TAG, "isIntelligentAgentInitialised: query " + query);
+//        Log.d(TAG, "isIntelligentAgentInitialised: query " + query);
         return query != null;
 
     }

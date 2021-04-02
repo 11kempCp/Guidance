@@ -1,4 +1,4 @@
-package com.example.guidance.Util;
+package com.example.guidance.Util.adapter;
 
 /**
  * Created by Conor K on 24/03/2021.

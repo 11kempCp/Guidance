@@ -2,7 +2,6 @@ package com.example.guidance.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,16 +13,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.guidance.R;
 import com.example.guidance.ServiceReceiver.onPauseServiceReceiver;
 import com.example.guidance.Util.Util;
+import com.example.guidance.Util.adapter.AdviceAdapter;
 import com.example.guidance.realm.model.Advice;
 import com.example.guidance.realm.model.AdviceUsageData;
 import com.example.guidance.realm.model.Data_Type;
 import com.example.guidance.realm.model.Intelligent_Agent;
 import com.example.guidance.realm.model.Location;
-import com.example.guidance.realm.model.Mood;
 import com.example.guidance.realm.model.Screentime;
 import com.google.android.material.navigation.NavigationView;
 
@@ -36,10 +37,14 @@ import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
+import static com.example.guidance.Util.IA.FEMALE;
+import static com.example.guidance.Util.IA.MALE;
 import static com.example.guidance.Util.Util.navigationViewVisibility;
 import static com.example.guidance.Util.Util.scheduleAdvice;
 import static com.example.guidance.Util.Util.scheduleAdviceFollowed;
 import static com.example.guidance.Util.Util.scheduleLocation;
+import static com.example.guidance.realm.databasefunctions.AdviceDatabaseFunctions.getAdviceOnDate;
+import static com.example.guidance.realm.databasefunctions.AdviceDatabaseFunctions.getAllAdvice;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.databasefunctions.LocationDatabaseFunctions.getLocationOverPreviousDays;
@@ -53,8 +58,8 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
 
 
     static Realm realm;
-    private TextView view;
-
+    private TextView view, currentAdvice;
+    private RecyclerView recyclerViewAdvice,recyclerViewAdviceToday;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,10 +81,10 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
         Realm.setDefaultConfiguration(realmConfiguration);
         realm = Realm.getDefaultInstance();
 
-        view = findViewById(R.id.textView);
-        view.setMovementMethod(new ScrollingMovementMethod());
-
-
+//        view = findViewById(R.id.textView);
+//        view.setMovementMethod(new ScrollingMovementMethod());
+        recyclerViewAdvice = findViewById(R.id.recyclerViewAdvice);
+        recyclerViewAdviceToday = findViewById(R.id.recyclerViewTodayAdvice);
         drawer = findViewById(R.id.drawer_layout_advice_activity);
         Toolbar toolbar = findViewById(R.id.toolbar);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -99,6 +104,41 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
 
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        Date currentTime = Calendar.getInstance().getTime();
+
+        RealmResults<Advice> advice = getAllAdvice(this);
+        RealmResults<Advice> adviceToday = getAdviceOnDate(this, currentTime);
+        Log.d(TAG, "onCreate: adviceSize " + advice.size());
+
+        if(!adviceToday.isEmpty()){
+
+
+
+            if(intelligent_agent.getGender().equals(FEMALE)){
+                AdviceAdapter adviceAdapter = new AdviceAdapter(this, adviceToday, getResources(),getResources().getColor(R.color.femalePrimaryColour), true );
+                recyclerViewAdviceToday.setAdapter(adviceAdapter);
+                recyclerViewAdviceToday.setLayoutManager(new LinearLayoutManager(this));
+            }else if(intelligent_agent.getGender().equals(MALE)){
+                AdviceAdapter adviceAdapter = new AdviceAdapter(this, adviceToday, getResources(),getResources().getColor(R.color.malePrimaryColour), true );
+                recyclerViewAdviceToday.setAdapter(adviceAdapter);
+                recyclerViewAdviceToday.setLayoutManager(new LinearLayoutManager(this));
+            }
+
+
+
+
+
+//            currentAdvice.setText(getResources().getString(R.string.no_advice));
+
+        }
+
+        if(!advice.isEmpty()){
+            AdviceAdapter adviceAdapter = new AdviceAdapter(this, advice,getResources(), getResources().getColor(R.color.malePrimaryColour), false);
+            recyclerViewAdvice.setAdapter(adviceAdapter);
+            recyclerViewAdvice.setLayoutManager(new LinearLayoutManager(this));
+        }
+
 
 
     }

@@ -1,4 +1,4 @@
-package com.example.guidance.Util;
+package com.example.guidance.Util.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -17,8 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.guidance.R;
-
-import java.util.Arrays;
 
 /**
  * Created by Conor K on 09/03/2021.

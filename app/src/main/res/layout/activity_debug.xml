@@ -79,7 +79,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:onClick="delete"
+                android:onClick="deleteAdvice"
                 android:text="@string/delete"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/button7" />
@@ -109,8 +109,8 @@
                 android:id="@+id/button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:onClick="startLocationJobService"
-                android:text="@string/startLocationJobService"
+                android:onClick="startAdviceJobService"
+                android:text="@string/startAdviceJobService"
                 app:layout_constraintEnd_toEndOf="@+id/button10"
                 app:layout_constraintTop_toTopOf="@+id/button23" />
 
@@ -165,8 +165,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:onClick="displayDataTypeUsageData"
-                android:text="@string/datatype_usage_data"
+                android:onClick="displayAdvice"
+                android:text="@string/display_advice"
                 app:layout_constraintEnd_toStartOf="@+id/button5"
                 app:layout_constraintStart_toStartOf="@+id/button2"
                 app:layout_constraintTop_toBottomOf="@+id/button2" />

@@ -1,4 +1,4 @@
-package com.example.guidance.Util;
+package com.example.guidance.Util.adapter;
 
 import android.util.Log;
 import android.view.GestureDetector;

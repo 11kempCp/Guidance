@@ -55,11 +55,13 @@ import io.realm.Sort;
 
 import static com.example.guidance.Util.IA.FEMALE;
 import static com.example.guidance.Util.IA.MALE;
+import static com.example.guidance.Util.Util.ADVICE;
 import static com.example.guidance.Util.Util.LOCATION;
 import static com.example.guidance.Util.Util.SCREENTIME;
 import static com.example.guidance.Util.Util.WEATHER;
 import static com.example.guidance.Util.Util.getUnscheduledJobs;
 import static com.example.guidance.Util.Util.navigationViewVisibility;
+import static com.example.guidance.Util.Util.scheduleAdvice;
 import static com.example.guidance.Util.Util.scheduleJob;
 import static com.example.guidance.Util.Util.scheduleLocation;
 import static com.example.guidance.Util.Util.scheduledUnscheduledJobs;
@@ -182,6 +184,14 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
 
 
         Toast.makeText(this, "Deleted Everything In Realm", Toast.LENGTH_SHORT).show();
+    }
+
+    public void deleteAdvice(View view){
+        realm.executeTransactionAsync(r -> {
+            Log.d(TAG, "deleted advice");
+            r.delete(Advice.class);
+        });
+
     }
 
 
@@ -312,6 +322,16 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
 //                packageManager,
 //                null,
 //                null);
+    }
+
+    public void startAdviceJobService(View view) {
+
+        PackageManager packageManager = this.getPackageManager();
+
+        Log.d(TAG, "scheduledUnscheduledJobs: " + ADVICE);
+
+        scheduleAdvice(this);
+
     }
 
     public void startWeatherJobService(View view) {
@@ -506,6 +526,23 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
             displayString.append(" ").append("\n");
         }
         displayTextView.setText(displayString.toString());
+    }
+
+
+    public void displayAdvice(View view){
+        RealmQuery<Advice> adviceRealmQuery = realm.where(Advice.class);
+//        RealmResults<Mood> mood = moodRealmQuery.findAll();
+        RealmResults<Advice> advice = adviceRealmQuery.sort("dateTimeAdviceGiven", Sort.DESCENDING).findAll();
+
+        Log.d(TAG, "displayAdvice " + advice.size() + " advice full list: " + advice);
+        this.displayTextView.setText("");
+        StringBuilder displayString = new StringBuilder();
+        for (Advice t : advice) {
+            displayString.append(" ").append(t).append("\n");
+            displayString.append(" ").append("\n");
+
+        }
+        this.displayTextView.setText(displayString);
     }
 
     @Override

@@ -1,14 +1,11 @@
 package com.example.guidance.Util;
 
 import android.graphics.Color;
-import android.view.View;
 
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.guidance.R;
+import com.example.guidance.Util.adapter.ItemTouchHelperAdapter;
 
 /**
  * Created by Conor K on 24/03/2021.

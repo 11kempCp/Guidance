@@ -30,79 +30,43 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-            <Button
-                android:id="@+id/button14"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewAdvice"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:onClick="startAdviceJobService"
-                android:text="@string/startAdviceJobService"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/toolbar"
-
-                />
-
-
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginTop="8dp"
-                android:text="@string/display"
+                android:layout_marginBottom="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/button19" />
+                app:layout_constraintTop_toBottomOf="@+id/view_firstName" />
 
-            <Button
-                android:id="@+id/button15"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:onClick="displayAdvice"
-                android:text="@string/display_advice"
-                app:layout_constraintEnd_toEndOf="@+id/button14"
+            <View
+                android:id="@+id/view_firstName"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+
+                android:layout_marginTop="250dp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/button14"
-                app:layout_constraintTop_toBottomOf="@+id/button17" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
-            <Button
-                android:id="@+id/button16"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewTodayAdvice"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
-                android:onClick="displayAdviceUsageData"
-                android:text="@string/display_advice_usage_data"
-                app:layout_constraintEnd_toEndOf="@+id/button14"
-                app:layout_constraintStart_toStartOf="@+id/button15"
-                app:layout_constraintTop_toBottomOf="@+id/button15" />
-
-            <Button
-                android:id="@+id/button17"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/startAdviceFollowedJobService"
-                app:layout_constraintEnd_toEndOf="@+id/button14"
-                app:layout_constraintStart_toStartOf="@+id/button14"
-                app:layout_constraintTop_toBottomOf="@+id/button14"
-                android:onClick="startAdviceFollowedJobService"
-                />
-
-            <Button
-                android:id="@+id/button19"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/delete_advice"
-                app:layout_constraintEnd_toEndOf="@+id/button16"
-                app:layout_constraintStart_toStartOf="@+id/button16"
-                app:layout_constraintTop_toBottomOf="@+id/button16"
-                android:onClick="deleteAdvice"
-                />
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="16dp"
+                app:layout_constraintBottom_toTopOf="@+id/view_firstName"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

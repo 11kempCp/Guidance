@@ -10,16 +10,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.guidance.R;
-import com.example.guidance.Util.QuestionaireRecyclerViewAdapter;
+import com.example.guidance.Util.adapter.QuestionaireRecyclerViewAdapter;
 import com.example.guidance.Util.Util;
 import com.example.guidance.realm.model.Intelligent_Agent;
 
 import java.util.Calendar;
 import java.util.Date;
 
-import static com.example.guidance.Util.QuestionaireRecyclerViewAdapter.getAmountQuestionsAnswered;
-import static com.example.guidance.Util.QuestionaireRecyclerViewAdapter.getAnswers;
-import static com.example.guidance.Util.QuestionaireRecyclerViewAdapter.getQuestions;
+import static com.example.guidance.Util.adapter.QuestionaireRecyclerViewAdapter.getAmountQuestionsAnswered;
+import static com.example.guidance.Util.adapter.QuestionaireRecyclerViewAdapter.getAnswers;
+import static com.example.guidance.Util.adapter.QuestionaireRecyclerViewAdapter.getQuestions;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.databasefunctions.QuestionnaireDatabaseFunctions.insertQuestionnaire;
 

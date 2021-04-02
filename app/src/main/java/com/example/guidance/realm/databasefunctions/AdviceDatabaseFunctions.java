@@ -15,14 +15,12 @@ import com.example.guidance.realm.model.Step;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
-import io.realm.RealmList;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -36,8 +34,56 @@ public class AdviceDatabaseFunctions {
 
     private static final String TAG = "AdviceDatabaseFunctions";
 
+    public static RealmResults<Advice> getAllAdvice(Context context){
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+
+
+//        RealmQuery<Step> query = realm.where(Step.class).lessThan("dateTime", currentTime);
+        RealmQuery<Advice> query = realm.where(Advice.class);
+        return query.sort("dateTimeAdviceGiven", Sort.DESCENDING).findAll();
+
+    }
+
+    public static RealmResults<Advice> getAdviceOnDate(Context context, Date currentTime){
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(currentTime);
+        cal1.set(cal1.get(Calendar.YEAR),cal1.get(Calendar.MONTH),cal1.get(Calendar.DATE),0,0,0);
+        Date beginningOfDay = cal1.getTime();
+
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(currentTime);
+        cal2.set(cal2.get(Calendar.YEAR),cal2.get(Calendar.MONTH),cal2.get(Calendar.DATE),23,59,59);
+        Date endOfDay = cal2.getTime();
+
+
+//        RealmQuery<Step> query = realm.where(Step.class).lessThan("dateTime", currentTime);
+        RealmQuery<Advice> query = realm.where(Advice.class).between("dateTimeAdviceGiven", beginningOfDay,endOfDay);
+        return query.sort("dateTimeAdviceGiven", Sort.DESCENDING).findAll();
+
+    }
+
+    public static RealmResults<Advice> getAdviceForAfterDate(Context context, Date currentTime){
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+        RealmQuery<Advice> query = realm.where(Advice.class).greaterThan("dateTimeAdviceFor", currentTime);
+        return query.sort("dateTimeAdviceGiven", Sort.DESCENDING).findAll();
+
+    }
+
     public static void insertAdvice(Context context, Date dateTimeAdviceGiven, String adviceType
-            , Date dateTimeAdviceFor, Float stepsCount, AppData screentime,
+            , Date dateTimeAdviceFor,String advice, Float stepsCount, AppData screentime,
                                     Float socialness, Float mood, List<Step> stepRealmList, AppData[] appDataRealmList,
                                     List<Location> locationRealmList, List<Socialness> socialnessRealmList,
                                     List<Mood> moodRealmList) {
@@ -53,6 +99,7 @@ public class AdviceDatabaseFunctions {
             init.setDateTimeAdviceGiven(dateTimeAdviceGiven);
             init.setAdviceType(adviceType);
             init.setDateTimeAdviceFor(dateTimeAdviceFor);
+            init.setAdvice(advice);
             init.setSteps(stepsCount);
             init.setScreentime(screentime);
             init.setSocialness(socialness);
@@ -74,14 +121,20 @@ public class AdviceDatabaseFunctions {
 
                 for(Step st :stepRealmList){
 //                    just.getJustificationScreentime().add(a);
-                    init.getJustification().getJustificationStep().add(st);
+                    if(st != null){
+                        init.getJustification().getJustificationStep().add(st);
+
+                    }
                 }
             }
 
             if (appDataRealmList != null) {
                 for(AppData a :appDataRealmList){
 //                    just.getJustificationScreentime().add(a);
-                    init.getJustification().getJustificationScreentime().add(a);
+
+                    if(a!=null){
+                        init.getJustification().getJustificationScreentime().add(a);
+                    }
                 }
 
             }
@@ -89,14 +142,18 @@ public class AdviceDatabaseFunctions {
             if (locationRealmList != null) {
 
                 for(Location l :locationRealmList){
-                    init.getJustification().getJustificationLocation().add(l);
+                    if(l!=null){
+                        init.getJustification().getJustificationLocation().add(l);
+                    }
                 }
             }
 
             if (socialnessRealmList != null) {
 
                 for(Socialness s: socialnessRealmList){
-                    init.getJustification().getJustificationSocialness().add(s);
+                    if(s!=null){
+                        init.getJustification().getJustificationSocialness().add(s);
+                    }
 
                 }
             }
@@ -104,7 +161,9 @@ public class AdviceDatabaseFunctions {
             if (moodRealmList != null) {
 
                 for(Mood m: moodRealmList){
-                    init.getJustification().getJustificationMood().add(m);
+                    if(m!=null){
+                        init.getJustification().getJustificationMood().add(m);
+                    }
 
                 }
             }

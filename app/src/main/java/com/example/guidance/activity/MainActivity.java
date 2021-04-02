@@ -17,18 +17,29 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.guidance.R;
 import com.example.guidance.ServiceReceiver.onPauseServiceReceiver;
 import com.example.guidance.Util.Util;
+import com.example.guidance.realm.model.Advice;
 import com.example.guidance.realm.model.Data_Type;
 import com.example.guidance.realm.model.Intelligent_Agent;
 import com.google.android.material.navigation.NavigationView;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Objects;
+
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
 
+import static com.example.guidance.Util.IA.NO_JUSTIFICATION;
+import static com.example.guidance.Util.IA.WITH_JUSTIFICATION;
 import static com.example.guidance.Util.Util.navigationViewVisibility;
+import static com.example.guidance.realm.databasefunctions.AdviceDatabaseFunctions.getAdviceForAfterDate;
+import static com.example.guidance.realm.databasefunctions.AdviceDatabaseFunctions.getAdviceOnDate;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.isIntelligentAgentInitialised;
 import static com.example.guidance.realm.databasefunctions.QuestionnaireDatabaseFunctions.isQuestionaireAnswered;
+import static com.example.guidance.realm.databasefunctions.RankingDatabaseFunctions.noAdvice;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     static Realm realm;
@@ -85,6 +96,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        Date currentTime = Calendar.getInstance().getTime();
+
+        if (isIntelligentAgentInitialised(this)) {
+            RealmResults<Advice> advice = getAdviceOnDate(this, currentTime);
+            Log.d(TAG, "onCreate: adviceSize " + advice.size());
+            if(advice.isEmpty() || advice.get(0).getAdviceType().equals(noAdvice)){
+                currentAdvice.setText(getResources().getString(R.string.no_advice_for_today));
+            }else{
+
+                currentAdvice.setText(Objects.requireNonNull(advice.get(0)).getAdvice());
+            }
+
+            if(intelligent_agent.getAdvice().equals(WITH_JUSTIFICATION)){
+                currentGraph.setVisibility(View.VISIBLE);
+            }else if (intelligent_agent.getAdvice().equals(NO_JUSTIFICATION)){
+                currentGraph.setVisibility(View.INVISIBLE);
+
+            }
+
+        }
+
+
+
     }
 
     @Override

@@ -19,6 +19,7 @@ public class Advice extends RealmObject {
     private Date dateTimeAdviceGiven;
     private String adviceType;
     private Date dateTimeAdviceFor;
+    private String advice;
     private Float steps;
     private AppData screentime;
     private Float socialness;
@@ -29,11 +30,12 @@ public class Advice extends RealmObject {
     public Advice() {
     }
 
-    public Advice(ObjectId _id, Date dateTimeAdviceGiven, String adviceType, Date dateTimeAdviceFor, Float steps, AppData screentime, Float socialness, Float mood, AdviceUsageData adviceUsageData, Justification justification) {
+    public Advice(ObjectId _id, Date dateTimeAdviceGiven, String adviceType, Date dateTimeAdviceFor, String advice, Float steps, AppData screentime, Float socialness, Float mood, AdviceUsageData adviceUsageData, Justification justification) {
         this._id = _id;
         this.dateTimeAdviceGiven = dateTimeAdviceGiven;
         this.adviceType = adviceType;
         this.dateTimeAdviceFor = dateTimeAdviceFor;
+        this.advice = advice;
         this.steps = steps;
         this.screentime = screentime;
         this.socialness = socialness;
@@ -72,6 +74,14 @@ public class Advice extends RealmObject {
 
     public void setDateTimeAdviceFor(Date dateTimeAdviceFor) {
         this.dateTimeAdviceFor = dateTimeAdviceFor;
+    }
+
+    public String getAdvice() {
+        return advice;
+    }
+
+    public void setAdvice(String advice) {
+        this.advice = advice;
     }
 
     public Float getSteps() {

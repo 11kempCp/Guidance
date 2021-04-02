@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.guidance.R;
 import com.example.guidance.ServiceReceiver.onPauseServiceReceiver;
 import com.example.guidance.Util.MyItemTouchHelper;
-import com.example.guidance.Util.RankingRecyclerAdapter;
+import com.example.guidance.Util.adapter.RankingRecyclerAdapter;
 import com.example.guidance.Util.Util;
 import com.example.guidance.Util.VerticalSpacingItemDecorator;
 import com.example.guidance.realm.model.Data_Type;

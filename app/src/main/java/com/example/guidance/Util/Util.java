@@ -79,8 +79,9 @@ public class Util {
     public static final int ADVICE_FOLLOWED = 9;
 
     //  todo change back so that WEATHER is called
-
-    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION,WEATHER, QUESTIONNAIRE, SCREENTIME, ADVICE ,ADVICE_FOLLOWED);
+    //todo fix weather being spammed constantly
+    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, QUESTIONNAIRE, SCREENTIME, ADVICE ,ADVICE_FOLLOWED);
+//    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION,WEATHER, QUESTIONNAIRE, SCREENTIME, ADVICE ,ADVICE_FOLLOWED);
 
     public static boolean scheduleJob(Context context, Class<?> serviceClass, int jobId, int minutes) {
         Date currentTime = Calendar.getInstance().getTime();
