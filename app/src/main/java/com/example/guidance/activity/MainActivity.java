@@ -13,10 +13,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.guidance.R;
 import com.example.guidance.ServiceReceiver.onPauseServiceReceiver;
 import com.example.guidance.Util.Util;
+import com.example.guidance.Util.adapter.AdviceAdapter;
 import com.example.guidance.realm.model.Advice;
 import com.example.guidance.realm.model.Data_Type;
 import com.example.guidance.realm.model.Intelligent_Agent;
@@ -24,22 +27,21 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Objects;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 
+import static com.example.guidance.Util.IA.FEMALE;
+import static com.example.guidance.Util.IA.MALE;
 import static com.example.guidance.Util.IA.NO_JUSTIFICATION;
 import static com.example.guidance.Util.IA.WITH_JUSTIFICATION;
 import static com.example.guidance.Util.Util.navigationViewVisibility;
-import static com.example.guidance.realm.databasefunctions.AdviceDatabaseFunctions.getAdviceForAfterDate;
 import static com.example.guidance.realm.databasefunctions.AdviceDatabaseFunctions.getAdviceOnDate;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.isIntelligentAgentInitialised;
 import static com.example.guidance.realm.databasefunctions.QuestionnaireDatabaseFunctions.isQuestionaireAnswered;
-import static com.example.guidance.realm.databasefunctions.RankingDatabaseFunctions.noAdvice;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     static Realm realm;
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     TextView currentAdvice, currentGraph;
     private DrawerLayout drawer;
     private boolean questionaire;
+    private RecyclerView recyclerViewMainAdvice;
 
     //Tag
     private static final String TAG = "MainActivity";
@@ -76,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         realm = Realm.getDefaultInstance();
-        currentAdvice = findViewById(R.id.textViewCurrentAdvice);
+        recyclerViewMainAdvice = findViewById(R.id.recyclerViewMainActivityAdvice);
         currentGraph = findViewById(R.id.textViewCurrentGraph);
         drawer = findViewById(R.id.drawer_layout_main_activity);
 
@@ -100,14 +103,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Date currentTime = Calendar.getInstance().getTime();
 
         if (isIntelligentAgentInitialised(this)) {
-            RealmResults<Advice> advice = getAdviceOnDate(this, currentTime);
-            Log.d(TAG, "onCreate: adviceSize " + advice.size());
-            if(advice.isEmpty() || advice.get(0).getAdviceType().equals(noAdvice)){
-                currentAdvice.setText(getResources().getString(R.string.no_advice_for_today));
-            }else{
+            RealmResults<Advice> adviceToday = getAdviceOnDate(this, currentTime);
 
-                currentAdvice.setText(Objects.requireNonNull(advice.get(0)).getAdvice());
+            if(intelligent_agent.getGender().equals(FEMALE)){
+                AdviceAdapter adviceAdapter = new AdviceAdapter(this, adviceToday, getResources(),getResources().getColor(R.color.femalePrimaryColour), true );
+                recyclerViewMainAdvice.setAdapter(adviceAdapter);
+                recyclerViewMainAdvice.setLayoutManager(new LinearLayoutManager(this));
+            }else if(intelligent_agent.getGender().equals(MALE)){
+                AdviceAdapter adviceAdapter = new AdviceAdapter(this, adviceToday, getResources(),getResources().getColor(R.color.malePrimaryColour), true );
+                recyclerViewMainAdvice.setAdapter(adviceAdapter);
+                recyclerViewMainAdvice.setLayoutManager(new LinearLayoutManager(this));
             }
+
 
             if(intelligent_agent.getAdvice().equals(WITH_JUSTIFICATION)){
                 currentGraph.setVisibility(View.VISIBLE);
