@@ -1,8 +1,12 @@
 package com.example.guidance.realm.model;
 
-import org.bson.types.ObjectId;
+import com.example.guidance.realm.model.advicemodel.A_AppData;
+import com.example.guidance.realm.model.advicemodel.A_Location;
+import com.example.guidance.realm.model.advicemodel.A_Mood;
+import com.example.guidance.realm.model.advicemodel.A_Socialness;
+import com.example.guidance.realm.model.advicemodel.A_Step;
 
-import java.util.List;
+import org.bson.types.ObjectId;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
@@ -15,11 +19,11 @@ public class Justification extends RealmObject {
 
     @PrimaryKey
     private ObjectId _id;
-    private RealmList<Step> justificationStep;
-    private RealmList<AppData> justificationScreentime;
-    private RealmList<Location> justificationLocation;
-    private RealmList<Socialness> justificationSocialness;
-    private RealmList<Mood> justificationMood;
+    private RealmList<A_Step> justificationStep;
+    private RealmList<A_AppData> justificationScreentime;
+    private RealmList<A_Location> justificationLocation;
+    private RealmList<A_Socialness> justificationSocialness;
+    private RealmList<A_Mood> justificationMood;
 
 
     public Justification() {
@@ -33,43 +37,43 @@ public class Justification extends RealmObject {
         this._id = _id;
     }
 
-    public RealmList<Step> getJustificationStep() {
+    public RealmList<A_Step> getJustificationStep() {
         return justificationStep;
     }
 
-    public void setJustificationStep(RealmList<Step> justificationStep) {
+    public void setJustificationStep(RealmList<A_Step> justificationStep) {
         this.justificationStep = justificationStep;
     }
 
-    public RealmList<AppData> getJustificationScreentime() {
+    public RealmList<A_AppData> getJustificationScreentime() {
         return justificationScreentime;
     }
 
-    public void setJustificationScreentime(RealmList<AppData> justificationScreentime) {
+    public void setJustificationScreentime(RealmList<A_AppData> justificationScreentime) {
         this.justificationScreentime = justificationScreentime;
     }
 
-    public RealmList<Location> getJustificationLocation() {
+    public RealmList<A_Location> getJustificationLocation() {
         return justificationLocation;
     }
 
-    public void setJustificationLocation(RealmList<Location> justificationLocation) {
+    public void setJustificationLocation(RealmList<A_Location> justificationLocation) {
         this.justificationLocation = justificationLocation;
     }
 
-    public RealmList<Socialness> getJustificationSocialness() {
+    public RealmList<A_Socialness> getJustificationSocialness() {
         return justificationSocialness;
     }
 
-    public void setJustificationSocialness(RealmList<Socialness> justificationSocialness) {
+    public void setJustificationSocialness(RealmList<A_Socialness> justificationSocialness) {
         this.justificationSocialness = justificationSocialness;
     }
 
-    public RealmList<Mood> getJustificationMood() {
+    public RealmList<A_Mood> getJustificationMood() {
         return justificationMood;
     }
 
-    public void setJustificationMood(RealmList<Mood> justificationMood) {
+    public void setJustificationMood(RealmList<A_Mood> justificationMood) {
         this.justificationMood = justificationMood;
     }
 }

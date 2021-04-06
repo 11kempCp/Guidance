@@ -1,7 +1,4 @@
-package com.example.guidance.realm.model;
-
-import com.example.guidance.realm.model.advicemodel.A_Location;
-import com.example.guidance.realm.model.advicemodel.A_Step;
+package com.example.guidance.realm.model.advicemodel;
 
 import org.bson.types.ObjectId;
 
@@ -11,9 +8,9 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 /**
- * Created by Conor K on 03/03/2021.
+ * Created by Conor K on 06/04/2021.
  */
-public class Location extends RealmObject {
+public class A_Location extends RealmObject {
 
     @PrimaryKey
     private ObjectId _id;
@@ -22,11 +19,11 @@ public class Location extends RealmObject {
     private double longitude;
 
 
-    public Location(){
+    public A_Location(){
 
     }
 
-    public Location(ObjectId _id, Date dateTime, double latitude, double longitude) {
+    public A_Location(ObjectId _id, Date dateTime, double latitude, double longitude) {
         this._id = _id;
         this.dateTime = dateTime;
         this.latitude = latitude;
@@ -64,16 +61,4 @@ public class Location extends RealmObject {
     public void set_id(ObjectId _id) {
         this._id = _id;
     }
-
-    public A_Location convertToAdviceFormat(Location location){
-
-        A_Location newLocationObject = new A_Location();
-        newLocationObject.set_id(new ObjectId());
-        newLocationObject.setDateTime(location.getDateTime());
-        newLocationObject.setLatitude(location.getLatitude());
-        newLocationObject.setLongitude(location.getLongitude());
-
-        return newLocationObject;
-    }
-
 }

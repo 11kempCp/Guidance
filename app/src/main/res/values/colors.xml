@@ -20,5 +20,8 @@
     <color name="malePrimaryDark">#4395e3</color>
     <color name="maleColourAccent">#f1c8a1</color>
 
+    <color name="color_before">#808080</color>
+    <color name="color_after">#D85116</color>
+
 
 </resources>

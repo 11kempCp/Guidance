@@ -44,7 +44,7 @@ import static com.example.guidance.Util.Util.scheduleAdvice;
 import static com.example.guidance.Util.Util.scheduleAdviceFollowed;
 import static com.example.guidance.Util.Util.scheduleLocation;
 import static com.example.guidance.realm.databasefunctions.AdviceDatabaseFunctions.getAdviceOnDate;
-import static com.example.guidance.realm.databasefunctions.AdviceDatabaseFunctions.getAllAdvice;
+import static com.example.guidance.realm.databasefunctions.AdviceDatabaseFunctions.getAllValidAdvice;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.databasefunctions.LocationDatabaseFunctions.getLocationOverPreviousDays;
@@ -58,8 +58,8 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
 
 
     static Realm realm;
-    private TextView view, currentAdvice;
-    private RecyclerView recyclerViewAdvice,recyclerViewAdviceToday;
+    private TextView adviceEmpty, noAdvice, view;
+    private RecyclerView recyclerViewAdvice, recyclerViewAdviceToday;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +85,8 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
 //        view.setMovementMethod(new ScrollingMovementMethod());
         recyclerViewAdvice = findViewById(R.id.recyclerViewAdvice);
         recyclerViewAdviceToday = findViewById(R.id.recyclerViewTodayAdvice);
+        noAdvice = findViewById(R.id.textViewAdviceNoAdvice);
+        adviceEmpty = findViewById(R.id.textViewAdviceEmptyAdvice);
         drawer = findViewById(R.id.drawer_layout_advice_activity);
         Toolbar toolbar = findViewById(R.id.toolbar);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -107,34 +109,46 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
 
         Date currentTime = Calendar.getInstance().getTime();
 
-        RealmResults<Advice> advice = getAllAdvice(this);
+        RealmResults<Advice> allValidAdvice = getAllValidAdvice(this);
         RealmResults<Advice> adviceToday = getAdviceOnDate(this, currentTime);
-        Log.d(TAG, "onCreate: adviceSize " + advice.size());
+        Log.d(TAG, "onCreate: adviceSize " + allValidAdvice.size());
 
-        if(!adviceToday.isEmpty()){
+        if (adviceToday.isEmpty()) {
+            noAdvice.setVisibility(View.VISIBLE);
+            recyclerViewAdviceToday.setVisibility(View.GONE);
+
+        } else {
+
+            noAdvice.setVisibility(View.GONE);
+            recyclerViewAdviceToday.setVisibility(View.VISIBLE);
 
 
 
-            if(intelligent_agent.getGender().equals(FEMALE)){
-                AdviceAdapter adviceAdapter = new AdviceAdapter(this, adviceToday, getResources(),getResources().getColor(R.color.femalePrimaryColour), true );
+            if (intelligent_agent.getGender().equals(FEMALE)) {
+                AdviceAdapter adviceAdapter = new AdviceAdapter(this, adviceToday, getResources(), getResources().getColor(R.color.femalePrimaryColour), getResources().getColor(R.color.color_before), getResources().getColor(R.color.color_after), true, currentTime);
                 recyclerViewAdviceToday.setAdapter(adviceAdapter);
                 recyclerViewAdviceToday.setLayoutManager(new LinearLayoutManager(this));
-            }else if(intelligent_agent.getGender().equals(MALE)){
-                AdviceAdapter adviceAdapter = new AdviceAdapter(this, adviceToday, getResources(),getResources().getColor(R.color.malePrimaryColour), true );
+            } else if (intelligent_agent.getGender().equals(MALE)) {
+                AdviceAdapter adviceAdapter = new AdviceAdapter(this, adviceToday, getResources(), getResources().getColor(R.color.malePrimaryColour), getResources().getColor(R.color.color_before), getResources().getColor(R.color.color_after), true, currentTime);
                 recyclerViewAdviceToday.setAdapter(adviceAdapter);
                 recyclerViewAdviceToday.setLayoutManager(new LinearLayoutManager(this));
             }
-
-
-
 
 
 //            currentAdvice.setText(getResources().getString(R.string.no_advice));
 
         }
 
-        if(!advice.isEmpty()){
-            AdviceAdapter adviceAdapter = new AdviceAdapter(this, advice,getResources(), getResources().getColor(R.color.malePrimaryColour), false);
+        if(allValidAdvice.isEmpty()){
+
+            adviceEmpty.setVisibility(View.VISIBLE);
+            recyclerViewAdvice.setVisibility(View.GONE);
+
+        }else{
+            adviceEmpty.setVisibility(View.GONE);
+            recyclerViewAdvice.setVisibility(View.VISIBLE);
+
+            AdviceAdapter adviceAdapter = new AdviceAdapter(this, allValidAdvice, getResources(), getResources().getColor(R.color.malePrimaryColour), getResources().getColor(R.color.color_before), getResources().getColor(R.color.color_after), false, currentTime);
             recyclerViewAdvice.setAdapter(adviceAdapter);
             recyclerViewAdvice.setLayoutManager(new LinearLayoutManager(this));
         }

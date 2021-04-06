@@ -16,6 +16,7 @@ import com.example.guidance.R;
 import com.example.guidance.realm.model.Advice;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 import io.realm.RealmResults;
@@ -29,16 +30,22 @@ public class AdviceAdapter extends RecyclerView.Adapter<AdviceAdapter.MyViewHold
     Advice[] ad;
     Resources resources;
     private String TAG = "AdviceAdapter";
-    Integer colour;
+    Integer colour_today;
+    Integer colour_before;
+    Integer colour_after;
     boolean todayAdvice;
+    Date currentTime;
 
 
-    public AdviceAdapter(Context context, RealmResults<Advice> advice, Resources recs, int clr, boolean tAdvice){
+    public AdviceAdapter(Context context, RealmResults<Advice> advice, Resources recs, int clr_today, int clr_bef, int clr_af, boolean tAdvice, Date c_t){
         ct = context;
         ad = advice.toArray(new Advice[0]);
         resources = recs;
-        colour = clr;
+        colour_today = clr_today;
+        colour_before = clr_bef;
+        colour_after = clr_af;
         todayAdvice = tAdvice;
+        currentTime = c_t;
     }
 
 
@@ -55,6 +62,9 @@ public class AdviceAdapter extends RecyclerView.Adapter<AdviceAdapter.MyViewHold
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+
+
+
         holder.advice.setText(ad[position].getAdvice());
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH);
 //        Log.d(TAG, "onBindViewHolder: date is " + ad[position].getDateTimeAdviceFor());
@@ -65,7 +75,11 @@ public class AdviceAdapter extends RecyclerView.Adapter<AdviceAdapter.MyViewHold
         holder.date.setText(date);
 
         if(todayAdvice){
-            holder.cardView.setCardBackgroundColor(colour);
+            holder.cardView.setCardBackgroundColor(colour_today);
+        }else if(ad[position].getDateTimeAdviceFor().before(currentTime)){
+            holder.cardView.setCardBackgroundColor(colour_before);
+        }else if(ad[position].getDateTimeAdviceFor().after(currentTime)){
+            holder.cardView.setCardBackgroundColor(colour_after);
         }
 
 

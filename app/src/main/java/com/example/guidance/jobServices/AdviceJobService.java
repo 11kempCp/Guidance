@@ -102,21 +102,23 @@ public class AdviceJobService extends JobService {
         Log.d(TAG, "onStartJob: ");
 
 
-        if (currentTime.getHours() >= 9 && currentTime.getHours() <= 20) {
+        if (currentTime.getHours() >= 12 && currentTime.getHours() <= 20) {
             Intelligent_Agent intelligent_agent = getIntelligentAgent(this);
             Log.d(TAG, "getInteractionAmountForDate: " + getInteractionAmountForDate(this, currentTime));
 
+            //Both if statements result in the same end result, this is due to a limitation with the
+            //group size that will be available. Therefore the Intelligent Agent will
+            // only provide advice once per day
             if (intelligent_agent.getInteraction().equals(HIGH)) {
                 Log.d(TAG, "onStartJob: high");
-                //todo change number to 2
-                if (getInteractionAmountForDate(this, currentTime) < 2) {
+
+                if (getInteractionAmountForDate(this, currentTime) < 1) {
                     determineAdvice(currentTime);
                 }else{
                     Log.d(TAG, "Interaction Limit reached");
                 }
             } else if (intelligent_agent.getInteraction().equals(LOW)) {
                 Log.d(TAG, "onStartJob: low");
-                //todo change number to 1
                 if (getInteractionAmountForDate(this, currentTime) < 1) {
                     determineAdvice(currentTime);
                 }else{

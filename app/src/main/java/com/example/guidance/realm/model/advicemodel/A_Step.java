@@ -1,6 +1,6 @@
-package com.example.guidance.realm.model;
+package com.example.guidance.realm.model.advicemodel;
 
-import com.example.guidance.realm.model.advicemodel.A_Step;
+import com.example.guidance.realm.model.Step;
 
 import org.bson.types.ObjectId;
 
@@ -10,20 +10,20 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 /**
- * Created by Conor K on 19/02/2021.
+ * Created by Conor K on 06/04/2021.
  */
-public class Step extends RealmObject {
+public class A_Step extends RealmObject {
 
     @PrimaryKey
     private ObjectId _id;
     private Date dateTime;
     private float stepCount;
 
-    public Step(){
+    public A_Step(){
 
     }
 
-    public Step(ObjectId _id, Date dateTime, float stepCount) {
+    public A_Step(ObjectId _id, Date dateTime, float stepCount) {
         this._id = _id;
         this.dateTime = dateTime;
         this.stepCount = stepCount;
@@ -53,9 +53,9 @@ public class Step extends RealmObject {
         this.stepCount = stepCount;
     }
 
-    public A_Step convertToAdviceFormat(Step step){
+    public Step newStepObject(Step step){
 
-        A_Step newStepObject = new A_Step();
+        Step newStepObject = new Step();
         newStepObject.set_id(new ObjectId());
         newStepObject.setDateTime(step.getDateTime());
         newStepObject.setStepCount(step.getStepCount());

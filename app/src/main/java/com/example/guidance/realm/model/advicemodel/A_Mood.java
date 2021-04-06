@@ -1,7 +1,4 @@
-package com.example.guidance.realm.model;
-
-import com.example.guidance.realm.model.advicemodel.A_Mood;
-import com.example.guidance.realm.model.advicemodel.A_Socialness;
+package com.example.guidance.realm.model.advicemodel;
 
 import org.bson.types.ObjectId;
 
@@ -11,9 +8,9 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 /**
- * Created by Conor K on 23/02/2021.
+ * Created by Conor K on 06/04/2021.
  */
-public class Mood extends RealmObject {
+public class A_Mood extends RealmObject {
 
     @PrimaryKey
     private ObjectId _id;
@@ -21,11 +18,11 @@ public class Mood extends RealmObject {
     private int rating;
 
 
-    public Mood(){
+    public A_Mood(){
 
     }
 
-    public Mood(ObjectId _id, Date dateTime, int rating) {
+    public A_Mood(ObjectId _id, Date dateTime, int rating) {
         this._id = _id;
         this.dateTime = dateTime;
         this.rating = rating;
@@ -53,15 +50,5 @@ public class Mood extends RealmObject {
 
     public void setRating(int rating) {
         this.rating = rating;
-    }
-
-    public A_Mood convertToAdviceFormat(Mood mood){
-
-        A_Mood newMoodObject = new A_Mood();
-        newMoodObject.set_id(new ObjectId());
-        newMoodObject.setDateTime(mood.getDateTime());
-        newMoodObject.setRating(mood.getRating());
-
-        return newMoodObject;
     }
 }

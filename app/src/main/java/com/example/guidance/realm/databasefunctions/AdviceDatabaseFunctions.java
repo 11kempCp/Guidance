@@ -34,7 +34,7 @@ public class AdviceDatabaseFunctions {
 
     private static final String TAG = "AdviceDatabaseFunctions";
 
-    public static RealmResults<Advice> getAllAdvice(Context context){
+    public static RealmResults<Advice> getAllValidAdvice(Context context){
         Realm.init(context);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
@@ -43,7 +43,7 @@ public class AdviceDatabaseFunctions {
 
 
 //        RealmQuery<Step> query = realm.where(Step.class).lessThan("dateTime", currentTime);
-        RealmQuery<Advice> query = realm.where(Advice.class);
+        RealmQuery<Advice> query = realm.where(Advice.class).notEqualTo("adviceType", noAdvice);
         return query.sort("dateTimeAdviceGiven", Sort.DESCENDING).findAll();
 
     }
@@ -66,7 +66,7 @@ public class AdviceDatabaseFunctions {
 
 
 //        RealmQuery<Step> query = realm.where(Step.class).lessThan("dateTime", currentTime);
-        RealmQuery<Advice> query = realm.where(Advice.class).between("dateTimeAdviceGiven", beginningOfDay,endOfDay);
+        RealmQuery<Advice> query = realm.where(Advice.class).between("dateTimeAdviceGiven", beginningOfDay,endOfDay).notEqualTo("adviceType", noAdvice);
         return query.sort("dateTimeAdviceGiven", Sort.DESCENDING).findAll();
 
     }
@@ -122,7 +122,7 @@ public class AdviceDatabaseFunctions {
                 for(Step st :stepRealmList){
 //                    just.getJustificationScreentime().add(a);
                     if(st != null){
-                        init.getJustification().getJustificationStep().add(st);
+                        init.getJustification().getJustificationStep().add(st.convertToAdviceFormat(st));
 
                     }
                 }
@@ -133,7 +133,7 @@ public class AdviceDatabaseFunctions {
 //                    just.getJustificationScreentime().add(a);
 
                     if(a!=null){
-                        init.getJustification().getJustificationScreentime().add(a);
+                        init.getJustification().getJustificationScreentime().add(a.convertToAdviceFormat(a));
                     }
                 }
 
@@ -143,7 +143,7 @@ public class AdviceDatabaseFunctions {
 
                 for(Location l :locationRealmList){
                     if(l!=null){
-                        init.getJustification().getJustificationLocation().add(l);
+                        init.getJustification().getJustificationLocation().add(l.convertToAdviceFormat(l));
                     }
                 }
             }
@@ -152,7 +152,7 @@ public class AdviceDatabaseFunctions {
 
                 for(Socialness s: socialnessRealmList){
                     if(s!=null){
-                        init.getJustification().getJustificationSocialness().add(s);
+                        init.getJustification().getJustificationSocialness().add(s.convertToAdviceFormat(s));
                     }
 
                 }
@@ -162,7 +162,7 @@ public class AdviceDatabaseFunctions {
 
                 for(Mood m: moodRealmList){
                     if(m!=null){
-                        init.getJustification().getJustificationMood().add(m);
+                        init.getJustification().getJustificationMood().add(m.convertToAdviceFormat(m));
                     }
 
                 }

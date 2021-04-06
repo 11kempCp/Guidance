@@ -1,5 +1,8 @@
 package com.example.guidance.realm.model;
 
+import com.example.guidance.realm.model.advicemodel.A_Socialness;
+import com.example.guidance.realm.model.advicemodel.A_Step;
+
 import org.bson.types.ObjectId;
 
 import java.util.Date;
@@ -50,5 +53,16 @@ public class Socialness extends RealmObject {
 
     public void setRating(int rating) {
         this.rating = rating;
+    }
+
+
+    public A_Socialness convertToAdviceFormat(Socialness socialness){
+
+        A_Socialness newSocialnessObject = new A_Socialness();
+        newSocialnessObject.set_id(new ObjectId());
+        newSocialnessObject.setDateTime(socialness.getDateTime());
+        newSocialnessObject.setRating(socialness.getRating());
+
+        return newSocialnessObject;
     }
 }

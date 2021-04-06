@@ -46,7 +46,7 @@ import static com.example.guidance.realm.databasefunctions.QuestionnaireDatabase
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     static Realm realm;
 
-    TextView currentAdvice, currentGraph;
+    TextView noAdvice, currentGraph;
     private DrawerLayout drawer;
     private boolean questionaire;
     private RecyclerView recyclerViewMainAdvice;
@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerViewMainAdvice = findViewById(R.id.recyclerViewMainActivityAdvice);
         currentGraph = findViewById(R.id.textViewCurrentGraph);
         drawer = findViewById(R.id.drawer_layout_main_activity);
+        noAdvice = findViewById(R.id.textViewNoAdvice);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -105,23 +106,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (isIntelligentAgentInitialised(this)) {
             RealmResults<Advice> adviceToday = getAdviceOnDate(this, currentTime);
 
-            if(intelligent_agent.getGender().equals(FEMALE)){
-                AdviceAdapter adviceAdapter = new AdviceAdapter(this, adviceToday, getResources(),getResources().getColor(R.color.femalePrimaryColour), true );
-                recyclerViewMainAdvice.setAdapter(adviceAdapter);
-                recyclerViewMainAdvice.setLayoutManager(new LinearLayoutManager(this));
-            }else if(intelligent_agent.getGender().equals(MALE)){
-                AdviceAdapter adviceAdapter = new AdviceAdapter(this, adviceToday, getResources(),getResources().getColor(R.color.malePrimaryColour), true );
-                recyclerViewMainAdvice.setAdapter(adviceAdapter);
-                recyclerViewMainAdvice.setLayoutManager(new LinearLayoutManager(this));
+            if(adviceToday.isEmpty()){
+                noAdvice.setVisibility(View.VISIBLE);
+                recyclerViewMainAdvice.setVisibility(View.GONE);
+
+            }else{
+
+                noAdvice.setVisibility(View.GONE);
+                recyclerViewMainAdvice.setVisibility(View.VISIBLE);
+
+                if(intelligent_agent.getGender().equals(FEMALE)){
+                    AdviceAdapter adviceAdapter = new AdviceAdapter(this, adviceToday, getResources(), getResources().getColor(R.color.malePrimaryColour), getResources().getColor(R.color.color_before), getResources().getColor(R.color.color_after), true, currentTime );
+                    recyclerViewMainAdvice.setAdapter(adviceAdapter);
+                    recyclerViewMainAdvice.setLayoutManager(new LinearLayoutManager(this));
+                }else if(intelligent_agent.getGender().equals(MALE)){
+                    AdviceAdapter adviceAdapter = new AdviceAdapter(this, adviceToday, getResources(), getResources().getColor(R.color.malePrimaryColour), getResources().getColor(R.color.color_before), getResources().getColor(R.color.color_after), true, currentTime );
+                    recyclerViewMainAdvice.setAdapter(adviceAdapter);
+                    recyclerViewMainAdvice.setLayoutManager(new LinearLayoutManager(this));
+                }
+
+                if(intelligent_agent.getAdvice().equals(WITH_JUSTIFICATION)){
+                    currentGraph.setVisibility(View.VISIBLE);
+                }else if (intelligent_agent.getAdvice().equals(NO_JUSTIFICATION)){
+                    currentGraph.setVisibility(View.INVISIBLE);
+
+                }
             }
 
 
-            if(intelligent_agent.getAdvice().equals(WITH_JUSTIFICATION)){
-                currentGraph.setVisibility(View.VISIBLE);
-            }else if (intelligent_agent.getAdvice().equals(NO_JUSTIFICATION)){
-                currentGraph.setVisibility(View.INVISIBLE);
 
-            }
+
+
 
         }
 

@@ -1,18 +1,19 @@
-package com.example.guidance.realm.model;
+package com.example.guidance.realm.model.advicemodel;
 
-import com.example.guidance.realm.model.advicemodel.A_AppData;
-import com.example.guidance.realm.model.advicemodel.A_Step;
+import com.example.guidance.realm.model.AppData;
 
 import org.bson.types.ObjectId;
 
+import java.util.Date;
+
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 /**
- * Created by Conor K on 15/03/2021.
+ * Created by Conor K on 06/04/2021.
  */
-public class AppData extends RealmObject {
-
+public class A_AppData extends RealmObject {
 
     @PrimaryKey
     private ObjectId _id;
@@ -21,10 +22,10 @@ public class AppData extends RealmObject {
     private Long totalTimeVisible;
     private Long totalTimeForegroundServiceUsed;
 
-    public AppData(){
+    public A_AppData(){
     }
 
-    public AppData(ObjectId _id, String packageName, Long totalTimeInForeground, Long totalTimeVisible, Long totalTimeForegroundServiceUsed) {
+    public A_AppData(ObjectId _id, String packageName, Long totalTimeInForeground, Long totalTimeVisible, Long totalTimeForegroundServiceUsed) {
         this._id = _id;
         this.packageName = packageName;
         this.totalTimeInForeground = totalTimeInForeground;
@@ -71,18 +72,4 @@ public class AppData extends RealmObject {
     public void setTotalTimeForegroundServiceUsed(Long totalTimeForegroundServiceUsed) {
         this.totalTimeForegroundServiceUsed = totalTimeForegroundServiceUsed;
     }
-
-
-    public A_AppData convertToAdviceFormat(AppData appData){
-
-        A_AppData newAppDataObject = new A_AppData();
-        newAppDataObject.set_id(new ObjectId());
-        newAppDataObject.setPackageName(appData.getPackageName());
-        newAppDataObject.setTotalTimeInForeground(appData.getTotalTimeInForeground());
-        newAppDataObject.setTotalTimeVisible(appData.getTotalTimeVisible());
-        newAppDataObject.setTotalTimeForegroundServiceUsed(appData.getTotalTimeForegroundServiceUsed());
-
-        return newAppDataObject;
-    }
-
 }
