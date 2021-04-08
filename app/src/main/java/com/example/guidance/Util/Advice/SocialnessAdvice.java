@@ -3,13 +3,15 @@ package com.example.guidance.Util.Advice;
 /**
  * Created by Conor K on 29/03/2021.
  */
-public class SocialnessAdvice {
+public class SocialnessAdvice extends AdviceText{
 
     //todo improve
-    private static String lowSocialness = "Your socialness has been low over the last %s days, you may want to reach out to your friends";
-    private static String jusLowSocialness = "Your socialness has been low over the last %s days, with an average of %s, you may want to reach out to your friends";
-    private static String nameLowSocialness = "%s, your socialness has been low over the last %s days, you may want to reach out to your friends";
-    private static String nameJusLowSocialness = "%s, your socialness has been low over the last %s days, with an average of %s, you may want to reach out to your friends";
+    private static final String lowSocialness = "Your socialness has been low over the last %s days, you may want to reach out to your friends. ";
+    private static final String jusLowSocialness = "Your socialness has been low over the last %s days, with an average of %s, you may want to reach out to your friends. ";
+    private static final String nameLowSocialness = "%s, your socialness has been low over the last %s days, you may want to reach out to your friends. ";
+    private static final String nameJusLowSocialness = "%s, your socialness has been low over the last %s days, with an average of %s, you may want to reach out to your friends. ";
+
+
 
     /**
      * Provides socialness advice without justification and does not require the users name
@@ -27,7 +29,7 @@ public class SocialnessAdvice {
             socialnessAdvice = String.format(lowSocialness, days);
 
         }
-        return socialnessAdvice;
+        return socialnessAdvice + full_Disclaimer;
     }
 
     /**
@@ -47,7 +49,7 @@ public class SocialnessAdvice {
             socialnessAdvice = String.format(jusLowSocialness, days, averageSocialness);
 
         }
-        return socialnessAdvice;
+        return socialnessAdvice + full_Disclaimer;
     }
 
     /**
@@ -67,7 +69,7 @@ public class SocialnessAdvice {
             socialnessAdvice = String.format(nameLowSocialness, name, days);
 
         }
-        return socialnessAdvice;
+        return socialnessAdvice + full_Disclaimer;
     }
 
     /**
@@ -88,6 +90,6 @@ public class SocialnessAdvice {
             socialnessAdvice = String.format(nameJusLowSocialness, name, days, averageSocialness);
 
         }
-        return socialnessAdvice;
+        return socialnessAdvice + full_Disclaimer;
     }
 }

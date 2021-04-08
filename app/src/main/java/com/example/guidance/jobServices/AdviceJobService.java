@@ -114,7 +114,7 @@ public class AdviceJobService extends JobService {
                 Log.d(TAG, "onStartJob: high");
 
                 //todo ensure that this is 1
-                if (getInteractionAmountForDate(this, currentTime) < 1) {
+                if (getInteractionAmountForDate(this, currentTime) < 100) {
                     determineAdvice(currentTime);
                 } else {
                     Log.d(TAG, "Interaction Limit reached");
@@ -123,7 +123,7 @@ public class AdviceJobService extends JobService {
                 Log.d(TAG, "onStartJob: low");
 
                 //todo ensure that this is 1
-                if (getInteractionAmountForDate(this, currentTime) < 1) {
+                if (getInteractionAmountForDate(this, currentTime) < 100) {
                     determineAdvice(currentTime);
                 } else {
                     Log.d(TAG, "Interaction Limit reached");

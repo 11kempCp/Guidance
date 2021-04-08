@@ -3,12 +3,14 @@ package com.example.guidance.Util.Advice;
 /**
  * Created by Conor K on 29/03/2021.
  */
-public class ScreentimeAdvice {
+public class ScreentimeAdvice extends AdviceText{
 
-    private static String screentimeHigh = "Your Screentime on %s was quite high yesterday, you might want to limit your Screentime for %s";
-    private static String jusScreentimeHigh = "Your Screentime on %s was quite high yesterday, at %s minutes, you might want to limit your Screentime for %s";
-    private static String nameScreentimeHigh = "%s, your Screentime on %s was quite high yesterday, you might want to limit your Screentime for %s";
-    private static String nameJusScreentimeHigh = "%s, your Screentime on %s was quite high yesterday, at %s minutes, you might want to limit your Screentime for %s";
+    private static final String screentimeHigh = "Your Screentime on %s was quite high yesterday, you might want to limit your Screentime for %s. ";
+    private static final String jusScreentimeHigh = "Your Screentime on %s was quite high yesterday, at %s minutes, you might want to limit your Screentime for %s. ";
+    private static final String nameScreentimeHigh = "%s, your Screentime on %s was quite high yesterday, you might want to limit your Screentime for %s. ";
+    private static final String nameJusScreentimeHigh = "%s, your Screentime on %s was quite high yesterday, at %s minutes, you might want to limit your Screentime for %s. ";
+
+
 
     /**
      * Provides screentime advice without justification and does not require the users name
@@ -25,7 +27,7 @@ public class ScreentimeAdvice {
         if (value == 1) {
             screentimeAdvice = String.format(screentimeHigh, applicationName, applicationName);
         }
-        return screentimeAdvice;
+        return screentimeAdvice + full_Disclaimer;
     }
 
     /**
@@ -44,7 +46,7 @@ public class ScreentimeAdvice {
         if (value == 1) {
             screentimeAdvice = String.format(jusScreentimeHigh, applicationName, minutes, applicationName);
         }
-        return screentimeAdvice;
+        return screentimeAdvice + full_Disclaimer;
     }
 
     /**
@@ -63,7 +65,7 @@ public class ScreentimeAdvice {
         if (value == 1) {
             screentimeAdvice = String.format(nameScreentimeHigh, name, applicationName, applicationName);
         }
-        return screentimeAdvice;
+        return screentimeAdvice + full_Disclaimer;
     }
 
     /**
@@ -83,6 +85,6 @@ public class ScreentimeAdvice {
         if (value == 1) {
             screentimeAdvice = String.format(nameJusScreentimeHigh, name, applicationName, minutes, applicationName);
         }
-        return screentimeAdvice;
+        return screentimeAdvice + full_Disclaimer;
     }
 }

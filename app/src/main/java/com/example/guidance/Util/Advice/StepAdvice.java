@@ -7,24 +7,20 @@ import java.util.Locale;
 /**
  * Created by Conor K on 29/03/2021.
  */
-public class StepAdvice {
+public class StepAdvice extends AdviceText{
 
-    private static final String stepCountLow = "Your step count was been low over the previous few days, increasing your step count might be beneficial to you.";
-    private static final String stepCountHigh = "Your step count has been high over the previous few days, decreasing your step count might be beneficial to you.";
-    private static final String jusStepCountLow = "Your step count was been low over the previous %s days, being %s, increasing your step count might be beneficial to you.";
-    private static final String jusStepCountHigh = "Your step count has been high over the previous %s days, being %s, decreasing your step count might be beneficial to you.";
-    private static final String nameStepCountLow = "%s, your step count was been low over the previous few days, increasing your step count might be beneficial to you.";
-    private static final String nameStepCountHigh = "%s, your step count has been high over the previous few days, decreasing your step count might be beneficial to you.";
-    private static final String nameJusStepCountLow = "%s, your step count was been low over the previous %s days, being %s, increasing your step count might be beneficial to you.";
-    private static final String nameJusStepCountHigh = "%s, your step count has been high over the previous %s days, being %s, decreasing your step count might be beneficial to you.";
+    private static final String stepCountLow = "Your step count was been low over the previous few days, increasing your step count might be beneficial to you. ";
+    private static final String stepCountHigh = "Your step count has been high over the previous few days, decreasing your step count might be beneficial to you. ";
+    private static final String jusStepCountLow = "Your step count was been low over the previous %s days, being %s, increasing your step count might be beneficial to you. ";
+    private static final String jusStepCountHigh = "Your step count has been high over the previous %s days, being %s, decreasing your step count might be beneficial to you. ";
+    private static final String nameStepCountLow = "%s, your step count was been low over the previous few days, increasing your step count might be beneficial to you. ";
+    private static final String nameStepCountHigh = "%s, your step count has been high over the previous few days, decreasing your step count might be beneficial to you. ";
+    private static final String nameJusStepCountLow = "%s, your step count was been low over the previous %s days, being %s, increasing your step count might be beneficial to you. ";
+    private static final String nameJusStepCountHigh = "%s, your step count has been high over the previous %s days, being %s, decreasing your step count might be beneficial to you. ";
 
-    private static final String s_Weather = " The weather on %s should be %s you may want to go for a walk on this date.";
-    private static final String s_Temperature = "The temperature on %s should be %sc. You may want to go for a walk on this date.";
-    private static final String f_Temperature = "The temperature on %s should be %sc.";
-    private static final String s_Sun = "The sun rises at %s and sets at %s.";
 
-    private static final SimpleDateFormat standardDateFormat = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH);
-    private static final SimpleDateFormat hourMinuteDateFormat = new SimpleDateFormat("hh:mm", Locale.ENGLISH);
+
+
 
 
     /**
@@ -41,7 +37,7 @@ public class StepAdvice {
         } else if (value == 1) {
             stepAdvice = stepCountHigh;
         }
-        return stepAdvice;
+        return stepAdvice + full_Disclaimer;
     }
 
     /**
@@ -64,7 +60,7 @@ public class StepAdvice {
             stepAdvice = String.format(jusStepCountHigh, days, steps);
 
         }
-        return stepAdvice;
+        return stepAdvice + full_Disclaimer;
     }
 
     /**
@@ -86,7 +82,7 @@ public class StepAdvice {
             stepAdvice = String.format(nameStepCountHigh, name);
 
         }
-        return stepAdvice;
+        return stepAdvice + full_Disclaimer;
     }
 
     /**
@@ -110,7 +106,7 @@ public class StepAdvice {
             stepAdvice = String.format(nameJusStepCountHigh, name, days, steps);
 
         }
-        return stepAdvice;
+        return stepAdvice + full_Disclaimer;
     }
 
 
@@ -154,7 +150,7 @@ public class StepAdvice {
             stepAdvice = String.format(jusStepCountHigh, days, steps);
 
         }
-        return stepAdvice;
+        return stepAdvice + full_Disclaimer;
     }
 
     /**
@@ -195,7 +191,7 @@ public class StepAdvice {
             stepAdvice = String.format(nameJusStepCountHigh, name, steps, days);
 
         }
-        return stepAdvice;
+        return stepAdvice + full_Disclaimer;
     }
 
 

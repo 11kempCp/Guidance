@@ -7,23 +7,20 @@ import java.util.Locale;
 /**
  * Created by Conor K on 29/03/2021.
  */
-public class LocationAdvice {
+public class LocationAdvice extends AdviceText {
 
-    private static final String locationStatic = "You have been inside for several days in a row; you might want to go outside for a walk.";
-    private static final String locationMobile = "You have been outside for several days in a row; you might want to stay inside for a bit.";
-    private static final String jusLocationStatic = "You have been inside for %s days in a row; you might want to go outside for a walk.";
-    private static final String jusLocationMobile = "You have been outside for %s days in a row; you might want to stay inside for a bit.";
-    private static final String nameLocationStatic = "%s, you have been inside for several days in a row; you might want to go outside for a walk.";
-    private static final String nameLocationMobile = "%s, you have been outside for several days in a row; you might want to stay inside for a bit.";
-    private static final String nameJusLocationStatic = "%s, you have been inside for %s days in a row; you might want to go outside for a walk.";
-    private static final String nameJusLocationMobile = "%s, you have been outside for %s days in a row; you might want to stay inside for a bit.";
-    private static final String s_Weather = " The weather on %s should be %s you may want to go for a walk on this date.";
-    private static final String s_Temperature = "The temperature on %s should be %sc. You may want to go for a walk on this date.";
-    private static final String f_Temperature = "The temperature on %s should be %sc.";
-    private static final String s_Sun = "The sun rises at %s and sets at %s";
+    private static final String locationStatic = "You have been inside for several days in a row; you might want to go outside for a walk. ";
+    private static final String locationMobile = "You have been outside for several days in a row; you might want to stay inside for a bit. ";
+    private static final String jusLocationStatic = "You have been inside for %s days in a row; you might want to go outside for a walk. ";
+    private static final String jusLocationMobile = "You have been outside for %s days in a row; you might want to stay inside for a bit. ";
+    private static final String nameLocationStatic = "%s, you have been inside for several days in a row; you might want to go outside for a walk. ";
+    private static final String nameLocationMobile = "%s, you have been outside for several days in a row; you might want to stay inside for a bit. ";
+    private static final String nameJusLocationStatic = "%s, you have been inside for %s days in a row; you might want to go outside for a walk. ";
+    private static final String nameJusLocationMobile = "%s, you have been outside for %s days in a row; you might want to stay inside for a bit. ";
 
-    private static final SimpleDateFormat standardDateFormat = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH);
-    private static final SimpleDateFormat hourMinuteDateFormat = new SimpleDateFormat("hh:mm", Locale.ENGLISH);
+
+
+
 
 
     /**
@@ -43,7 +40,7 @@ public class LocationAdvice {
             locationAdvice = locationMobile;
 
         }
-        return locationAdvice;
+        return locationAdvice + full_Disclaimer;
     }
 
     /**
@@ -64,7 +61,7 @@ public class LocationAdvice {
             locationAdvice = String.format(jusLocationMobile, days);
 
         }
-        return locationAdvice;
+        return locationAdvice + full_Disclaimer;
     }
 
     /**
@@ -84,7 +81,7 @@ public class LocationAdvice {
         } else if (value == 1) {
             locationAdvice = String.format(nameLocationMobile, name);
         }
-        return locationAdvice;
+        return locationAdvice + full_Disclaimer;
     }
 
     /**
@@ -143,7 +140,7 @@ public class LocationAdvice {
 
 
 
-        return locationAdvice;
+        return locationAdvice + full_Disclaimer;
     }
 
     /**
@@ -165,7 +162,7 @@ public class LocationAdvice {
             locationAdvice = String.format(nameJusLocationMobile, days, name);
 
         }
-        return locationAdvice;
+        return locationAdvice + full_Disclaimer;
     }
 
     /**
@@ -208,7 +205,7 @@ public class LocationAdvice {
             locationAdvice = String.format(jusLocationMobile, days);
 
         }
-        return locationAdvice;
+        return locationAdvice + full_Disclaimer;
     }
 
     /**
@@ -252,6 +249,6 @@ public class LocationAdvice {
             locationAdvice = String.format(nameJusLocationMobile, days, name);
 
         }
-        return locationAdvice;
+        return locationAdvice + full_Disclaimer;
     }
 }

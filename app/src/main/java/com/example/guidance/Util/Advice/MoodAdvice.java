@@ -3,14 +3,16 @@ package com.example.guidance.Util.Advice;
 /**
  * Created by Conor K on 28/03/2021.
  */
-public class MoodAdvice {
+public class MoodAdvice extends AdviceText{
 
 
     //todo improve
-    private static String lowMood = "Your mood has been low over the last %s days, you may want to try talking to people";
-    private static String jusLowMood = "Your mood has been low over the last %s days, with an average of %s, you may want to try talking to people";
-    private static String nameLowMood = "%s, your mood has been low over the last %s days, you may want to try talking to people";
-    private static String nameJusLowMood = "%s, your mood has been low over the last %s days, with an average of %s, you may want to try talking to people";
+    private static final String lowMood = "Your mood has been low over the last %s days, you may want to try talking to people. ";
+    private static final String jusLowMood = "Your mood has been low over the last %s days, with an average of %s, you may want to try talking to people. ";
+    private static final String nameLowMood = "%s, your mood has been low over the last %s days, you may want to try talking to people. ";
+    private static final String nameJusLowMood = "%s, your mood has been low over the last %s days, with an average of %s, you may want to try talking to people. ";
+
+
 
 
     /**
@@ -30,7 +32,7 @@ public class MoodAdvice {
         }
 
 
-        return moodAdvice;
+        return moodAdvice + full_Disclaimer;
     }
 
     /**
@@ -51,7 +53,7 @@ public class MoodAdvice {
         }
 
 
-        return moodAdvice;
+        return moodAdvice + full_Disclaimer;
     }
 
     /**
@@ -94,7 +96,7 @@ public class MoodAdvice {
         }
 
 
-        return moodAdvice;
+        return moodAdvice + full_Disclaimer;
     }
 
 

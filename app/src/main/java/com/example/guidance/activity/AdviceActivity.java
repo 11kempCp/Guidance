@@ -1,5 +1,6 @@
 package com.example.guidance.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -182,6 +183,7 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
         }
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
