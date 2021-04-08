@@ -53,12 +53,12 @@ public class Step extends RealmObject {
         this.stepCount = stepCount;
     }
 
-    public A_Step convertToAdviceFormat(Step step){
+    public A_Step convertToAdviceFormat(){
 
         A_Step newStepObject = new A_Step();
         newStepObject.set_id(new ObjectId());
-        newStepObject.setDateTime(step.getDateTime());
-        newStepObject.setStepCount(step.getStepCount());
+        newStepObject.setDateTime(dateTime);
+        newStepObject.setStepCount(stepCount);
 
         return newStepObject;
     }

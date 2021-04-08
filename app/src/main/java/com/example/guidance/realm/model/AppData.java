@@ -73,14 +73,14 @@ public class AppData extends RealmObject {
     }
 
 
-    public A_AppData convertToAdviceFormat(AppData appData){
+    public A_AppData convertToAdviceFormat(){
 
         A_AppData newAppDataObject = new A_AppData();
         newAppDataObject.set_id(new ObjectId());
-        newAppDataObject.setPackageName(appData.getPackageName());
-        newAppDataObject.setTotalTimeInForeground(appData.getTotalTimeInForeground());
-        newAppDataObject.setTotalTimeVisible(appData.getTotalTimeVisible());
-        newAppDataObject.setTotalTimeForegroundServiceUsed(appData.getTotalTimeForegroundServiceUsed());
+        newAppDataObject.setPackageName(packageName);
+        newAppDataObject.setTotalTimeInForeground(totalTimeInForeground);
+        newAppDataObject.setTotalTimeVisible(totalTimeVisible);
+        newAppDataObject.setTotalTimeForegroundServiceUsed(totalTimeForegroundServiceUsed);
 
         return newAppDataObject;
     }

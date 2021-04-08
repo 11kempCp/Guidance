@@ -4,10 +4,9 @@ import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
+import com.example.guidance.Util.Util;
 import com.example.guidance.realm.model.AppData;
 import com.example.guidance.realm.model.Screentime;
-import com.example.guidance.realm.model.Socialness;
-import com.example.guidance.realm.model.Step;
 
 import org.bson.types.ObjectId;
 
@@ -20,8 +19,6 @@ import io.realm.RealmConfiguration;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
-
-import static com.example.guidance.Util.Util.changeDayBy;
 
 /**
  * Created by Conor K on 20/03/2021.
@@ -222,7 +219,7 @@ public class ScreentimeDatabaseFunctions {
 //        cal.add(Calendar.DATE, Day);
 //        cal.set(cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),cal.get(Calendar.DATE),23,59,59);
 //        Date previousDay = cal.getTime();
-        Date previousDay = changeDayBy(currentTime,-1);
+        Date previousDay = Util.changeDayEndOfDay(currentTime,-1);
 
         Log.d(TAG, "getScreentimePreviousDay: " + previousDay);
 

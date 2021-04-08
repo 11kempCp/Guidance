@@ -97,8 +97,14 @@ public class LocationAdvice {
     public static String getLocationAdvice(int value, String name,Date dateFor ,String weather, Double temperature, Date sunriseFor, Date sunsetFor ) {
         String locationAdvice = null;
         String date = standardDateFormat.format(dateFor);
-        String sunrise = hourMinuteDateFormat.format(sunriseFor);
-        String sunset = hourMinuteDateFormat.format(sunsetFor);
+        String sunrise = null;
+        String sunset = null;
+
+        if(sunriseFor!=null&&sunsetFor!=null){
+             sunrise = hourMinuteDateFormat.format(sunriseFor);
+             sunset = hourMinuteDateFormat.format(sunsetFor);
+        }
+
 
         // inactive location change
         if (value == 0) {
@@ -173,8 +179,13 @@ public class LocationAdvice {
         String locationAdvice = null;
 
         String date = standardDateFormat.format(dateFor);
-        String sunrise = hourMinuteDateFormat.format(sunriseFor);
-        String sunset = hourMinuteDateFormat.format(sunsetFor);
+        String sunrise = null;
+        String sunset = null;
+
+        if(sunriseFor!=null&&sunsetFor!=null){
+            sunrise = hourMinuteDateFormat.format(sunriseFor);
+            sunset = hourMinuteDateFormat.format(sunsetFor);
+        }
 
         // inactive location change
         if (value == 0) {
@@ -212,8 +223,13 @@ public class LocationAdvice {
         String locationAdvice = null;
 
         String date = standardDateFormat.format(dateFor);
-        String sunrise = hourMinuteDateFormat.format(sunriseFor);
-        String sunset = hourMinuteDateFormat.format(sunsetFor);
+        String sunrise = null;
+        String sunset = null;
+
+        if(sunriseFor!=null&&sunsetFor!=null){
+            sunrise = hourMinuteDateFormat.format(sunriseFor);
+            sunset = hourMinuteDateFormat.format(sunsetFor);
+        }
 
         // inactive location change
         if (value == 0) {

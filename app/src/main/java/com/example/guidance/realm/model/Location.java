@@ -65,13 +65,13 @@ public class Location extends RealmObject {
         this._id = _id;
     }
 
-    public A_Location convertToAdviceFormat(Location location){
+    public A_Location convertToAdviceFormat(){
 
         A_Location newLocationObject = new A_Location();
         newLocationObject.set_id(new ObjectId());
-        newLocationObject.setDateTime(location.getDateTime());
-        newLocationObject.setLatitude(location.getLatitude());
-        newLocationObject.setLongitude(location.getLongitude());
+        newLocationObject.setDateTime(dateTime);
+        newLocationObject.setLatitude(latitude);
+        newLocationObject.setLongitude(longitude);
 
         return newLocationObject;
     }

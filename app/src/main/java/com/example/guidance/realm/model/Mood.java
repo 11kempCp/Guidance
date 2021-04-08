@@ -55,12 +55,12 @@ public class Mood extends RealmObject {
         this.rating = rating;
     }
 
-    public A_Mood convertToAdviceFormat(Mood mood){
+    public A_Mood convertToAdviceFormat(){
 
         A_Mood newMoodObject = new A_Mood();
         newMoodObject.set_id(new ObjectId());
-        newMoodObject.setDateTime(mood.getDateTime());
-        newMoodObject.setRating(mood.getRating());
+        newMoodObject.setDateTime(dateTime);
+        newMoodObject.setRating(rating);
 
         return newMoodObject;
     }

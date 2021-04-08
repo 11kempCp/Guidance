@@ -56,12 +56,12 @@ public class Socialness extends RealmObject {
     }
 
 
-    public A_Socialness convertToAdviceFormat(Socialness socialness){
+    public A_Socialness convertToAdviceFormat(){
 
         A_Socialness newSocialnessObject = new A_Socialness();
         newSocialnessObject.set_id(new ObjectId());
-        newSocialnessObject.setDateTime(socialness.getDateTime());
-        newSocialnessObject.setRating(socialness.getRating());
+        newSocialnessObject.setDateTime(dateTime);
+        newSocialnessObject.setRating(rating);
 
         return newSocialnessObject;
     }

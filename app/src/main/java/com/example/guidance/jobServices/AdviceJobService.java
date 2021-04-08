@@ -5,6 +5,7 @@ import android.app.TaskStackBuilder;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -13,6 +14,7 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.example.guidance.R;
 import com.example.guidance.Util.AdviceJustification;
+import com.example.guidance.Util.Util;
 import com.example.guidance.activity.AdviceActivity;
 import com.example.guidance.app.App;
 import com.example.guidance.realm.model.AppData;
@@ -48,7 +50,6 @@ import static com.example.guidance.Util.IA.LOW;
 import static com.example.guidance.Util.IA.noJustification;
 import static com.example.guidance.Util.IA.withJustification;
 import static com.example.guidance.Util.Util.ADVICE;
-import static com.example.guidance.Util.Util.changeDayBy;
 import static com.example.guidance.Util.Util.isSameDate;
 import static com.example.guidance.realm.databasefunctions.AdviceDatabaseFunctions.convertLocationToRealmList;
 import static com.example.guidance.realm.databasefunctions.AdviceDatabaseFunctions.convertMoodToRealmList;
@@ -81,7 +82,7 @@ public class AdviceJobService extends JobService {
 
     private static final String TAG = "AdviceJobService";
 
-    private static int idealStepcount = 3000; //steps
+    private static int idealStepCount = 3000; //steps
     private static int idealScreentimeUsage = 60; //minutes
     private static final int idealThresholdDistance = 50; //meters
     private static final double idealMood = 2.5; //average of more than this
@@ -112,16 +113,19 @@ public class AdviceJobService extends JobService {
             if (intelligent_agent.getInteraction().equals(HIGH)) {
                 Log.d(TAG, "onStartJob: high");
 
+                //todo ensure that this is 1
                 if (getInteractionAmountForDate(this, currentTime) < 1) {
                     determineAdvice(currentTime);
-                }else{
+                } else {
                     Log.d(TAG, "Interaction Limit reached");
                 }
             } else if (intelligent_agent.getInteraction().equals(LOW)) {
                 Log.d(TAG, "onStartJob: low");
+
+                //todo ensure that this is 1
                 if (getInteractionAmountForDate(this, currentTime) < 1) {
                     determineAdvice(currentTime);
-                }else{
+                } else {
                     Log.d(TAG, "Interaction Limit reached");
                 }
             }
@@ -144,7 +148,7 @@ public class AdviceJobService extends JobService {
         Data_Type dataType = getDataType(this);
 
         if (ranking.getIdealStepCount() != null) {
-            idealStepcount = ranking.getIdealStepCount();
+            idealStepCount = ranking.getIdealStepCount();
         }
 
         if (ranking.getScreentimeLimit() != null) {
@@ -342,8 +346,7 @@ public class AdviceJobService extends JobService {
         Screentime most_visible_screentime;
         boolean sort = false;
 
-        Log.d(TAG, "adviceScreentime: " + screentimePreviousDay)
-        ;
+        Log.d(TAG, "adviceScreentime: " + screentimePreviousDay);
         Log.d(TAG, "adviceScreentime date: " + screentimePreviousDay.getDateTime());
         most_visible_screentime = screentimePreviousDay;
         if (screentimePreviousDay.getAppData().size() > 6) {
@@ -351,30 +354,37 @@ public class AdviceJobService extends JobService {
         } else {
             appDataList = new AppData[screentimePreviousDay.getAppData().size()];
         }
+        int x = 0;
 
         for (AppData appData : screentimePreviousDay.getAppData()) {
 
             if (!sort) {
-                for (int i = 0; i <= appDataList.length; i++) {
-                    if (appDataList[i] == null) {
-                        appDataList[i] = appData;
-                        Log.d(TAG, "adviceScreentime: " + Arrays.toString(appDataList));
-                        if (i == appDataList.length - 1) {
-                            sort = true;
-                            break;
-                        }
-                        break;
-                    }
-                }
-            } else {
-                appDataList = sortList(appDataList);
 
-                if (appDataList[appDataList.length - 1].getTotalTimeInForeground() < appData.getTotalTimeInForeground()) {
-                    appDataList[appDataList.length - 1] = appData;
+                if(x == appDataList.length){
+                    sort = true;
+                }else{
+
+                    if (appDataList[x] == null) {
+                        appDataList[x] = appData;
+                        x++;
+                        continue;
+                    } else {
+                        sort = true;
+                    }
+
                 }
             }
+
+            appDataList = sortList(appDataList);
+
+            if (appDataList[0].getTotalTimeInForeground() < appData.getTotalTimeInForeground()) {
+                appDataList[0] = appData;
+            }
+
+
         }
 
+        appDataList = sortList(appDataList);
         int i = 0;
         for (AppData appData : appDataList) {
             i++;
@@ -384,10 +394,9 @@ public class AdviceJobService extends JobService {
             Log.d(TAG, i + " + adviceScreentime: date " + most_visible_screentime.getDateTime() + " " + appData.getPackageName() + " TotalTimeInForeground " + TotalTimeInForeground + " TotalTimeVisible " + TotalTimeVisible + " TotalTimeForegroundServiceUsed " + TotalTimeForegroundServiceUsed);
         }
 
-        if (idealScreentimeUsage <= TimeUnit.MILLISECONDS.toMinutes(appDataList[0].getTotalTimeInForeground())) {
+        if (idealScreentimeUsage <= TimeUnit.MILLISECONDS.toMinutes(appDataList[appDataList.length-1].getTotalTimeInForeground())) {
             rankingLinkedHashMap.put(screentime, true);
             return appDataList;
-
         }
 
         return null;
@@ -397,15 +406,7 @@ public class AdviceJobService extends JobService {
     public AppData[] sortList(AppData[] appDataList) {
         List<AppData> dataList = new ArrayList<>(Arrays.asList(appDataList));
 
-//        Log.d(TAG, "THIS : " + dataList);
-
-        Collections.sort(dataList, (o1, o2) -> {
-//                    Log.d(TAG, "compare: " + dataList);
-                    return o1.getTotalTimeInForeground().compareTo(o2.getTotalTimeInForeground());
-                }
-        );
-
-        Log.d(TAG, "sorted : " + dataList);
+        dataList.sort((o1, o2) -> o1.getTotalTimeInForeground().compareTo(o2.getTotalTimeInForeground()));
         return dataList.toArray(new AppData[0]);
     }
 
@@ -425,7 +426,7 @@ public class AdviceJobService extends JobService {
 
         stepCountPreviousDay = stepPreviousDay.getStepCount();
 
-        if (stepCountPreviousDay < idealStepcount) {
+        if (stepCountPreviousDay < idealStepCount) {
 
             rankingLinkedHashMap.put(step, true);
             return stepPreviousDay;
@@ -547,14 +548,14 @@ public class AdviceJobService extends JobService {
                 if (withJustification(intelligent_agent)) {
                     text = getStepAdvice(0, days, adviceJustification.getJustificationStep().getStepCount(), name);
 
-                    insertAdvice(this, currentTime, step, changeDayBy(currentTime, 1), text, adviceJustification.getJustificationStep().getStepCount(), null, null, null,
+                    insertAdvice(this, currentTime, step, Util.changeDayEndOfDay(currentTime, 1), text, adviceJustification.getJustificationStep().getStepCount(), null, null, null,
                             Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), adviceJustification.getJustificationLocation(), adviceJustification.getJustificationSocialness(), adviceJustification.getJustificationMood());
 
                     //if the user is in the NO_JUSTIFICATION group
                 } else if (noJustification(intelligent_agent)) {
                     text = getStepAdvice(0, name);
 
-                    insertAdvice(this, currentTime, step, changeDayBy(currentTime, 1), text, adviceJustification.getJustificationStep().getStepCount(), null, null, null,
+                    insertAdvice(this, currentTime, step, Util.changeDayEndOfDay(currentTime, 1), text, adviceJustification.getJustificationStep().getStepCount(), null, null, null,
                             Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), adviceJustification.getJustificationLocation(), adviceJustification.getJustificationSocialness(), adviceJustification.getJustificationMood());
 
                 }
@@ -563,14 +564,14 @@ public class AdviceJobService extends JobService {
                 if (withJustification(intelligent_agent)) {
                     text = getStepAdvice(0, days, adviceJustification.getJustificationStep().getStepCount());
 
-                    insertAdvice(this, currentTime, step, changeDayBy(currentTime, 1), text, adviceJustification.getJustificationStep().getStepCount(), null, null, null,
+                    insertAdvice(this, currentTime, step, Util.changeDayEndOfDay(currentTime, 1), text, adviceJustification.getJustificationStep().getStepCount(), null, null, null,
                             Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), adviceJustification.getJustificationLocation(), adviceJustification.getJustificationSocialness(), adviceJustification.getJustificationMood());
 
                     //if the user is in the NO_JUSTIFICATION group
                 } else if (noJustification(intelligent_agent)) {
                     text = getStepAdvice(0);
 
-                    insertAdvice(this, currentTime, step, changeDayBy(currentTime, 1), text, adviceJustification.getJustificationStep().getStepCount(), null, null, null,
+                    insertAdvice(this, currentTime, step, Util.changeDayEndOfDay(currentTime, 1), text, adviceJustification.getJustificationStep().getStepCount(), null, null, null,
                             Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), adviceJustification.getJustificationLocation(), adviceJustification.getJustificationSocialness(), adviceJustification.getJustificationMood());
 
                 }
@@ -588,30 +589,30 @@ public class AdviceJobService extends JobService {
                 //if the user is in the WITH_JUSTIFICATION group
                 if (withJustification(intelligent_agent)) {
 
-                    text = getScreentimeAdvice(1, screentimeAppdata[0].getPackageName(), TimeUnit.MILLISECONDS.toMinutes(screentimeAppdata[0].getTotalTimeInForeground()), name);
+                    text = getScreentimeAdvice(1, getApplicationName(screentimeAppdata[screentimeAppdata.length-1].getPackageName()), TimeUnit.MILLISECONDS.toMinutes(screentimeAppdata[screentimeAppdata.length-1].getTotalTimeInForeground()), name);
 
-                    insertAdvice(this, currentTime, screentime, changeDayBy(currentTime, 1), text, null, screentimeAppdata[0], null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
+                    insertAdvice(this, currentTime, screentime, Util.changeDayEndOfDay(currentTime, 1), text, null, screentimeAppdata[screentimeAppdata.length-1], null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
                             convertSocialnessToRealmList(this, adviceJustification.getJustificationSocialness()), convertMoodToRealmList(this, adviceJustification.getJustificationMood()));
 
                     //if the user is in the NO_JUSTIFICATION group
                 } else if (noJustification(intelligent_agent)) {
-                    text = getScreentimeAdvice(1, screentimeAppdata[0].getPackageName(), name);
+                    text = getScreentimeAdvice(1, getApplicationName(screentimeAppdata[screentimeAppdata.length-1].getPackageName()), name);
 
-                    insertAdvice(this, currentTime, screentime, changeDayBy(currentTime, 1), text, null, screentimeAppdata[0], null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
+                    insertAdvice(this, currentTime, screentime, Util.changeDayEndOfDay(currentTime, 1), text, null, screentimeAppdata[screentimeAppdata.length-1], null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
                             convertSocialnessToRealmList(this, adviceJustification.getJustificationSocialness()), convertMoodToRealmList(this, adviceJustification.getJustificationMood()));
                 }
             } else {
                 //if the user is in the WITH_JUSTIFICATION group
                 if (withJustification(intelligent_agent)) {
-                    text = getScreentimeAdvice(1, screentimeAppdata[0].getPackageName(), TimeUnit.MILLISECONDS.toMinutes(screentimeAppdata[0].getTotalTimeInForeground()));
+                    text = getScreentimeAdvice(1, getApplicationName(screentimeAppdata[screentimeAppdata.length-1].getPackageName()), TimeUnit.MILLISECONDS.toMinutes(screentimeAppdata[screentimeAppdata.length-1].getTotalTimeInForeground()));
 
-                    insertAdvice(this, currentTime, screentime, changeDayBy(currentTime, 1), text, null, screentimeAppdata[0], null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
+                    insertAdvice(this, currentTime, screentime, Util.changeDayEndOfDay(currentTime, 1), text, null, screentimeAppdata[screentimeAppdata.length-1], null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
                             convertSocialnessToRealmList(this, adviceJustification.getJustificationSocialness()), convertMoodToRealmList(this, adviceJustification.getJustificationMood()));
                     //if the user is in the NO_JUSTIFICATION group
                 } else if (noJustification(intelligent_agent)) {
-                    text = getScreentimeAdvice(1, screentimeAppdata[0].getPackageName());
+                    text = getScreentimeAdvice(1, getApplicationName(screentimeAppdata[screentimeAppdata.length-1].getPackageName()));
 
-                    insertAdvice(this, currentTime, screentime, changeDayBy(currentTime, 1), text, null, screentimeAppdata[0], null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
+                    insertAdvice(this, currentTime, screentime, Util.changeDayEndOfDay(currentTime, 1), text, null, screentimeAppdata[screentimeAppdata.length-1], null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
                             convertSocialnessToRealmList(this, adviceJustification.getJustificationSocialness()), convertMoodToRealmList(this, adviceJustification.getJustificationMood()));
                 }
             }
@@ -633,7 +634,7 @@ public class AdviceJobService extends JobService {
                 } else if (noJustification(intelligent_agent)) {
                     //todo give a date with which to go out for
                     text = getLocationAdvice(0, name, weather.getDateTime(), weather.getWeather(), weather.getFeels_like_day(), weather.getSunRise(), weather.getSunSet());
-                    insertAdvice(this, currentTime, location, changeDayBy(currentTime, 1), text, null, null, null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
+                    insertAdvice(this, currentTime, location, Util.changeDayEndOfDay(currentTime, 1), text, null, null, null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
                             convertSocialnessToRealmList(this, adviceJustification.getJustificationSocialness()), convertMoodToRealmList(this, adviceJustification.getJustificationMood()));
                 }
             } else if (nameExists) {
@@ -642,13 +643,13 @@ public class AdviceJobService extends JobService {
                     //todo location days is not the same (potentially)
                     text = getLocationAdvice(0, days, name);
 
-                    insertAdvice(this, currentTime, location, changeDayBy(currentTime, 1), text, null, null, null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
+                    insertAdvice(this, currentTime, location, Util.changeDayEndOfDay(currentTime, 1), text, null, null, null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
                             convertSocialnessToRealmList(this, adviceJustification.getJustificationSocialness()), convertMoodToRealmList(this, adviceJustification.getJustificationMood()));
 
                     //if the user is in the NO_JUSTIFICATION group
                 } else if (noJustification(intelligent_agent)) {
                     text = getLocationAdvice(0, name);
-                    insertAdvice(this, currentTime, location, changeDayBy(currentTime, 1), text, null, null, null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
+                    insertAdvice(this, currentTime, location, Util.changeDayEndOfDay(currentTime, 1), text, null, null, null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
                             convertSocialnessToRealmList(this, adviceJustification.getJustificationSocialness()), convertMoodToRealmList(this, adviceJustification.getJustificationMood()));
                 }
             } else {
@@ -657,13 +658,13 @@ public class AdviceJobService extends JobService {
                     //todo location days is not the same (potentially)
                     text = getLocationAdvice(0, days);
 
-                    insertAdvice(this, currentTime, location, changeDayBy(currentTime, 1), text, null, null, null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
+                    insertAdvice(this, currentTime, location, Util.changeDayEndOfDay(currentTime, 1), text, null, null, null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
                             convertSocialnessToRealmList(this, adviceJustification.getJustificationSocialness()), convertMoodToRealmList(this, adviceJustification.getJustificationMood()));
                     //if the user is in the NO_JUSTIFICATION group
                 } else if (noJustification(intelligent_agent)) {
                     text = getLocationAdvice(0);
 
-                    insertAdvice(this, currentTime, location, changeDayBy(currentTime, 1), text, null, null, null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
+                    insertAdvice(this, currentTime, location, Util.changeDayEndOfDay(currentTime, 1), text, null, null, null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
                             convertSocialnessToRealmList(this, adviceJustification.getJustificationSocialness()), convertMoodToRealmList(this, adviceJustification.getJustificationMood()));
                 }
             }
@@ -693,26 +694,26 @@ public class AdviceJobService extends JobService {
 
                     text = getSocialnessAdvice(0, soocialnessSize, averageSocialness, name);
 
-                    insertAdvice(this, currentTime, socialness, changeDayBy(currentTime, 1), text, null, null, averageSocialness, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
+                    insertAdvice(this, currentTime, socialness, Util.changeDayEndOfDay(currentTime, 1), text, null, null, averageSocialness, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
                             convertSocialnessToRealmList(this, adviceJustification.getJustificationSocialness()), convertMoodToRealmList(this, adviceJustification.getJustificationMood()));
                     //if the user is in the NO_JUSTIFICATION group
                 } else if (noJustification(intelligent_agent)) {
                     text = getSocialnessAdvice(0, soocialnessSize, name);
 
-                    insertAdvice(this, currentTime, socialness, changeDayBy(currentTime, 1), text, null, null, averageSocialness, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
+                    insertAdvice(this, currentTime, socialness, Util.changeDayEndOfDay(currentTime, 1), text, null, null, averageSocialness, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
                             convertSocialnessToRealmList(this, adviceJustification.getJustificationSocialness()), convertMoodToRealmList(this, adviceJustification.getJustificationMood()));
                 }
             } else {
                 //if the user is in the WITH_JUSTIFICATION group
                 if (withJustification(intelligent_agent)) {
                     text = getSocialnessAdvice(0, soocialnessSize, averageSocialness);
-                    insertAdvice(this, currentTime, socialness, changeDayBy(currentTime, 1), text, null, null, averageSocialness, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
+                    insertAdvice(this, currentTime, socialness, Util.changeDayEndOfDay(currentTime, 1), text, null, null, averageSocialness, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
                             convertSocialnessToRealmList(this, adviceJustification.getJustificationSocialness()), convertMoodToRealmList(this, adviceJustification.getJustificationMood()));
 
                     //if the user is in the NO_JUSTIFICATION group
                 } else if (noJustification(intelligent_agent)) {
                     text = getSocialnessAdvice(0, soocialnessSize);
-                    insertAdvice(this, currentTime, socialness, changeDayBy(currentTime, 1), text, null, null, averageSocialness, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
+                    insertAdvice(this, currentTime, socialness, Util.changeDayEndOfDay(currentTime, 1), text, null, null, averageSocialness, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
                             convertSocialnessToRealmList(this, adviceJustification.getJustificationSocialness()), convertMoodToRealmList(this, adviceJustification.getJustificationMood()));
                 }
             }
@@ -742,13 +743,13 @@ public class AdviceJobService extends JobService {
                 if (withJustification(intelligent_agent)) {
 
                     text = getMoodAdvice(0, moodSize, averageMood, name);
-                    insertAdvice(this, currentTime, mood, changeDayBy(currentTime, 1), text, null, null, null, averageMood, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
+                    insertAdvice(this, currentTime, mood, Util.changeDayEndOfDay(currentTime, 1), text, null, null, null, averageMood, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
                             convertSocialnessToRealmList(this, adviceJustification.getJustificationSocialness()), convertMoodToRealmList(this, adviceJustification.getJustificationMood()));
 
                     //if the user is in the NO_JUSTIFICATION group
                 } else if (noJustification(intelligent_agent)) {
                     text = getMoodAdvice(0, moodSize, name);
-                    insertAdvice(this, currentTime, mood, changeDayBy(currentTime, 1), text, null, null, null, averageMood, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
+                    insertAdvice(this, currentTime, mood, Util.changeDayEndOfDay(currentTime, 1), text, null, null, null, averageMood, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
                             convertSocialnessToRealmList(this, adviceJustification.getJustificationSocialness()), convertMoodToRealmList(this, adviceJustification.getJustificationMood()));
 
                 }
@@ -756,14 +757,14 @@ public class AdviceJobService extends JobService {
                 //if the user is in the WITH_JUSTIFICATION group
                 if (withJustification(intelligent_agent)) {
                     text = getMoodAdvice(0, moodSize, averageMood);
-                    insertAdvice(this, currentTime, mood, changeDayBy(currentTime, 1), text, null, null, null, averageMood, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
+                    insertAdvice(this, currentTime, mood, Util.changeDayEndOfDay(currentTime, 1), text, null, null, null, averageMood, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
                             convertSocialnessToRealmList(this, adviceJustification.getJustificationSocialness()), convertMoodToRealmList(this, adviceJustification.getJustificationMood()));
 
 
                     //if the user is in the NO_JUSTIFICATION group
                 } else if (noJustification(intelligent_agent)) {
                     text = getMoodAdvice(0, moodSize);
-                    insertAdvice(this, currentTime, mood, changeDayBy(currentTime, 1), text, null, null, null, averageMood, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
+                    insertAdvice(this, currentTime, mood, Util.changeDayEndOfDay(currentTime, 1), text, null, null, null, averageMood, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
                             convertSocialnessToRealmList(this, adviceJustification.getJustificationSocialness()), convertMoodToRealmList(this, adviceJustification.getJustificationMood()));
 
                 }
@@ -802,5 +803,17 @@ public class AdviceJobService extends JobService {
 
     }
 
+
+    public String getApplicationName(String packageName)  {
+
+        try {
+            PackageManager packageManager= getApplicationContext().getPackageManager();
+            return  (String) packageManager.getApplicationLabel(packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA));
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return "";
+    }
 
 }

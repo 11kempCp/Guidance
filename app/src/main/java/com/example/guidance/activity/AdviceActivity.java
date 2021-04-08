@@ -44,7 +44,8 @@ import static com.example.guidance.Util.Util.scheduleAdvice;
 import static com.example.guidance.Util.Util.scheduleAdviceFollowed;
 import static com.example.guidance.Util.Util.scheduleLocation;
 import static com.example.guidance.realm.databasefunctions.AdviceDatabaseFunctions.getAdviceOnDate;
-import static com.example.guidance.realm.databasefunctions.AdviceDatabaseFunctions.getAllValidAdvice;
+
+import static com.example.guidance.realm.databasefunctions.AdviceDatabaseFunctions.getAllValidAdviceNotToday;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.databasefunctions.LocationDatabaseFunctions.getLocationOverPreviousDays;
@@ -64,6 +65,7 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+
         Intelligent_Agent intelligent_agent = getIntelligentAgent(this);
         Data_Type dataType = getDataType(this);
 
@@ -71,15 +73,31 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
         //so that the user does not see a flash of one colour as it changes to the other
         Util.setActivityTheme(intelligent_agent, this);
 
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_advice);
 
-
+        Date currentTime = Calendar.getInstance().getTime();
         //todo delete?
         Realm.init(this);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
         realm = Realm.getDefaultInstance();
+        RealmResults<Advice> allValidAdvice = getAllValidAdviceNotToday(this,realm, currentTime);
+        RealmResults<Advice> adviceToday = getAdviceOnDate(this,realm, currentTime);
+//        RealmResults<Advice> allAdvice = getAllAdvice(realm, currentTime);
+
+//        Log.d(TAG, "onCreate: allAdvice.size " + allAdvice.size() + " allAdvice "+ allAdvice);
+//        for(Advice aasd : allAdvice){
+//            Log.d(TAG, "onCreate: another " + aasd);
+//        }
+//
+//
+//        Log.d(TAG, "onCreate: allValidAdvice.size " + allValidAdvice.size());
+//        Log.d(TAG, "onCreate: adviceToday.Size " + adviceToday.size());
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_advice);
+
+
+
 
 //        view = findViewById(R.id.textView);
 //        view.setMovementMethod(new ScrollingMovementMethod());
@@ -107,11 +125,7 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        Date currentTime = Calendar.getInstance().getTime();
 
-        RealmResults<Advice> allValidAdvice = getAllValidAdvice(this);
-        RealmResults<Advice> adviceToday = getAdviceOnDate(this, currentTime);
-        Log.d(TAG, "onCreate: adviceSize " + allValidAdvice.size());
 
         if (adviceToday.isEmpty()) {
             noAdvice.setVisibility(View.VISIBLE);
@@ -145,6 +159,8 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
             recyclerViewAdvice.setVisibility(View.GONE);
 
         }else{
+
+            Log.d(TAG, "onCreate: allValidAdvice" + allValidAdvice);
             adviceEmpty.setVisibility(View.GONE);
             recyclerViewAdvice.setVisibility(View.VISIBLE);
 

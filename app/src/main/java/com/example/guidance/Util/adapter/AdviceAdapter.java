@@ -25,11 +25,11 @@ import io.realm.RealmResults;
  * Created by Conor K on 01/04/2021.
  */
 public class AdviceAdapter extends RecyclerView.Adapter<AdviceAdapter.MyViewHolder> {
+    private String TAG = "AdviceAdapter";
 
     Context ct;
     Advice[] ad;
     Resources resources;
-    private String TAG = "AdviceAdapter";
     Integer colour_today;
     Integer colour_before;
     Integer colour_after;

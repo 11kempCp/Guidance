@@ -771,11 +771,30 @@ public class Util {
      * @param day  number of days the date is to be changed by, minus number inputted will take away days from the date
      * @return the modified date
      */
-    public static Date changeDayBy(Date date, int day) {
+    public static Date changeDayEndOfDay(Date date, int day) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         cal.add(Calendar.DATE, day);
         cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE), 23, 59, 59);
+        return cal.getTime();
+
+
+    }
+
+
+
+    /**
+     * Changes the date inputed by x amount of days
+     *
+     * @param date the date to be changed
+     * @param day  number of days the date is to be changed by, minus number inputted will take away days from the date
+     * @return the modified date
+     */
+    public static Date changeDayStartOfDay(Date date, int day) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.DATE, day);
+        cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE), 0, 0, 0);
         return cal.getTime();
 
 

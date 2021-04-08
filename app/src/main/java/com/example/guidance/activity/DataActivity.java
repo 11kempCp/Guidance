@@ -1,5 +1,6 @@
 package com.example.guidance.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.widget.Switch;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -62,7 +64,17 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
 
     private DrawerLayout drawer;
 
-    Switch steps, distance_traveled, location, ambient_temp, screentime, sleep_tracking, weather, external_temp, sun, socialness, mood;
+    Switch steps;
+//    Switch distance_traveled;
+    Switch location;
+    Switch ambient_temp;
+    Switch screentime;
+//    Switch sleep_tracking;
+    Switch weather;
+    Switch external_temp;
+    Switch sun;
+    Switch socialness;
+    Switch mood;
 
     private NavigationView navigationView;
 
@@ -99,11 +111,11 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
 
         steps = findViewById(R.id.switchSteps);
-        distance_traveled = findViewById(R.id.switchDistanceTraveled);
+//        distance_traveled = findViewById(R.id.switchDistanceTraveled);
         location = findViewById(R.id.switchLocation);
         ambient_temp = findViewById(R.id.switchAmbientTemp);
         screentime = findViewById(R.id.switchScreentime);
-        sleep_tracking = findViewById(R.id.switchSleepTracking);
+//        sleep_tracking = findViewById(R.id.switchSleepTracking);
         weather = findViewById(R.id.switchWeather);
         external_temp = findViewById(R.id.switchExternalTemp);
         sun = findViewById(R.id.switchSun);
@@ -121,7 +133,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
             }
 
 
-            distance_traveled.setChecked(data_type.isDistance_traveled());
+//            distance_traveled.setChecked(data_type.isDistance_traveled());
 
             if (isPermsLocation(this)) {
                 location.setChecked(data_type.isLocation());
@@ -137,7 +149,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 screentime.setChecked(false);
             }
 
-            sleep_tracking.setChecked(data_type.isSleep_tracking());
+//            sleep_tracking.setChecked(data_type.isSleep_tracking());
 
             //todo if internet access not given?
             weather.setChecked(data_type.isWeather());
@@ -235,6 +247,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         insertDataTypeUsageData(this, currentTime, String.valueOf(steps.getText()), steps.isChecked());
     }
 
+    //Unused
     public void switchDistanceTraveled(View view) {
         Date currentTime = Calendar.getInstance().getTime();
 
@@ -252,19 +265,19 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
 //                }
 //            }
 
-        realm.executeTransactionAsync(r -> {
-            // Get the Data_Storing class to update.
-            Data_Type data = r.where(Data_Type.class).findFirst();
-            // Update properties on the instance.
-            // This change is saved to the realm.
-            if (data != null) {
-                data.setDistance_traveled(distance_traveled.isChecked());
-            }
-            Log.i(TAG, "Updated Data_Storing: distance_traveled " + distance_traveled.isChecked());
-
-        });
-
-        insertDataTypeUsageData(this, currentTime, String.valueOf(distance_traveled.getText()), distance_traveled.isChecked());
+//        realm.executeTransactionAsync(r -> {
+//            // Get the Data_Storing class to update.
+//            Data_Type data = r.where(Data_Type.class).findFirst();
+//            // Update properties on the instance.
+//            // This change is saved to the realm.
+//            if (data != null) {
+//                data.setDistance_traveled(distance_traveled.isChecked());
+//            }
+//            Log.i(TAG, "Updated Data_Storing: distance_traveled " + distance_traveled.isChecked());
+//
+//        });
+//
+//        insertDataTypeUsageData(this, currentTime, String.valueOf(distance_traveled.getText()), distance_traveled.isChecked());
     }
 
     public void switchLocation(View view) {
@@ -461,10 +474,11 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         insertDataTypeUsageData(this, currentTime, String.valueOf(sun.getText()), sun.isChecked());
     }
 
+
+    //unused
     public void switchSleepTracking(View view) {
         Date currentTime = Calendar.getInstance().getTime();
 
-        //todo uncomment
 
 //            if(!sleep_tracking.isChecked()){
 //                unscheduledJob(this,SLEEP_TRACKING);
@@ -477,19 +491,19 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
 //                }
 //            }
 
-        realm.executeTransactionAsync(r -> {
-            // Get the Data_Storing class to update.
-            Data_Type data = r.where(Data_Type.class).findFirst();
-            // Update properties on the instance.
-            // This change is saved to the realm.
-            if (data != null) {
-                data.setSleep_tracking(sleep_tracking.isChecked());
-            }
-            Log.i(TAG, "Updated Data_Storing: sleep_tracking " + sleep_tracking.isChecked());
-
-        });
-
-        insertDataTypeUsageData(this, currentTime, String.valueOf(sleep_tracking.getText()), sleep_tracking.isChecked());
+//        realm.executeTransactionAsync(r -> {
+//            // Get the Data_Storing class to update.
+//            Data_Type data = r.where(Data_Type.class).findFirst();
+//            // Update properties on the instance.
+//            // This change is saved to the realm.
+//            if (data != null) {
+//                data.setSleep_tracking(sleep_tracking.isChecked());
+//            }
+//            Log.i(TAG, "Updated Data_Storing: sleep_tracking " + sleep_tracking.isChecked());
+//
+//        });
+//
+//        insertDataTypeUsageData(this, currentTime, String.valueOf(sleep_tracking.getText()), sleep_tracking.isChecked());
     }
 
 

@@ -45,34 +45,34 @@
                 app:layout_constraintTop_toBottomOf="@+id/toolbar"
                 tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-            <Switch
-                android:id="@+id/switchDistanceTraveled"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:onClick="switchDistanceTraveled"
-                android:text="@string/distance_traveled"
-                app:layout_constraintEnd_toEndOf="@+id/switchSteps"
-                app:layout_constraintStart_toStartOf="@+id/switchSteps"
-                app:layout_constraintTop_toBottomOf="@+id/switchSteps" />
+<!--            <Switch-->
+<!--                android:id="@+id/switchDistanceTraveled"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="8dp"-->
+<!--                android:onClick="switchDistanceTraveled"-->
+<!--                android:text="@string/distance_traveled"-->
+<!--                app:layout_constraintEnd_toEndOf="@+id/switchSteps"-->
+<!--                app:layout_constraintStart_toStartOf="@+id/switchSteps"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/switchSteps" />-->
 
             <Switch
                 android:id="@+id/switchLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:onClick="switchLocation"
                 android:text="@string/location"
-                app:layout_constraintEnd_toEndOf="@+id/switchDistanceTraveled"
+                app:layout_constraintEnd_toEndOf="@+id/switchSteps"
                 app:layout_constraintHorizontal_bias="0.522"
-                app:layout_constraintStart_toStartOf="@+id/switchDistanceTraveled"
-                app:layout_constraintTop_toBottomOf="@+id/switchDistanceTraveled" />
+                app:layout_constraintStart_toStartOf="@+id/switchSteps"
+                app:layout_constraintTop_toBottomOf="@+id/switchSteps" />
 
             <Switch
                 android:id="@+id/switchAmbientTemp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:onClick="switchAmbientTemp"
                 android:text="@string/ambient_temp"
                 app:layout_constraintEnd_toEndOf="@+id/switchLocation"
@@ -84,7 +84,7 @@
                 android:id="@+id/switchScreentime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:onClick="switchScreentime"
                 android:text="@string/screentime"
                 app:layout_constraintEnd_toEndOf="@+id/switchAmbientTemp"
@@ -96,41 +96,43 @@
                 android:id="@+id/switchWeather"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:onClick="switchWeather"
                 android:text="@string/weather"
                 app:layout_constraintEnd_toEndOf="@+id/switchScreentime"
                 app:layout_constraintHorizontal_bias="0.421"
                 app:layout_constraintStart_toStartOf="@+id/switchScreentime"
-                app:layout_constraintTop_toBottomOf="@+id/switchSleepTracking" />
+                app:layout_constraintTop_toBottomOf="@+id/switchScreentime" />
 
             <Switch
                 android:id="@+id/switchExternalTemp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:onClick="switchExternalTemp"
                 android:text="@string/external_temp"
                 app:layout_constraintEnd_toEndOf="@+id/switchWeather"
                 app:layout_constraintStart_toStartOf="@+id/switchWeather"
                 app:layout_constraintTop_toBottomOf="@+id/switchWeather" />
 
-            <Switch
-                android:id="@+id/switchSleepTracking"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:onClick="switchSleepTracking"
-                android:text="@string/sleep_tracking"
-                app:layout_constraintEnd_toEndOf="@+id/switchScreentime"
-                app:layout_constraintStart_toStartOf="@+id/switchScreentime"
-                app:layout_constraintTop_toBottomOf="@+id/switchScreentime" />
+            <!--
+                        <Switch
+                            android:id="@+id/switchSleepTracking"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:onClick="switchSleepTracking"
+                            android:text="@string/sleep_tracking"
+                            app:layout_constraintEnd_toEndOf="@+id/switchScreentime"
+                            app:layout_constraintStart_toStartOf="@+id/switchScreentime"
+                            app:layout_constraintTop_toBottomOf="@+id/switchScreentime" />
+                             -->
 
             <Switch
                 android:id="@+id/switchSun"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:onClick="switchSun"
                 android:text="@string/sun"
                 app:layout_constraintEnd_toEndOf="@+id/switchExternalTemp"
@@ -141,7 +143,7 @@
                 android:id="@+id/switchSocialness"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:onClick="switchSocialness"
                 android:text="@string/socialness"
                 app:layout_constraintEnd_toEndOf="@+id/switchSun"
@@ -152,7 +154,7 @@
                 android:id="@+id/switchMood"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:onClick="switchMood"
                 android:text="@string/mood"
                 app:layout_constraintEnd_toEndOf="@+id/switchSocialness"

@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     TextView noAdvice, currentGraph;
     private DrawerLayout drawer;
     private boolean questionaire;
-    private RecyclerView recyclerViewMainAdvice;
 
     //Tag
     private static final String TAG = "MainActivity";
@@ -64,6 +63,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //so that the user does not see a flash of one colour as it changes to the other
         Util.setActivityTheme(intelligent_agent, this);
 
+        Realm.init(this);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        realm = Realm.getDefaultInstance();
+
+        Date currentTime = Calendar.getInstance().getTime();
+        RealmResults<Advice> adviceToday = getAdviceOnDate(this, realm, currentTime);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -73,13 +80,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
 
-        Realm.init(this);
-        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
-        Realm.setDefaultConfiguration(realmConfiguration);
-
-
-        realm = Realm.getDefaultInstance();
-        recyclerViewMainAdvice = findViewById(R.id.recyclerViewMainActivityAdvice);
+        RecyclerView recyclerViewMainAdvice = findViewById(R.id.recyclerViewMainActivityAdvice);
         currentGraph = findViewById(R.id.textViewCurrentGraph);
         drawer = findViewById(R.id.drawer_layout_main_activity);
         noAdvice = findViewById(R.id.textViewNoAdvice);
@@ -101,10 +102,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        Date currentTime = Calendar.getInstance().getTime();
+
 
         if (isIntelligentAgentInitialised(this)) {
-            RealmResults<Advice> adviceToday = getAdviceOnDate(this, currentTime);
 
             if(adviceToday.isEmpty()){
                 noAdvice.setVisibility(View.VISIBLE);
