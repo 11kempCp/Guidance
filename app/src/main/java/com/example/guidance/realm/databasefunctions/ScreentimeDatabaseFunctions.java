@@ -95,7 +95,6 @@ public class ScreentimeDatabaseFunctions {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 ad.setTotalTimeForegroundServiceUsed(app.getTotalTimeForegroundServiceUsed());
                                 ad.setTotalTimeVisible(app.getTotalTimeVisible());
-
                             }
 
                             packageInAppDataAlready = true;

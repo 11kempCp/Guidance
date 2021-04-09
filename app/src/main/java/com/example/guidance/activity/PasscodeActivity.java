@@ -23,7 +23,6 @@ import static com.example.guidance.Util.IA.Analysis;
 import static com.example.guidance.Util.IA.Gender;
 import static com.example.guidance.Util.IA.Interaction;
 import static com.example.guidance.Util.IA.Output;
-import static com.example.guidance.Util.Util.requestPerms;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.initialiseDataType;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.intelligentAgentEntry;
@@ -35,7 +34,6 @@ import static com.example.guidance.realm.databasefunctions.UserInformationDataba
 public class PasscodeActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private static final String TAG = "PasscodeActivity";
-    //    private TextInputLayout textInput;
     private TextInputEditText passcode, name, age, otherGender;
     ArrayList<String> passcodeList = new ArrayList<>();
     private Spinner spinner;
@@ -58,6 +56,8 @@ public class PasscodeActivity extends AppCompatActivity implements AdapterView.O
         otherGender = findViewById(R.id.inputGenderOther);
         textInputLayoutInputGender = findViewById(R.id.textInputLayoutGender);
 
+
+        //todo change to a hardcoded passcode list
         generatePasscodes();
 
         spinner = (Spinner) findViewById(R.id.spinnerGender);
@@ -105,26 +105,27 @@ public class PasscodeActivity extends AppCompatActivity implements AdapterView.O
 
             userInformationEntry(PasscodeActivity.this, entryName, entryAge, entryGender);
 
-
+            //initialises the Data_Type realm
             if (!isDataTypeInitialised(this)) {
                 initialiseDataType(PasscodeActivity.this);
             } else {
                 Log.d(TAG, "dataType already initialised");
             }
 
+            //initialises the Ranking realm
             if (!isRankingInitialised(this)) {
                 initialiseRanking(this, 0,1,2,3,4, 3000,60);
             } else {
                 Log.d(TAG, "ranking already initialised");
             }
 
-            requestPerms(this, PasscodeActivity.this);
+//            requestPerms(this, PasscodeActivity.this);
 
 
 //            Intent intent = new Intent(this, QuestionaireActivity.class);
 //            startActivity(intent);
 
-
+            //ends the activity and returns the user to the MainActivity
             finish();
         } else {
             Log.d(TAG, "Invalid passcode");
@@ -134,6 +135,9 @@ public class PasscodeActivity extends AppCompatActivity implements AdapterView.O
 
     }
 
+
+    //todo change to a hardcoded passcode list
+    //Creates the passcodes
     public void generatePasscodes() {
 
         StringBuilder passcode = new StringBuilder();
@@ -167,6 +171,7 @@ public class PasscodeActivity extends AppCompatActivity implements AdapterView.O
     }
 
 
+    //Checks to see if the passcode entered is valid
     private boolean isValidPasscode(String passcode) {
         return passcodeList.contains(passcode);
     }

@@ -75,6 +75,17 @@ public class QuestionnaireDatabaseFunctions {
 
     }
 
+    public static boolean isQuestionnaire(Context context) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+        RealmQuery<Questionnaire> tasksQuery = realm.where(Questionnaire.class);
+//        realm.close();
+
+        return tasksQuery.findFirst() != null;
+    }
+
     public static Questionnaire getQuestionnaire(Context context) {
         Realm.init(context);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
@@ -84,6 +95,17 @@ public class QuestionnaireDatabaseFunctions {
 //        realm.close();
 
         return tasksQuery.findFirst();
+    }
+
+    public static int getSizeAllQuestionnaire(Context context) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+        RealmQuery<Questionnaire> tasksQuery = realm.where(Questionnaire.class);
+//        realm.close();
+
+        return tasksQuery.findAll().size();
     }
 
 }

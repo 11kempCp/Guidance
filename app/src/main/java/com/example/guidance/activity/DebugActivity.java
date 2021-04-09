@@ -219,7 +219,7 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
     }
 
     public void getSteps(View view) {
-        Toast.makeText(this, "Steps " + StepsService.getmSteps(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Steps " + StepsService.getSteps(), Toast.LENGTH_SHORT).show();
     }
 
     public void resetSteps(View view) {
@@ -301,27 +301,10 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
 
     public void startLocationJobService(View view) {
 
-        PackageManager packageManager = this.getPackageManager();
-
         Log.d(TAG, "scheduledUnscheduledJobs: " + LOCATION);
-
-
-//        checkPermissionsAndSchedule(this,
-//                LOCATION,
-//                LocationJobService.class,
-//                this.getResources().getInteger(R.integer.location),
-//                ACCESS_FINE_LOCATION);
-
         scheduleLocation(this);
 
-//        Log.d(TAG, "scheduledUnscheduledJobs: " + WEATHER);
-//        checkPermissionsAndSchedule(this,
-//                WEATHER,
-//                WeatherJobService.class,
-//                this.getResources().getInteger(R.integer.default_time),
-//                packageManager,
-//                null,
-//                null);
+
     }
 
     public void startAdviceJobService(View view) {

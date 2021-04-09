@@ -39,9 +39,8 @@ public class LocationService extends Service {
 
     public static final String TAG = "LocationService";
     static int sID;
-    private static FusedLocationProviderClient mFusedLocationClient;
+    private FusedLocationProviderClient mFusedLocationClient;
     private static LocationCallback mLocationCallback;
-    private static Handler mServiceHandler;
     private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 1000;
     private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
             UPDATE_INTERVAL_IN_MILLISECONDS / 2;
@@ -68,8 +67,7 @@ public class LocationService extends Service {
             }
         };
 
-//        createLocationRequest();
-//        getLastLocation(this);
+
     }
 
     @Override
@@ -95,8 +93,10 @@ public class LocationService extends Service {
             createLocationRequest();
         }
 
+        //gets the last location
         getLastLocation(this);
 
+        //requests the newest location of the device
         startLocationUpdates();
 
         return START_NOT_STICKY;
@@ -118,7 +118,7 @@ public class LocationService extends Service {
 //        removeLocationUpdates();
     }
 
-    public static void removeLocationUpdates() {
+    public void removeLocationUpdates() {
         Log.d(TAG, "removeLocationUpdates");
         receivingUpdates = false;
         mFusedLocationClient.removeLocationUpdates(mLocationCallback);
@@ -132,6 +132,7 @@ public class LocationService extends Service {
     }
 
 
+    //template for the location request
     private static void createLocationRequest() {
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
@@ -151,19 +152,16 @@ public class LocationService extends Service {
                             mLocation = task.getResult();
                             currentTime = Calendar.getInstance().getTime();
 
-
+                            //stores the location entry, only if it has not been entered in the realm
+                            //in the last x amount of minutes
                             locationEntry(context, currentTime, truncate(mLocation.getLatitude()), truncate(mLocation.getLongitude()));
 
-
-
-                            if (!receivingUpdates) {
-                                stopForeground(true);
-                                stopSelfResult(sID);
-                            }
-
-//                            Log.d(TAG, "getLastLocation: " + mLocation.getLatitude() + " " + mLocation.getLongitude() + " " + currentTime);
                         } else {
-                            Log.w(TAG, "Failed to get location.");
+                            Log.w(TAG, "Failed to get location. " + " task status " + task.isSuccessful() + " task result = " + task.getResult());
+                        }
+
+                        //if receivingUpdates is false then the notification and service will stop
+                        if (!receivingUpdates) {
                             stopForeground(true);
                             stopSelfResult(sID);
                         }
@@ -174,6 +172,7 @@ public class LocationService extends Service {
         }
     }
 
+    //New location has been received
     private void onNewLocation(Context context, LocationResult location) {
         mLocation = location.getLastLocation();
         currentTime = Calendar.getInstance().getTime();
@@ -193,8 +192,8 @@ public class LocationService extends Service {
     }
 
 
+    //truncates the coordinates (lat/lon)
     private double truncate(double coordinate) {
-//        Log.d(TAG, "trim: input " + coordinate);
         DecimalFormat df;
         //TODO potentially change to 3dp
         df = new DecimalFormat("##.####");

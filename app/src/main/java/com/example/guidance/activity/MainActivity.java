@@ -48,7 +48,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     TextView noAdvice, currentGraph;
     private DrawerLayout drawer;
-    private boolean questionaire;
+    private boolean questionnaire;
+    Toolbar toolbar;
 
     //Tag
     private static final String TAG = "MainActivity";
@@ -74,6 +75,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //if the intelligent agent is not initialised then it is the users first time using the
+        //application therefore they need to enter their passcode and the other relevant information
         if (!isIntelligentAgentInitialised(this)) {
             Intent intent = new Intent(this, PasscodeActivity.class);
             startActivity(intent);
@@ -85,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer = findViewById(R.id.drawer_layout_main_activity);
         noAdvice = findViewById(R.id.textViewNoAdvice);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         //hides the navigation items that shouldn't be shown
@@ -103,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
 
 
-
+        //displays the advice for the current day
         if (isIntelligentAgentInitialised(this)) {
 
             if(adviceToday.isEmpty()){
@@ -167,20 +170,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onPause() {
         Log.d(TAG, "onPause:");
+
         Intent broadcastIntent = new Intent();
         broadcastIntent.setAction("onPauseServiceReceiver");
         broadcastIntent.setClass(this, onPauseServiceReceiver.class);
+
         this.sendBroadcast(broadcastIntent);
         super.onPause();
     }
 
     @Override
     protected void onDestroy() {
-//        Intent broadcastIntent = new Intent();
-//        broadcastIntent.setAction("onPauseServiceReceiver");
-//        broadcastIntent.setClass(this, onPauseServiceReceiver.class);
-//        this.sendBroadcast(broadcastIntent);
-
         super.onDestroy();
     }
 
@@ -226,8 +226,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onResume() {
-        if (isIntelligentAgentInitialised(this) && !isQuestionaireAnswered(this) && !questionaire) {
-            questionaire = true;
+        if (isIntelligentAgentInitialised(this) && !isQuestionaireAnswered(this) && !questionnaire) {
+
+            //sets the toolbar color to gender of the intelligent agent
+            Util.setToolbarColor(getIntelligentAgent(this), toolbar, getResources());
+
+            questionnaire = true;
             Intent intent = new Intent(this, QuestionaireActivity.class);
             startActivity(intent);
         }

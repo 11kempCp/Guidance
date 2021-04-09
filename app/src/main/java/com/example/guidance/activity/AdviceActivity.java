@@ -76,32 +76,16 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
 
 
         Date currentTime = Calendar.getInstance().getTime();
-        //todo delete?
         Realm.init(this);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
         realm = Realm.getDefaultInstance();
         RealmResults<Advice> allValidAdvice = getAllValidAdviceNotToday(this,realm, currentTime);
         RealmResults<Advice> adviceToday = getAdviceOnDate(this,realm, currentTime);
-//        RealmResults<Advice> allAdvice = getAllAdvice(realm, currentTime);
-
-//        Log.d(TAG, "onCreate: allAdvice.size " + allAdvice.size() + " allAdvice "+ allAdvice);
-//        for(Advice aasd : allAdvice){
-//            Log.d(TAG, "onCreate: another " + aasd);
-//        }
-//
-//
-//        Log.d(TAG, "onCreate: allValidAdvice.size " + allValidAdvice.size());
-//        Log.d(TAG, "onCreate: adviceToday.Size " + adviceToday.size());
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_advice);
 
-
-
-
-//        view = findViewById(R.id.textView);
-//        view.setMovementMethod(new ScrollingMovementMethod());
         recyclerViewAdvice = findViewById(R.id.recyclerViewAdvice);
         recyclerViewAdviceToday = findViewById(R.id.recyclerViewTodayAdvice);
         noAdvice = findViewById(R.id.textViewAdviceNoAdvice);
@@ -148,9 +132,6 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
                 recyclerViewAdviceToday.setAdapter(adviceAdapter);
                 recyclerViewAdviceToday.setLayoutManager(new LinearLayoutManager(this));
             }
-
-
-//            currentAdvice.setText(getResources().getString(R.string.no_advice));
 
         }
 
@@ -253,9 +234,7 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
     }
 
 
-    public void displayLocationsss(View view) {
-//        RealmQuery<Location> locationRealmQuery = realm.where(Location.class);
-//        RealmResults<Location> temp = locationRealmQuery.sort("dateTime", Sort.DESCENDING).findAll();
+    public void displayLocationAdviceActivity(View view) {
         Date currentTime = Calendar.getInstance().getTime();
         RealmResults<Location> temp = getLocationOverPreviousDays(this, currentTime, 3);
 
@@ -269,7 +248,6 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
             displayString2.append(t.getDateTime()).append(" ").append(t.getLatitude()).append(" , ").append(t.getLongitude()).append("\n");
             displayString.append(" ").append("\n");
         }
-//        Log.d(TAG, "displayLocation: " + displayString2);
         this.view.setText(displayString);
 
     }
@@ -306,7 +284,7 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
 
     }
 
-    public void displayAdvice(View view) {
+    public void displayAdviceAdviceActivity(View view) {
         RealmQuery<Advice> adviceRealmQuery = realm.where(Advice.class);
 //        RealmResults<Mood> mood = moodRealmQuery.findAll();
         RealmResults<Advice> advice = adviceRealmQuery.sort("dateTimeAdviceGiven", Sort.DESCENDING).findAll();
@@ -340,7 +318,7 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
 
     }
 
-    public void deleteAdvice(View view) {
+    public void deleteAdviceAdviceActivity(View view) {
 
         realm.executeTransactionAsync(r -> {
             Log.d(TAG, "deleted Screentime");

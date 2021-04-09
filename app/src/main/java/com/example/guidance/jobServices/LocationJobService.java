@@ -26,11 +26,13 @@ public class LocationJobService extends JobService {
         Log.d(TAG, "onStartJob: ");
         Intent serviceIntent = new Intent("CHECK_LOCATION", null, this, LocationService.class);
 
-        Date currentTime = Calendar.getInstance().getTime();
 
         Data_Type data = getDataType(this);
-
+        //validation to ensure that the user has allowed the location dataType to be collected and stored
         if (data.isLocation()) {
+
+            //if the API level is O or above then the LocationService needs to be run as an foregroundService
+            //otherwise it can be run as a service
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(serviceIntent);
             } else {
@@ -45,6 +47,7 @@ public class LocationJobService extends JobService {
 
     @Override
     public boolean onStopJob(JobParameters params) {
+        //stops the LocationService service from running
         Date currentTime = Calendar.getInstance().getTime();
         Log.d(TAG, "Job Cancelled Before Completion " + currentTime);
         Intent serviceIntent = new Intent(this, LocationService.class);

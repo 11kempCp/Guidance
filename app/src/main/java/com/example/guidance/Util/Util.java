@@ -10,6 +10,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Build;
 import android.util.Log;
 
@@ -799,6 +801,8 @@ public class Util {
 
 
     }
+
+
 
 
 }

@@ -82,6 +82,7 @@ public class AdviceJobService extends JobService {
 
     private static final String TAG = "AdviceJobService";
 
+    //Predefined ideal's for the relevant advice's
     private static int idealStepCount = 3000; //steps
     private static int idealScreentimeUsage = 60; //minutes
     private static final int idealThresholdDistance = 50; //meters
@@ -91,6 +92,7 @@ public class AdviceJobService extends JobService {
 
     private final AdviceJustification adviceJustification = new AdviceJustification();
 
+    //the amount of days with which to look over data
     private static final int days = 3;
 
 
@@ -114,7 +116,7 @@ public class AdviceJobService extends JobService {
                 Log.d(TAG, "onStartJob: high");
 
                 //todo ensure that this is 1
-                if (getInteractionAmountForDate(this, currentTime) < 100) {
+                if (getInteractionAmountForDate(this, currentTime) < 1) {
                     determineAdvice(currentTime);
                 } else {
                     Log.d(TAG, "Interaction Limit reached");
@@ -123,7 +125,7 @@ public class AdviceJobService extends JobService {
                 Log.d(TAG, "onStartJob: low");
 
                 //todo ensure that this is 1
-                if (getInteractionAmountForDate(this, currentTime) < 100) {
+                if (getInteractionAmountForDate(this, currentTime) < 1) {
                     determineAdvice(currentTime);
                 } else {
                     Log.d(TAG, "Interaction Limit reached");

@@ -47,14 +47,20 @@ public class AdviceFollowedJobService extends JobService {
 
         Log.d(TAG, "onStartJob: ");
 
+        //gets a list of all Advice whose AdviceFollowed variable is equal to null
         ArrayList<Advice> unresolvedAdvice = getUnresolvedAdvice(this);
         Date currentTime = Calendar.getInstance().getTime();
-        if(unresolvedAdvice.isEmpty()){
 
+        //if unresolvedAdvice is empty then stop the AdviceFollowedJobService
+        if(unresolvedAdvice.isEmpty()){
             Log.d(TAG, "unresolvedAdvice.isEmpty(): true");
             stopSelf();
         }
 
+        //for each Advice in the unresolvedAdvice, a check is done to ensure that the advice taken is
+        //equal to null, it then checks if the dateTime the advice is for has past. If so then checks to see
+        //if the advice has been followed, by checking the data for the date the advice was for.
+        //If there is insufficient data for the date then it is assumed the advice was not followed
         for (Advice advice : unresolvedAdvice) {
             if (advice.getAdviceUsageData().getAdviceTaken() == null) {
                 if (currentTime.after(advice.getDateTimeAdviceFor())) {

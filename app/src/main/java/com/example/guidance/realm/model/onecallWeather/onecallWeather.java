@@ -21,7 +21,7 @@ public class onecallWeather {
     private final current current;
     private final ArrayList<minutely> minutely;
     private final ArrayList<hourly> hourly;
-    private final ArrayList<daily> daily;
+    private final ArrayList<com.example.guidance.realm.model.onecallWeather.daily> daily;
     private final ArrayList<alerts> alerts;
 
 
@@ -65,7 +65,7 @@ public class onecallWeather {
         return hourly;
     }
 
-    public ArrayList<daily> getDaily() {
+    public ArrayList<com.example.guidance.realm.model.onecallWeather.daily> getDaily() {
         return daily;
     }
 
@@ -98,9 +98,9 @@ public class onecallWeather {
 
 
         if (test.getDaily() != null) {
-            ArrayList<daily> dailyArrayList = test.getDaily();
+            ArrayList<com.example.guidance.realm.model.onecallWeather.daily> dailyArrayList = test.getDaily();
 
-            for (daily t : dailyArrayList) {
+            for (com.example.guidance.realm.model.onecallWeather.daily t : dailyArrayList) {
 
                 Log.d(TAG, "daily " + t.getDt() + " " + t.getSunrise() + " " + t.getSunset() + " " + t.getTemp().getDay() + " " + t.getTemp().getMin() + " " + t.getTemp().getMax() + " " + t.getTemp().getNight() + " " + t.getTemp().getEve() + " " + t.getTemp().getMorn() + " " + t.getFeels_like().getDay() + " " + t.getFeels_like().getNight() + " " + t.getFeels_like().getEve() + " " + t.getFeels_like().getMorn() + " " + t.getPressure() + " " + t.getHumidity() + " " + t.getDw_point() + " " + t.getWind_speed() + " " + t.getWind_deg());
 

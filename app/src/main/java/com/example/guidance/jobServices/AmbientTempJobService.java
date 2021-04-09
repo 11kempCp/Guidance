@@ -34,26 +34,25 @@ public class AmbientTempJobService extends JobService
     public boolean onStartJob(JobParameters params) {
         Data_Type data = getDataType(this);
 
+        //validation to ensure that the user has allowed the ambient temperature dataType to be collected and stored
         if (data.isAmbient_temp()) {
+
+            //if the API level is O or above then the AmbientTempService needs to be run as an foregroundService
+            //otherwise it can be run inside this jobService
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Intent serviceIntent = new Intent(this,  AmbientTempService.class);
+                Intent serviceIntent = new Intent(this, AmbientTempService.class);
                 startForegroundService(serviceIntent);
             } else {
 
-                Date currentTime = Calendar.getInstance().getTime();
                 mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
                 Sensor sensor = mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
-                boolean test = mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_FASTEST);
-                Log.d(TAG, "Job Finished " + currentTime + " sensorManager " + test);
+                mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_FASTEST);
 
             }
-        }else {
-            //todo unschedule job?
         }
 
         return false;
     }
-
 
 
     @Override

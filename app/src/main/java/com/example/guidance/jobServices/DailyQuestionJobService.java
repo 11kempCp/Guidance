@@ -37,8 +37,12 @@ public class DailyQuestionJobService extends JobService {
         Date currentTime = Calendar.getInstance().getTime();
 
         Data_Type data = getDataType(this);
+        //validation to ensure that the user wants to store their socialness or mood data
         if ((data.isSocialness() || data.isMood())) {
+
+            //timeframe in which the notification will be displayed
             if (currentTime.getHours() >= 14 && currentTime.getHours() <= 22) {
+
                 //TODO if user has selected one but not the other
                 if(!isSocialnessEntryDate(this, currentTime) || !isMoodEntryToday(this,currentTime)){
                     //Create an Intent for the activity you want to start
@@ -73,9 +77,8 @@ public class DailyQuestionJobService extends JobService {
 
     @Override
     public boolean onStopJob(JobParameters params) {
-
+        //removes the notification if the job is cancelled
         stopForeground(true);
-
         return false;
     }
 }

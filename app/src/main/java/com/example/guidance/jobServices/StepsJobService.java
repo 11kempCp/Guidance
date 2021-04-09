@@ -35,12 +35,12 @@ public class StepsJobService extends JobService {
             if (isStepEntryDate(this, currentTime)) {
                 Log.d(TAG, "Updated Existing Entry");
 //            Toast.makeText(this, "Updated Existing Entry", Toast.LENGTH_SHORT).show();
-                updateStepToday(this, StepsService.getmSteps(), currentTime);
+                updateStepToday(this, StepsService.getSteps(), currentTime);
             } else {
                 StepsService.resetSensor();
                 Log.d(TAG, "New Entry Saved into Database");
 //            Toast.makeText(this, "New Entry Saved into Database", Toast.LENGTH_SHORT).show();
-                insertStepsCounter(this, StepsService.getmSteps(), currentTime);
+                insertStepsCounter(this, StepsService.getSteps(), currentTime);
             }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

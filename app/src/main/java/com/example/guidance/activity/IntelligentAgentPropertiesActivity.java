@@ -75,25 +75,27 @@ public class IntelligentAgentPropertiesActivity extends AppCompatActivity implem
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-
+        //Sets the analysis textView to the relevant text attribute
         if(intelligent_agent.getAnalysis().equals(MACHINE_LEARNING)){
             analysis.setText(TEXT_MACHINE_LEARNING);
         }else if (intelligent_agent.getAnalysis().equals(TRADITIONAL_PROGRAMMING)){
             analysis.setText(TEXT_TRADITIONAL_PROGRAMMING);
         }
 
+        //Sets the advice textView to the relevant text attribute
         if(withJustification(intelligent_agent)){
             advice.setText(TEXT_WITH_JUSTIFICATION);
         }else if (noJustification(intelligent_agent)){
             advice.setText(TEXT_NO_JUSTIFICATION);
         }
-
+        //Sets the gender textView to the relevant text attribute
         if(intelligent_agent.getGender().equals(MALE)){
             gender.setText(TEXT_MALE);
         }else if (intelligent_agent.getGender().equals(FEMALE)){
             gender.setText(TEXT_FEMALE);
         }
 
+        //Sets the interaction textView to the relevant text attribute
         if(intelligent_agent.getInteraction().equals(HIGH)){
             interaction.setText(TEXT_HIGH);
         }else if (intelligent_agent.getInteraction().equals(LOW)){

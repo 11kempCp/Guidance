@@ -62,6 +62,8 @@ public class WeatherService extends Service {
         startForeground(WEATHER, notification);
         sID = startId;
 
+
+        //call to obtain weather information
         callWeather();
 
 
@@ -79,12 +81,6 @@ public class WeatherService extends Service {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
-//        Call<Weather> test =  service.getNowWeather("London.uk", "04aad354e4131a7227796a9a38f10262");
-
-
-//        https://api.openweathermap.org/data/2.5/onecall?lat=51.48&lon=-3.18&exclude=current,minutely,alerts,&appid=04aad354e4131a7227796a9a38f10262&units=metric
-
-
         WeatherInterface weather = retrofit.create(WeatherInterface.class);
 
         String key = getString(R.string.openWeatherapikey);
@@ -94,16 +90,17 @@ public class WeatherService extends Service {
         Date currentTime = Calendar.getInstance().getTime();
 
         Location location = getMostRecentLocation(this, currentTime);
-
+        //if is a location entered then it can be used in the openWeather api call
         if (location != null) {
             Call<onecallWeather> call = weather.getDailyWeather(location.getLatitude(), location.getLongitude(), "current,minutely,hourly,alerts", key, "metric");
 
-
+            //openWeather api call
             call.enqueue(new Callback<onecallWeather>() {
                 @Override
                 public void onResponse(Call<onecallWeather> call, Response<onecallWeather> response) {
                     Log.d(TAG, "onResponse: ");
 
+                    //if the call is unsuccessful
                     if (!response.isSuccessful()) {
                         Log.d(TAG, "Code " + response.code());
                         return;
@@ -111,40 +108,24 @@ public class WeatherService extends Service {
 
                     onecallWeather weather = response.body();
 
-                    assert weather != null;
+                    if(weather!=null){
+//                        weather.printOneCallWeather(weather);
 
-                    weather.printOneCallWeather(weather);
+                        //gets the daily weather from the OneCallWeather object
+                        ArrayList<daily> dailyArrayList = weather.getDaily();
 
-                    ArrayList<daily> daily = weather.getDaily();
+                        //loops over each daily entry from openWeather api call
+                        for(daily daily: dailyArrayList){
+                            weatherEntry(WeatherService.this, Util.convertEpochToDate(daily.getDt()),daily.getWeather().get(0).getMain(),
+                                    Util.convertEpochToDate(daily.getSunrise()),Util.convertEpochToDate(daily.getSunset()),
+                                    daily.getFeels_like().getMorn(),daily.getFeels_like().getDay(),
+                                    daily.getFeels_like().getEve(),daily.getFeels_like().getNight(),
+                                    daily.getTemp().getMax(),daily.getTemp().getMin());
 
-                    for(daily d: daily){
-
-
-                        weatherEntry(WeatherService.this, Util.convertEpochToDate(d.getDt()),d.getWeather().get(0).getMain(),
-                                Util.convertEpochToDate(d.getSunrise()),Util.convertEpochToDate(d.getSunset()),
-                                d.getFeels_like().getMorn(),d.getFeels_like().getDay(),
-                                d.getFeels_like().getEve(),d.getFeels_like().getNight(),
-                                d.getTemp().getMax(),d.getTemp().getMin());
-
-
+                        }
                     }
 
-
-
-
-
-
-
-//                    ArrayList<hourly> hourly = weather.getHourly();
-
-                    Log.d(TAG, "onResponse: " + response);
-
-
-//                test.printWeatherObject(test);
-
-
-//                Log.d(TAG, "onResponse: " + test);
-
+                    //stops the service and removes the notification
                     stopForeground(true);
                     stopSelfResult(sID);
                 }
@@ -157,16 +138,12 @@ public class WeatherService extends Service {
                     stopSelfResult(sID);
                 }
             });
+
         }else{
             Log.d(TAG, "No locations entered");
             stopForeground(true);
             stopSelfResult(sID);
         }
-
-
-//        Call<WeatherCity> call = weather.getCurrentWeather("London,uk", R.string.openWeatherapikey);
-//        Call<WeatherCity> call = weather.getCurrentWeather("London,uk", key);
-
 
     }
 

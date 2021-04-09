@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -33,10 +34,8 @@ import static com.example.guidance.Util.Util.navigationViewVisibility;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.databasefunctions.MoodDatabaseFunctions.getMoodEntryDate;
-import static com.example.guidance.realm.databasefunctions.MoodDatabaseFunctions.getTodaysMoodEntry;
 import static com.example.guidance.realm.databasefunctions.MoodDatabaseFunctions.isMoodEntryToday;
 import static com.example.guidance.realm.databasefunctions.MoodDatabaseFunctions.moodEntry;
-import static com.example.guidance.realm.databasefunctions.SocialnessDatabaseFunctions.getSocialnessDateRating;
 import static com.example.guidance.realm.databasefunctions.SocialnessDatabaseFunctions.getSocialnessEntryDate;
 import static com.example.guidance.realm.databasefunctions.SocialnessDatabaseFunctions.isSocialnessEntryDate;
 import static com.example.guidance.realm.databasefunctions.SocialnessDatabaseFunctions.socialnessEntry;
@@ -45,9 +44,9 @@ public class DailyQuestionActivity extends AppCompatActivity implements Navigati
 
     private static final String TAG = "DailyQuestionActivity";
     private DrawerLayout drawer;
-    private RadioGroup radioGroupOne, radioGroupTwo;
-    private TextView dailyQuestionOne, dailyQuestionTwo, clarificationOne, clarificationTwo;
-    private RadioButton q1b1, q1b2, q1b3, q1b4, q2b1, q2b2, q2b3, q2b4;
+    private RadioGroup radioGroupSocialness, radioGroupMood;
+    private TextView socialnessDailyQuestion, moodDailyQuestion, socialnessClarification, moodClarification;
+    private RadioButton socialnessButtonOne, socialnessButtonTwo, socialnessButtonThree, socialnessButtonFour, moodButtonOne, moodButtonTwo, moodButtonThree, moodButtonFour;
 
 
     @SuppressLint("NonConstantResourceId")
@@ -87,102 +86,85 @@ public class DailyQuestionActivity extends AppCompatActivity implements Navigati
         toggle.syncState();
 
 
-        //TODO selective toggling i.e. if the user only has mood tracking enabled then only the mood
-        // question should be displayed
-        dailyQuestionOne = findViewById(R.id.textViewDailyQuestionOne);
-        dailyQuestionTwo = findViewById(R.id.textViewDailyQuestionTwo);
-        clarificationOne = findViewById(R.id.textViewClarificationOne);
-        clarificationTwo = findViewById(R.id.textViewClarificationTwo);
+        socialnessDailyQuestion = findViewById(R.id.textViewDailyQuestionOne);
+        socialnessClarification = findViewById(R.id.textViewClarificationOne);
+        socialnessDailyQuestion.setText(R.string.daily_question_one);
+        socialnessClarification.setText(R.string.daily_question_one_clarification);
+        radioGroupSocialness = findViewById(R.id.radioGroupDailyQuestionOne);
 
-        radioGroupOne = findViewById(R.id.radioGroupDailyQuestionOne);
-        radioGroupTwo = findViewById(R.id.radioGroupDailyQuestionTwo);
-
-        dailyQuestionOne.setText(R.string.daily_question_one);
-        dailyQuestionTwo.setText(R.string.daily_question_two);
-
-        clarificationOne.setText(R.string.daily_question_one_clarification);
-        clarificationTwo.setText(R.string.daily_question_two_clarification);
+        socialnessButtonOne = findViewById(R.id.radioButton1QuestionOne);
+        socialnessButtonTwo = findViewById(R.id.radioButton2QuestionOne);
+        socialnessButtonThree = findViewById(R.id.radioButton3QuestionOne);
+        socialnessButtonFour = findViewById(R.id.radioButton4QuestionOne);
 
 
-        q1b1 = findViewById(R.id.radioButton1QuestionOne);
-        q1b2 = findViewById(R.id.radioButton2QuestionOne);
-        q1b3 = findViewById(R.id.radioButton3QuestionOne);
-        q1b4 = findViewById(R.id.radioButton4QuestionOne);
+        moodDailyQuestion = findViewById(R.id.textViewDailyQuestionTwo);
+        moodClarification = findViewById(R.id.textViewClarificationTwo);
+        radioGroupMood = findViewById(R.id.radioGroupDailyQuestionTwo);
+        moodDailyQuestion.setText(R.string.daily_question_two);
+        moodClarification.setText(R.string.daily_question_two_clarification);
 
-        q2b1 = findViewById(R.id.radioButton1QuestionTwo);
-        q2b2 = findViewById(R.id.radioButton2QuestionTwo);
-        q2b3 = findViewById(R.id.radioButton3QuestionTwo);
-        q2b4 = findViewById(R.id.radioButton4QuestionTwo);
+        moodButtonOne = findViewById(R.id.radioButton1QuestionTwo);
+        moodButtonTwo = findViewById(R.id.radioButton2QuestionTwo);
+        moodButtonThree = findViewById(R.id.radioButton3QuestionTwo);
+        moodButtonFour = findViewById(R.id.radioButton4QuestionTwo);
 
         Date ct = Calendar.getInstance().getTime();
+        setAllRadioButtonStatus(dataType,ct);
 
-        if (isMoodEntryToday(this, ct)) {
-            int value = Objects.requireNonNull(getMoodEntryDate(this, ct)).getRating();
-
-            ((RadioButton) radioGroupTwo.getChildAt(value - 1)).setChecked(true);
-        }
-
-        if (isSocialnessEntryDate(this, ct)) {
-            int value = Objects.requireNonNull(getSocialnessEntryDate(this, ct)).getRating();
-
-            ((RadioButton) radioGroupOne.getChildAt(value - 1)).setChecked(true);
-        }
-
-
-        radioGroupOne.setOnCheckedChangeListener((group, checkedId) -> {
+        radioGroupSocialness.setOnCheckedChangeListener((group, checkedId) -> {
             Util.stopBackgroundNotification(DAILY_QUESTION);
             switch (checkedId) {
                 case R.id.radioButton1QuestionOne:
                     Date currentTime = Calendar.getInstance().getTime();
-                    socialnessEntry(this, currentTime, Integer.parseInt(String.valueOf(q1b1.getText())));
+                    socialnessEntry(this, currentTime, Integer.parseInt(String.valueOf(socialnessButtonOne.getText())));
                     Toast.makeText(this, "Answer Saved", Toast.LENGTH_SHORT).show();
                     break;
                 case R.id.radioButton2QuestionOne:
                     currentTime = Calendar.getInstance().getTime();
-                    socialnessEntry(this, currentTime, Integer.parseInt(String.valueOf(q1b2.getText())));
+                    socialnessEntry(this, currentTime, Integer.parseInt(String.valueOf(socialnessButtonTwo.getText())));
                     Toast.makeText(this, "Answer Saved", Toast.LENGTH_SHORT).show();
 
                     break;
                 case R.id.radioButton3QuestionOne:
                     currentTime = Calendar.getInstance().getTime();
-                    socialnessEntry(this, currentTime, Integer.parseInt(String.valueOf(q1b3.getText())));
+                    socialnessEntry(this, currentTime, Integer.parseInt(String.valueOf(socialnessButtonThree.getText())));
                     Toast.makeText(this, "Answer Saved", Toast.LENGTH_SHORT).show();
 
                     break;
                 case R.id.radioButton4QuestionOne:
                     currentTime = Calendar.getInstance().getTime();
-                    socialnessEntry(this, currentTime, Integer.parseInt(String.valueOf(q1b4.getText())));
+                    socialnessEntry(this, currentTime, Integer.parseInt(String.valueOf(socialnessButtonFour.getText())));
                     Toast.makeText(this, "Answer Saved", Toast.LENGTH_SHORT).show();
 
                     break;
             }
         });
 
-
-        radioGroupTwo.setOnCheckedChangeListener((group, checkedId) -> {
+        radioGroupMood.setOnCheckedChangeListener((group, checkedId) -> {
             Util.stopBackgroundNotification(DAILY_QUESTION);
             switch (checkedId) {
                 case R.id.radioButton1QuestionTwo:
                     Date currentTime = Calendar.getInstance().getTime();
-                    moodEntry(this, currentTime, Integer.parseInt(String.valueOf(q2b1.getText())));
+                    moodEntry(this, currentTime, Integer.parseInt(String.valueOf(moodButtonOne.getText())));
                     Toast.makeText(this, "Answer Saved", Toast.LENGTH_SHORT).show();
 
                     break;
                 case R.id.radioButton2QuestionTwo:
                     currentTime = Calendar.getInstance().getTime();
-                    moodEntry(this, currentTime, Integer.parseInt(String.valueOf(q2b2.getText())));
+                    moodEntry(this, currentTime, Integer.parseInt(String.valueOf(moodButtonTwo.getText())));
                     Toast.makeText(this, "Answer Saved", Toast.LENGTH_SHORT).show();
 
                     break;
                 case R.id.radioButton3QuestionTwo:
                     currentTime = Calendar.getInstance().getTime();
-                    moodEntry(this, currentTime, Integer.parseInt(String.valueOf(q2b3.getText())));
+                    moodEntry(this, currentTime, Integer.parseInt(String.valueOf(moodButtonThree.getText())));
                     Toast.makeText(this, "Answer Saved", Toast.LENGTH_SHORT).show();
 
                     break;
                 case R.id.radioButton4QuestionTwo:
                     currentTime = Calendar.getInstance().getTime();
-                    moodEntry(this, currentTime, Integer.parseInt(String.valueOf(q2b4.getText())));
+                    moodEntry(this, currentTime, Integer.parseInt(String.valueOf(moodButtonFour.getText())));
                     Toast.makeText(this, "Answer Saved", Toast.LENGTH_SHORT).show();
 
                     break;
@@ -248,6 +230,81 @@ public class DailyQuestionActivity extends AppCompatActivity implements Navigati
         broadcastIntent.setClass(this, onPauseServiceReceiver.class);
         this.sendBroadcast(broadcastIntent);
         super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Date ct = Calendar.getInstance().getTime();
+        setAllRadioButtonStatus(getDataType(this),ct);
+    }
+
+    private void setAllRadioButtonStatus(Data_Type dataType , Date ct){
+
+        if(dataType.isSocialness()){
+            setSocialnessRadioButton(ct);
+            socialnessVisible();
+        }else{
+            socialnessInvisible();
+        }
+
+        if(dataType.isMood()){
+            setMoodRadioButton(ct);
+            moodVisible();
+        }else{
+            moodInvisible();
+        }
+    }
+
+    private void moodVisible(){
+        moodDailyQuestion.setVisibility(View.VISIBLE);
+        moodClarification.setVisibility(View.VISIBLE);
+        radioGroupMood.setVisibility(View.VISIBLE);
+    }
+
+    private void moodInvisible(){
+        moodDailyQuestion.setVisibility(View.GONE);
+        moodClarification.setVisibility(View.GONE);
+        radioGroupMood.setVisibility(View.GONE);
+    }
+
+
+    private void socialnessVisible(){
+        socialnessDailyQuestion.setVisibility(View.VISIBLE);
+        socialnessClarification.setVisibility(View.VISIBLE);
+        radioGroupSocialness.setVisibility(View.VISIBLE);
+    }
+
+    private void socialnessInvisible(){
+        socialnessDailyQuestion.setVisibility(View.GONE);
+        socialnessClarification.setVisibility(View.GONE);
+        radioGroupSocialness.setVisibility(View.GONE);
+    }
+
+    private void setSocialnessRadioButton(Date ct){
+
+
+        if (isSocialnessEntryDate(this, ct)) {
+            int value = Objects.requireNonNull(getSocialnessEntryDate(this, ct)).getRating();
+
+            ((RadioButton) radioGroupSocialness.getChildAt(value - 1)).setChecked(true);
+        }
+
+
+
+    }
+
+    private void setMoodRadioButton(Date ct){
+        if (isMoodEntryToday(this, ct)) {
+            int value = Objects.requireNonNull(getMoodEntryDate(this, ct)).getRating();
+
+            ((RadioButton) radioGroupMood.getChildAt(value - 1)).setChecked(true);
+        }
+
+
+
+
+
     }
 
 }

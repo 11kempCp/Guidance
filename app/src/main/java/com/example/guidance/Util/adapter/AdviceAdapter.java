@@ -64,16 +64,21 @@ public class AdviceAdapter extends RecyclerView.Adapter<AdviceAdapter.MyViewHold
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
 
-
+        //Sets the advice textview to equal to the advice
         holder.advice.setText(ad[position].getAdvice());
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH);
-//        Log.d(TAG, "onBindViewHolder: date is " + ad[position].getDateTimeAdviceFor());
-        String dateFormat = simpleDateFormat.format(ad[position].getDateTimeAdviceFor());
-//        Log.d(TAG, "onBindViewHolder: dateFormat " + dateFormat);
 
+
+        //formatter for the date into the dd/MM/yy date format
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH);
+
+        //formats the date the advice was for into the above date format
+        String dateFormat = simpleDateFormat.format(ad[position].getDateTimeAdviceFor());
+
+        //adds text to the front of the date so that the date's meaning is clear
         String date = resources.getString(R.string.date_advice_for) + dateFormat;
         holder.date.setText(date);
 
+        //sets the color of the text's background
         if(todayAdvice){
             holder.cardView.setCardBackgroundColor(colour_today);
         }else if(ad[position].getDateTimeAdviceFor().before(currentTime)){

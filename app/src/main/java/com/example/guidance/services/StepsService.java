@@ -27,16 +27,15 @@ public class StepsService extends Service {
 
     public static final String TAG = "StepsService";
     // Steps counted in current session
-    private static int mSteps = 0;
+    private static int steps = 0;
     // Value of the step counter sensor when the listener was registered.
     // (Total steps are calculated from this value.)
-    private static int mCounterSteps = 0;
+    private static int counterSteps = 0;
 
     // max batch latency is specified in microseconds
     private static final int BATCH_LATENCY_10s = 10000000;
 
     int sID;
-
 
 
     @Override
@@ -53,7 +52,9 @@ public class StepsService extends Service {
                 .build();
 
         startForeground(STEPS, notification);
-         sID = startId;
+        sID = startId;
+
+        //creates the step counter
         SensorManager mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         Sensor sensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
         final boolean batchMode = mSensorManager.registerListener(mListener, sensor, SensorManager.SENSOR_DELAY_NORMAL, BATCH_LATENCY_10s);
@@ -63,17 +64,17 @@ public class StepsService extends Service {
 
     }
 
-
+    /**
+     * resets the stepCounter
+     */
     public static void resetSensor() {
-        mSteps = 0;
-        mCounterSteps = 0;
+        steps = 0;
+        counterSteps = 0;
     }
 
     private static final SensorEventListener mListener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
-
-
 
             /*
             Taken from https://github.com/android/sensors-samples
@@ -82,19 +83,19 @@ public class StepsService extends Service {
             number of steps taken, as the first value a listener receives is undefined.
              */
 
-            if (mCounterSteps < 1) {
+            if (counterSteps < 1) {
                 // initial value
-                mCounterSteps = (int) event.values[0];
+                counterSteps = (int) event.values[0];
             }
 
             // Calculate steps taken based on first counter value received.
-            mSteps = (int) event.values[0] - mCounterSteps;
+            steps = (int) event.values[0] - counterSteps;
 
             // Add the number of steps previously taken, otherwise the counter would start at 0.
             // This is needed to keep the counter consistent across rotation changes.
 //            mSteps = mSteps + mPreviousCounterSteps;
 
-            Log.d(TAG, "onSensorChanged: " + mSteps);
+            Log.d(TAG, "onSensorChanged: " + steps);
         }
 
         @Override
@@ -111,14 +112,14 @@ public class StepsService extends Service {
 
     @Override
     public void onDestroy() {
-//        Toast.makeText(this, " DESTROY Total Steps " + mSteps, Toast.LENGTH_SHORT).show();
-
         stopForeground(sID);
-
         super.onDestroy();
     }
 
-    public static int getmSteps() {
-        return mSteps;
+    /**
+     * Returns the current value of the steps variable
+     * */
+    public static int getSteps() {
+        return steps;
     }
 }

@@ -24,11 +24,12 @@ public class WeatherJobService extends JobService {
     public boolean onStartJob(JobParameters params) {
         Intent serviceIntent = new Intent(this, WeatherService.class);
 
+        //gets the data_types that the user has selected to be stored
         Data_Type data = getDataType(this);
 
+        //ensures that one of the data types is selected before launching the weatherService
         if (data.isWeather() || data.isSun() || data.isExternal_temp()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
                 startForegroundService(serviceIntent);
             } else {
                 startService(serviceIntent);

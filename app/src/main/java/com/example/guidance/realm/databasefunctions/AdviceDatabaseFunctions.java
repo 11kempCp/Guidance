@@ -375,10 +375,18 @@ public class AdviceDatabaseFunctions {
 //        realm.close();
         ArrayList<Advice> adviceArrayList = new ArrayList<>();
 
+        //gets a currentTime object and sets the hour, minute and seconds of the current day to be 0
+        //ensures that any Advice data that this function returns has had the DateTimeAdviceFor
+        // date passed
+        Date currentTime = Calendar.getInstance().getTime();
+        currentTime.setHours(0);
+        currentTime.setMinutes(0);
+        currentTime.setSeconds(0);
+
         tasksQuery.sort("dateTimeAdviceGiven", Sort.ASCENDING);
         for (Advice advice : tasksQuery) {
 
-            if (!advice.getAdviceType().equals(noAdvice) && advice.getAdviceUsageData().getAdviceTaken() == null) {
+            if (!advice.getAdviceType().equals(noAdvice) && advice.getAdviceUsageData().getAdviceTaken() == null && advice.getAdviceUsageData().getDateTimeAdviceFor().before(currentTime)) {
                 adviceArrayList.add(advice);
             }
 
