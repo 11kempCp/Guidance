@@ -633,10 +633,14 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         super.onPause();
     }
 
+
+    //returns if there is a ambient temperature sensor on the device
     public boolean isAmbientTemperatureSensor(SensorManager mSensorManager) {
         return mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) != null;
     }
 
+
+    //returns if there is a step counter sensor on the device
     public boolean isStepsSensor(SensorManager mSensorManager) {
         return mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) != null;
     }
