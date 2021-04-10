@@ -119,12 +119,12 @@ public class UserInformationActivity extends AppCompatActivity implements Naviga
                 textInputLayoutInputGender.getEditText().setText(user_information.getUserSpecifiedGender());
 
 
-
                 //something set visible
                 otherGender.setVisibility(View.VISIBLE);
                 textInputLayoutInputGender.setVisibility(View.VISIBLE);
-
-
+            } else {
+                otherGender.setVisibility(View.INVISIBLE);
+                textInputLayoutInputGender.setVisibility(View.INVISIBLE);
             }
 
         }
@@ -237,5 +237,28 @@ public class UserInformationActivity extends AppCompatActivity implements Naviga
         }
 
         updateUserInformation(this, entryName, entryAge, entryGender, userSpecifiedGender);
+    }
+
+    public void deleteUserInformation(View view) {
+
+        String entryName = null;
+        Integer entryAge = null;
+        String entryGender = null;
+        String userSpecifiedGender = null;
+
+        updateUserInformation(this, entryName, entryAge, entryGender, userSpecifiedGender);
+
+        refreshUiElements();
+
+    }
+
+    public void refreshUiElements() {
+        name.setText("");
+        age.setText("");
+        spinner.setSelection(0);
+        otherGender.setVisibility(View.INVISIBLE);
+        textInputLayoutInputGender.setVisibility(View.INVISIBLE);
+
+
     }
 }

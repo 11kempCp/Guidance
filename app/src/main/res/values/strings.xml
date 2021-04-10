@@ -255,6 +255,7 @@
     <string name="gender_optional">Gender (optional)</string>
     <string name="gender_specify">Please Specify (optional)</string>
     <string name="update_user_information">Update User Information</string>
+    <string name="delete_user_information">Delete User Information</string>
 
 
     <string-array name="gender">
