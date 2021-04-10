@@ -222,11 +222,11 @@
     </string-array>
 
     <string-array name="placeholder_questions">
-    <item>Error</item>
+        <item>Error</item>
     </string-array>
 
     <array name="placeholder_answers">
-    <item>@array/placeholder_answers_1</item>
+        <item>@array/placeholder_answers_1</item>
     </array>
 
     <string-array name="placeholder_answers_1">
@@ -246,11 +246,16 @@
     <string name="enter_passcode">Enter Passcode</string>
     <string name="enter_name">Enter Name</string>
     <string name="enter_name_optional">Enter Name (optional)</string>
+    <string name="name_optional">Name (optional)</string>
     <string name="enter_age">Enter Age</string>
     <string name="enter_age_optional">Enter Age (optional)</string>
+    <string name="age_optional">Age (optional)</string>
     <string name="enter_gender">Enter Gender</string>
     <string name="enter_gender_optional">Enter Gender (optional)</string>
+    <string name="gender_optional">Gender (optional)</string>
     <string name="gender_specify">Please Specify (optional)</string>
+    <string name="update_user_information">Update User Information</string>
+
 
     <string-array name="gender">
         <item>Enter Gender (optional)</item>
@@ -258,6 +263,7 @@
         <item>Female</item>
         <item>Other</item>
     </string-array>
+
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="other">Other</string>
@@ -296,6 +302,7 @@
     <string name="daily_question">Daily Questions</string>
     <string name="ranking">Advice Ranking</string>
     <string name="intelligent_agent_properties">Intelligent Agent Properties</string>
+    <string name="user_information">User Information</string>
     <!--End of Activity Name Strings-->
 
     <!--End of Activity Name Strings-->

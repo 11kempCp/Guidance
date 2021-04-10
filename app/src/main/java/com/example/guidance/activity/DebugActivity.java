@@ -272,6 +272,9 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
                 myIntent = new Intent(this, IntelligentAgentPropertiesActivity.class);
                 startActivity(myIntent);
                 break;
+            case R.id.nav_user_information:
+                myIntent = new Intent(this, UserInformationActivity.class);
+                startActivity(myIntent);
         }
 
         return true;

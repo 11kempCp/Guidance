@@ -84,6 +84,7 @@ public class PasscodeActivity extends AppCompatActivity implements AdapterView.O
             String entryName = null;
             Integer entryAge = null;
             String entryGender = null;
+            String userSpecifiedGender = null;
 
             if (!String.valueOf(name.getText()).equals("")) {
                 entryName = String.valueOf(name.getText());
@@ -99,11 +100,13 @@ public class PasscodeActivity extends AppCompatActivity implements AdapterView.O
                 entryGender = spinner.getSelectedItem().toString();
             } else if (spinner.getSelectedItem().toString().equals(getResources().getString(R.string.other))) {
                 if (!String.valueOf(otherGender.getText()).equals("")) {
-                    entryGender = String.valueOf(otherGender.getText());
+                    entryGender = getResources().getString(R.string.other);
+                    userSpecifiedGender = String.valueOf(otherGender.getText());
+
                 }
             }
 
-            userInformationEntry(PasscodeActivity.this, entryName, entryAge, entryGender);
+            userInformationEntry(PasscodeActivity.this, entryName, entryAge, entryGender, userSpecifiedGender);
 
             //initialises the Data_Type realm
             if (!isDataTypeInitialised(this)) {

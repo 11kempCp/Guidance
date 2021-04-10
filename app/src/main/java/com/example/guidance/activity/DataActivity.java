@@ -236,6 +236,9 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 myIntent = new Intent(this, IntelligentAgentPropertiesActivity.class);
                 startActivity(myIntent);
                 break;
+            case R.id.nav_user_information:
+                myIntent = new Intent(this, UserInformationActivity.class);
+                startActivity(myIntent);
         }
 
 

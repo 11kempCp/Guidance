@@ -200,6 +200,9 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
                 myIntent = new Intent(this, IntelligentAgentPropertiesActivity.class);
                 startActivity(myIntent);
                 break;
+            case R.id.nav_user_information:
+                myIntent = new Intent(this, UserInformationActivity.class);
+                startActivity(myIntent);
         }
 
 

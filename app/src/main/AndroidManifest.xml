@@ -27,19 +27,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Guidance">
+        <activity
+            android:name=".activity.UserInformationActivity"
+            android:label="@string/user_information"
+            android:theme="@style/defaultAppTheme.NoActionBar" />
+
 
         <activity
             android:name=".activity.IntelligentAgentPropertiesActivity"
             android:label="@string/intelligent_agent_properties"
-            android:theme="@style/defaultAppTheme.NoActionBar">
-
-        </activity>
-
+            android:theme="@style/defaultAppTheme.NoActionBar" />
         <activity
             android:name=".activity.RankingActivity"
             android:label="@string/ranking"
             android:theme="@style/defaultAppTheme.NoActionBar" />
-
         <activity
             android:name=".activity.QuestionaireActivity"
             android:theme="@style/defaultAppTheme.NoActionBar">
@@ -174,13 +175,11 @@
             android:enabled="true"
             android:label="Advice JobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-
         <service
             android:name=".jobServices.AdviceFollowedJobService"
             android:enabled="true"
             android:label="Advice Followed JobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-
     </application>
 
 </manifest>

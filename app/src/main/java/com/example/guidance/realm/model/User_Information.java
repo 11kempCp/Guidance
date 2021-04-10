@@ -15,14 +15,16 @@ public class User_Information extends RealmObject {
     private String name;
     private Integer age;
     private String gender;
+    private String userSpecifiedGender;
 
     public User_Information(){}
 
-    public User_Information(ObjectId _id, String name, Integer age, String gender) {
+    public User_Information(ObjectId _id, String name, Integer age, String gender, String userSpecifiedGender) {
         this._id = _id;
         this.name = name;
         this.age = age;
         this.gender = gender;
+        this.userSpecifiedGender = userSpecifiedGender;
     }
 
     public ObjectId get_id() {
@@ -55,5 +57,13 @@ public class User_Information extends RealmObject {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public String getUserSpecifiedGender() {
+        return userSpecifiedGender;
+    }
+
+    public void setUserSpecifiedGender(String userSpecifiedGender) {
+        this.userSpecifiedGender = userSpecifiedGender;
     }
 }

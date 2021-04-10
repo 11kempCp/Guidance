@@ -109,40 +109,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //displays the advice for the current day
         if (isIntelligentAgentInitialised(this)) {
 
-            if(adviceToday.isEmpty()){
+            if (adviceToday.isEmpty()) {
                 noAdvice.setVisibility(View.VISIBLE);
                 recyclerViewMainAdvice.setVisibility(View.GONE);
 
-            }else{
+            } else {
 
                 noAdvice.setVisibility(View.GONE);
                 recyclerViewMainAdvice.setVisibility(View.VISIBLE);
 
-                if(intelligent_agent.getGender().equals(FEMALE)){
-                    AdviceAdapter adviceAdapter = new AdviceAdapter(this, adviceToday, getResources(), getResources().getColor(R.color.malePrimaryColour), getResources().getColor(R.color.color_before), getResources().getColor(R.color.color_after), true, currentTime );
+                if (intelligent_agent.getGender().equals(FEMALE)) {
+                    AdviceAdapter adviceAdapter = new AdviceAdapter(this, adviceToday, getResources(), getResources().getColor(R.color.malePrimaryColour), getResources().getColor(R.color.color_before), getResources().getColor(R.color.color_after), true, currentTime);
                     recyclerViewMainAdvice.setAdapter(adviceAdapter);
                     recyclerViewMainAdvice.setLayoutManager(new LinearLayoutManager(this));
-                }else if(intelligent_agent.getGender().equals(MALE)){
-                    AdviceAdapter adviceAdapter = new AdviceAdapter(this, adviceToday, getResources(), getResources().getColor(R.color.malePrimaryColour), getResources().getColor(R.color.color_before), getResources().getColor(R.color.color_after), true, currentTime );
+                } else if (intelligent_agent.getGender().equals(MALE)) {
+                    AdviceAdapter adviceAdapter = new AdviceAdapter(this, adviceToday, getResources(), getResources().getColor(R.color.malePrimaryColour), getResources().getColor(R.color.color_before), getResources().getColor(R.color.color_after), true, currentTime);
                     recyclerViewMainAdvice.setAdapter(adviceAdapter);
                     recyclerViewMainAdvice.setLayoutManager(new LinearLayoutManager(this));
                 }
 
-                if(intelligent_agent.getAdvice().equals(WITH_JUSTIFICATION)){
+                if (intelligent_agent.getAdvice().equals(WITH_JUSTIFICATION)) {
                     currentGraph.setVisibility(View.VISIBLE);
-                }else if (intelligent_agent.getAdvice().equals(NO_JUSTIFICATION)){
+                } else if (intelligent_agent.getAdvice().equals(NO_JUSTIFICATION)) {
                     currentGraph.setVisibility(View.INVISIBLE);
 
                 }
             }
 
 
-
-
-
-
         }
-
 
 
     }
@@ -219,6 +214,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 myIntent = new Intent(this, IntelligentAgentPropertiesActivity.class);
                 startActivity(myIntent);
                 break;
+            case R.id.nav_user_information:
+                myIntent = new Intent(this, UserInformationActivity.class);
+                startActivity(myIntent);
         }
 
         return true;
