@@ -22,6 +22,10 @@
     <string name="notification_location">Storing Location</string>
     <string name="notification_weather">Storing Weather</string>
     <string name="notification_questionnaire">Please Answer Questionnaire</string>
+    <string name="study_status">Study Status</string>
+    <!--    //todo check if this is what the end application is gunna do-->
+    <string name="notification_study">Thank you for participating in the study. The usage data generated has now been uploaded. The application will continue to function and provide advice to you.
+        If you have any questions about the application please email KempCP@Cardiff.ac.uk</string>
     <!--End of Notification Strings-->
 
 

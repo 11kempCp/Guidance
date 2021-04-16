@@ -1,16 +1,25 @@
 package com.example.guidance.jobServices;
 
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Context;
+import android.content.Intent;
 import android.os.StrictMode;
 import android.util.Log;
+
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.files.FileMetadata;
 import com.dropbox.core.v2.users.FullAccount;
+import com.example.guidance.R;
+import com.example.guidance.activity.QuestionaireActivity;
+import com.example.guidance.app.App;
 import com.example.guidance.gsonTemplates.AdviceUsageDataSerializer;
 import com.example.guidance.gsonTemplates.DataTypeSerializer;
 import com.example.guidance.gsonTemplates.DataTypeUsageDataSerializer;
@@ -46,6 +55,7 @@ import static com.example.guidance.Util.Output.create;
 import static com.example.guidance.Util.Output.getFile;
 import static com.example.guidance.Util.Output.isFilePresent;
 import static com.example.guidance.Util.Output.read;
+import static com.example.guidance.Util.Util.QUESTIONNAIRE;
 import static com.example.guidance.realm.databasefunctions.AdviceDatabaseFunctions.getAllAdviceUsageData;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getAllUsageData;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
@@ -73,7 +83,8 @@ public class ExportJobService extends JobService {
 
 
         Log.d(TAG, "onStartJob: ");
-        exportStudyData(this);
+//        exportStudyData(this);
+//        createNotification();
 
         if(currentTime.after(intelligent_agent.getEnd_Date()) && getSizeAllQuestionnaire(this) == 2 && !intelligent_agent.isStudyStatus() && intelligent_agent.getAccessToken()!=null){
 
@@ -82,11 +93,49 @@ public class ExportJobService extends JobService {
             exportStudyData(this);
             updateIntelligentAgent(this, true);
 
-//            createNotification();
+            createNotification();
         }
 
 
         return false;
+    }
+
+    private void createNotification() {
+        //Create an Intent for the activity you want to start
+        Intent resultIntent = new Intent(this, QuestionaireActivity.class);
+        // Create the TaskStackBuilder and add the intent, which inflates the back stack
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addNextIntentWithParentStack(resultIntent);
+        // Get the PendingIntent containing the entire back stack
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, App.CHANNEL_ID);
+
+
+        NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle();
+        bigTextStyle.setBigContentTitle(getString(R.string.study_status));
+        bigTextStyle.bigText(getString(R.string.notification_study));
+
+        builder.setContentIntent(resultPendingIntent)
+                .setContentTitle(getString(R.string.study_status))
+                .setStyle(bigTextStyle)
+//                .setContentText(text)
+                .setSmallIcon(R.drawable.ic_guide)
+                .setContentIntent(resultPendingIntent)
+                .setPriority(NotificationCompat.PRIORITY_LOW);
+
+
+//        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, App.CHANNEL_ID);
+//        builder.setContentIntent(resultPendingIntent)
+//                .setContentTitle(getString(R.string.study_status))
+//                .setContentText(getString(R.string.notification_study))
+//                .setSmallIcon(R.drawable.ic_guide)
+//                .setContentIntent(resultPendingIntent)
+//                .setPriority(NotificationCompat.PRIORITY_LOW);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        notificationManager.notify(QUESTIONNAIRE, builder.build());
     }
 
     @Override
