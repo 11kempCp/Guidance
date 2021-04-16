@@ -460,7 +460,12 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                     Date currentTime = Calendar.getInstance().getTime();
                     insertLocation(context, currentTime,  Util.truncate(latitude),  Util.truncate(longitude));
 //                    switchWeather(view);
-                        scheduleWeather(context);
+
+                    if (!scheduleWeather(context)){
+                        switchName.setChecked(false);
+                        Toast.makeText(context, "Job scheduling failed please try again.", Toast.LENGTH_SHORT).show();
+                    }
+
                     alert.dismiss();
 
                 }else{
@@ -532,7 +537,10 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 displayAlertDialog(weather, view);
             }else{
                 if (!isExistingWeatherWeek(this, currentTime)) {
-                    scheduleWeather(this);
+                    if (!scheduleWeather(this)){
+                        weather.setChecked(false);
+                        Toast.makeText(this, "Job scheduling failed please try again.", Toast.LENGTH_SHORT).show();
+                    }
 
                 }
             }
@@ -571,9 +579,9 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
             if(!isLocation(this)){
                 displayAlertDialog(external_temp, view);
             }else{
-                if (!isExistingWeatherWeek(this, currentTime)) {
-                    scheduleWeather(this);
-
+                if (!scheduleWeather(this)){
+                    weather.setChecked(false);
+                    Toast.makeText(this, "Job scheduling failed please try again.", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -613,8 +621,10 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 displayAlertDialog(sun, view);
             }else{
                 if (!isExistingWeatherWeek(this, currentTime)) {
-                    scheduleWeather(this);
-
+                    if (!scheduleWeather(this)){
+                        weather.setChecked(false);
+                        Toast.makeText(this, "Job scheduling failed please try again.", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         }
