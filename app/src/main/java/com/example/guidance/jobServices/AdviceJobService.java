@@ -1,5 +1,6 @@
 package com.example.guidance.jobServices;
 
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.app.job.JobParameters;
@@ -16,6 +17,7 @@ import com.example.guidance.R;
 import com.example.guidance.Util.AdviceJustification;
 import com.example.guidance.Util.Util;
 import com.example.guidance.activity.AdviceActivity;
+import com.example.guidance.activity.MainActivity;
 import com.example.guidance.app.App;
 import com.example.guidance.realm.model.AppData;
 import com.example.guidance.realm.model.Data_Type;
@@ -50,6 +52,8 @@ import static com.example.guidance.Util.IA.LOW;
 import static com.example.guidance.Util.IA.noJustification;
 import static com.example.guidance.Util.IA.withJustification;
 import static com.example.guidance.Util.Util.ADVICE;
+import static com.example.guidance.Util.Util.WEATHER;
+import static com.example.guidance.Util.Util.changeDayStartOfDay;
 import static com.example.guidance.Util.Util.isSameDate;
 import static com.example.guidance.realm.databasefunctions.AdviceDatabaseFunctions.convertLocationToRealmList;
 import static com.example.guidance.realm.databasefunctions.AdviceDatabaseFunctions.convertMoodToRealmList;
@@ -103,35 +107,40 @@ public class AdviceJobService extends JobService {
     @Override
     public boolean onStartJob(JobParameters params) {
         Log.d(TAG, "onStartJob: ");
+        Intelligent_Agent intelligent_agent = getIntelligentAgent(this);
 
+        //validation to ensure that the starting day immediately causes a null advice to be given
+        if(currentTime.after(changeDayStartOfDay(intelligent_agent.getDate_Initialised(),1))){
 
-        if (currentTime.getHours() >= 12 && currentTime.getHours() <= 20) {
-            Intelligent_Agent intelligent_agent = getIntelligentAgent(this);
-            Log.d(TAG, "getInteractionAmountForDate: " + getInteractionAmountForDate(this, currentTime));
+            //Ensures that advice is given between 12am and 8pm
+            if (currentTime.getHours() >= 12 && currentTime.getHours() <= 20) {
+                Log.d(TAG, "getInteractionAmountForDate: " + getInteractionAmountForDate(this, currentTime));
 
-            //Both if statements result in the same end result, this is due to a limitation with the
-            //group size that will be available. Therefore the Intelligent Agent will
-            // only provide advice once per day
-            if (intelligent_agent.getInteraction().equals(HIGH)) {
-                Log.d(TAG, "onStartJob: high");
+                //Both if statements result in the same end result, this is due to a limitation with the
+                //group size that will be available. Therefore the Intelligent Agent will
+                // only provide advice once per day
+                if (intelligent_agent.getInteraction().equals(HIGH)) {
+                    Log.d(TAG, "onStartJob: high");
 
-                //todo ensure that this is 1
-                if (getInteractionAmountForDate(this, currentTime) < 1) {
-                    determineAdvice(currentTime);
-                } else {
-                    Log.d(TAG, "Interaction Limit reached");
-                }
-            } else if (intelligent_agent.getInteraction().equals(LOW)) {
-                Log.d(TAG, "onStartJob: low");
+                    //todo ensure that this is 1
+                    if (getInteractionAmountForDate(this, currentTime) < 1) {
+                        determineAdvice(currentTime);
+                    } else {
+                        Log.d(TAG, "Interaction Limit reached");
+                    }
+                } else if (intelligent_agent.getInteraction().equals(LOW)) {
+                    Log.d(TAG, "onStartJob: low");
 
-                //todo ensure that this is 1
-                if (getInteractionAmountForDate(this, currentTime) < 1) {
-                    determineAdvice(currentTime);
-                } else {
-                    Log.d(TAG, "Interaction Limit reached");
+                    //todo ensure that this is 1
+                    if (getInteractionAmountForDate(this, currentTime) < 1) {
+                        determineAdvice(currentTime);
+                    } else {
+                        Log.d(TAG, "Interaction Limit reached");
+                    }
                 }
             }
         }
+
 
         return false;
     }
@@ -258,7 +267,24 @@ public class AdviceJobService extends JobService {
 
         if (noAdviceAvailable == rankingLinkedHashMap.size()) {
             Log.d(TAG, "No Advice Available");
-            Toast.makeText(this, "No Advice Available", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "No Advice Available", Toast.LENGTH_SHORT).show();
+
+
+            Intent notificationIntent = new Intent(this, MainActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+            Notification notification = new NotificationCompat.Builder(this, App.CHANNEL_ID)
+                    .setContentTitle(getString(R.string.advice))
+                    .setContentText(getString(R.string.no_advice_for_today))
+                    .setSmallIcon(R.drawable.ic_advice)
+                    .setContentIntent(pendingIntent)
+                    .setPriority(NotificationCompat.PRIORITY_LOW)
+                    .build();
+
+            startForeground(ADVICE, notification);
+
+
+
+
             insertAdvice(this, currentTime, noAdvice, null, null, null,
                     null, null, null, null, null, null,
                     null, null);

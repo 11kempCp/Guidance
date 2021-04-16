@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawer;
     private boolean questionnaire;
     Toolbar toolbar;
+    NavigationView navigationView;
 
     //Tag
     private static final String TAG = "MainActivity";
@@ -89,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         noAdvice = findViewById(R.id.textViewNoAdvice);
 
         toolbar = findViewById(R.id.toolbar);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         //hides the navigation items that shouldn't be shown
         navigationViewVisibility(navigationView, intelligent_agent, dataType);
@@ -228,6 +229,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             //sets the toolbar color to gender of the intelligent agent
             Util.setToolbarColor(getIntelligentAgent(this), toolbar, getResources());
+            Util.navigationViewVisibility(navigationView, getIntelligentAgent(this), getDataType(this));
 
             questionnaire = true;
             Intent intent = new Intent(this, QuestionaireActivity.class);

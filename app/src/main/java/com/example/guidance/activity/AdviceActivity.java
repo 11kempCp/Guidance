@@ -45,7 +45,6 @@ import static com.example.guidance.Util.Util.scheduleAdvice;
 import static com.example.guidance.Util.Util.scheduleAdviceFollowed;
 import static com.example.guidance.Util.Util.scheduleLocation;
 import static com.example.guidance.realm.databasefunctions.AdviceDatabaseFunctions.getAdviceOnDate;
-
 import static com.example.guidance.realm.databasefunctions.AdviceDatabaseFunctions.getAllValidAdviceNotToday;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
@@ -66,7 +65,6 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-
         Intelligent_Agent intelligent_agent = getIntelligentAgent(this);
         Data_Type dataType = getDataType(this);
 
@@ -80,8 +78,8 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
         realm = Realm.getDefaultInstance();
-        RealmResults<Advice> allValidAdvice = getAllValidAdviceNotToday(this,realm, currentTime);
-        RealmResults<Advice> adviceToday = getAdviceOnDate(this,realm, currentTime);
+        RealmResults<Advice> allValidAdvice = getAllValidAdviceNotToday(this, realm, currentTime);
+        RealmResults<Advice> adviceToday = getAdviceOnDate(this, realm, currentTime);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_advice);
@@ -111,7 +109,6 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
         toggle.syncState();
 
 
-
         if (adviceToday.isEmpty()) {
             noAdvice.setVisibility(View.VISIBLE);
             recyclerViewAdviceToday.setVisibility(View.GONE);
@@ -120,7 +117,6 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
 
             noAdvice.setVisibility(View.GONE);
             recyclerViewAdviceToday.setVisibility(View.VISIBLE);
-
 
 
             if (intelligent_agent.getGender().equals(FEMALE)) {
@@ -135,12 +131,12 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
 
         }
 
-        if(allValidAdvice.isEmpty()){
+        if (allValidAdvice.isEmpty()) {
 
             adviceEmpty.setVisibility(View.VISIBLE);
             recyclerViewAdvice.setVisibility(View.GONE);
 
-        }else{
+        } else {
 
             Log.d(TAG, "onCreate: allValidAdvice" + allValidAdvice);
             adviceEmpty.setVisibility(View.GONE);
@@ -150,7 +146,6 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
             recyclerViewAdvice.setAdapter(adviceAdapter);
             recyclerViewAdvice.setLayoutManager(new LinearLayoutManager(this));
         }
-
 
 
     }

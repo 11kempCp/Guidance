@@ -46,6 +46,8 @@ import static com.example.guidance.Util.IA.FEMALE;
 import static com.example.guidance.Util.IA.MALE;
 import static com.example.guidance.Util.IA.withJustification;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
+import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
+import static com.example.guidance.realm.databasefunctions.QuestionnaireDatabaseFunctions.isQuestionaireAnswered;
 import static io.realm.Realm.getApplicationContext;
 
 
@@ -298,7 +300,7 @@ public class Util {
         Data_Type data = getDataType(context);
 
 
-        if (data != null) {
+        if (data != null && isQuestionaireAnswered(context) && getIntelligentAgent(context)!=null) {
 
             PackageManager packageManager = context.getPackageManager();
             for (int job : unscheduledJobs) {
