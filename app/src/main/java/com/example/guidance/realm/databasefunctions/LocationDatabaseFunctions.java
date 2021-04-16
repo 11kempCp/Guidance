@@ -55,6 +55,18 @@ public class LocationDatabaseFunctions {
         realm.close();
     }
 
+    public static boolean isLocation(Context context){
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+        Location query = realm.where(Location.class).findFirst();
+
+        return query != null;
+
+    }
+
 
     public static void locationEntry(Context context, Date currentTime, double latitude, double longitude) {
 

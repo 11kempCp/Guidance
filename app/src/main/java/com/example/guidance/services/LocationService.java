@@ -191,7 +191,6 @@ public class LocationService extends Service {
         removeLocationUpdates();
     }
 
-
     //truncates the coordinates (lat/lon)
     private double truncate(double coordinate) {
         DecimalFormat df;
@@ -201,5 +200,6 @@ public class LocationService extends Service {
         df.setRoundingMode(RoundingMode.DOWN);
         return Double.parseDouble(df.format(coordinate));
     }
+
 
 }

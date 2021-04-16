@@ -31,6 +31,8 @@ import com.example.guidance.realm.model.Data_Type;
 import com.example.guidance.realm.model.Intelligent_Agent;
 import com.google.android.material.navigation.NavigationView;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -757,7 +759,8 @@ public class Util {
      * @return returns if the WeatherJobService has been scheduled
      */
     public static boolean scheduleWeather(Context context) {
-        return scheduleJob(context, WeatherJobService.class, WEATHER, context.getResources().getInteger(R.integer.weather), JobInfo.NETWORK_TYPE_UNMETERED);
+//        return scheduleJob(context, WeatherJobService.class, WEATHER, context.getResources().getInteger(R.integer.weather), JobInfo.NETWORK_TYPE_UNMETERED);
+        return false;
     }
 
     /**
@@ -840,6 +843,16 @@ public class Util {
 
     }
 
+
+    //truncates the coordinates (lat/lon)
+    public static double truncate(double coordinate) {
+        DecimalFormat df;
+        //TODO potentially change to 3dp
+        df = new DecimalFormat("##.####");
+//        df = new DecimalFormat("###.######");
+        df.setRoundingMode(RoundingMode.DOWN);
+        return Double.parseDouble(df.format(coordinate));
+    }
 
 
 

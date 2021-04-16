@@ -221,6 +221,14 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
 
     }
 
+    public void deleteLocation(View view) {
+        realm.executeTransactionAsync(r -> {
+            Log.d(TAG, "deleted Location");
+            r.delete(Location.class);
+        });
+
+    }
+
 
     public void jobRunning(View view) {
 

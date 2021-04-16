@@ -1,15 +1,21 @@
 package com.example.guidance.activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -29,8 +35,10 @@ import com.example.guidance.services.StepsService;
 import com.example.guidance.services.WeatherService;
 import com.google.android.material.navigation.NavigationView;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import io.realm.Realm;
 
@@ -55,6 +63,8 @@ import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunct
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.initialiseDataType;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.insertDataTypeUsageData;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
+import static com.example.guidance.realm.databasefunctions.LocationDatabaseFunctions.insertLocation;
+import static com.example.guidance.realm.databasefunctions.LocationDatabaseFunctions.isLocation;
 import static com.example.guidance.realm.databasefunctions.WeatherDatabaseFunctions.isExistingWeatherWeek;
 
 public class DataActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -423,6 +433,86 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         insertDataTypeUsageData(this, currentTime, String.valueOf(screentime.getText()), screentime.isChecked());
     }
 
+    double longitude;
+    double latitude;
+
+    public void displayAlertDialog(Switch switchName, View view){
+        Context context = this;
+        AlertDialog alert = new AlertDialog.Builder(this).create();
+
+        alert.setTitle("Location");
+        alert.setMessage("A location is required in order for this functionality to operate. Your location will only be stored on the device and will not be uploaded at the end of the study.");
+
+// Set an EditText view to get user input
+        final EditText input = new EditText(this);
+        alert.setView(input);
+
+
+        alert.setButton("Enter", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                Log.d(TAG, "onClick: enter " + input.getText().toString());
+
+
+                boolean loc = createLocation(context, input.getText().toString());
+//                boolean loc = createLocation(context, "Cardiff");
+
+                if(loc){
+                    Date currentTime = Calendar.getInstance().getTime();
+                    insertLocation(context, currentTime,  Util.truncate(latitude),  Util.truncate(longitude));
+//                    switchWeather(view);
+                        scheduleWeather(context);
+                    alert.dismiss();
+
+                }else{
+                    Toast.makeText(context, "Location not recognised, please enter another location", Toast.LENGTH_SHORT).show();
+                    switchName.setChecked(false);
+                }
+
+
+
+
+            }
+        });
+
+        alert.setButton2("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+                Log.d(TAG, "onClick: Cancel");
+
+                switchName.setChecked(false);
+                alert.dismiss();
+            }
+        });
+
+        alert.show();
+    }
+
+    public boolean createLocation(Context context, String locationName){
+
+        try {
+            Geocoder geocoder = new Geocoder(context);
+            List<Address> addresses;
+
+            addresses = geocoder.getFromLocationName( locationName, 1);
+            if(addresses.size() > 0) {
+                double latitude= addresses.get(0).getLatitude();
+                double longitude= addresses.get(0).getLongitude();
+
+                Log.d(TAG, "createLocation: " +  Util.truncate(latitude) + " , " +  Util.truncate(longitude));
+
+
+                return true;
+            }
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        return false;
+    }
+
     public void switchWeather(View view) {
         Date currentTime = Calendar.getInstance().getTime();
 
@@ -437,8 +527,14 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
             }
 
         } else {
-            if (!isExistingWeatherWeek(this, currentTime)) {
-                scheduleWeather(this);
+
+            if(!isLocation(this)){
+                displayAlertDialog(weather, view);
+            }else{
+                if (!isExistingWeatherWeek(this, currentTime)) {
+                    scheduleWeather(this);
+
+                }
             }
         }
 
@@ -471,9 +567,17 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         } else {
-            if (!isExistingWeatherWeek(this, currentTime)) {
-                scheduleWeather(this);
+
+            if(!isLocation(this)){
+                displayAlertDialog(external_temp, view);
+            }else{
+                if (!isExistingWeatherWeek(this, currentTime)) {
+                    scheduleWeather(this);
+
+                }
             }
+
+
         }
 
         //updates the Data_Type class to reflect the status of the external temp switch
@@ -505,8 +609,13 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         } else {
-            if (!isExistingWeatherWeek(this, currentTime)) {
-                scheduleWeather(this);
+            if(!isLocation(this)){
+                displayAlertDialog(sun, view);
+            }else{
+                if (!isExistingWeatherWeek(this, currentTime)) {
+                    scheduleWeather(this);
+
+                }
             }
         }
 
