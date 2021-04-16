@@ -14,6 +14,7 @@ import java.util.Date;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmQuery;
+import io.realm.RealmResults;
 
 /**
  * Created by Conor K on 20/03/2021.
@@ -116,6 +117,16 @@ public class DataTypeDatabaseFunctions {
             }
         });
         realm.close();
+    }
+
+    public static RealmResults<DataTypeUsageData> getAllUsageData(Realm realm){
+
+
+        RealmQuery<DataTypeUsageData> tasksQuery = realm.where(DataTypeUsageData.class);
+//        realm.close();
+
+        return tasksQuery.findAll();
+
     }
 
 }

@@ -68,8 +68,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:onClick="displayIA"
-                android:text="@string/display_intelligent_agent"
+                android:onClick="exportStudyData"
+                android:text="@string/exportStudyData"
                 app:layout_constraintEnd_toStartOf="@+id/button8"
                 app:layout_constraintStart_toStartOf="@+id/button6"
                 app:layout_constraintTop_toBottomOf="@+id/button6" />
@@ -100,8 +100,8 @@
                 android:id="@+id/button10"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:onClick="displayWeather"
-                android:text="@string/display_weather"
+                android:onClick="uploadFileAc"
+                android:text="@string/uploadFile"
                 app:layout_constraintEnd_toEndOf="@+id/button8"
                 app:layout_constraintTop_toTopOf="@+id/button9" />
 
@@ -165,8 +165,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:onClick="displayAdvice"
-                android:text="@string/display_advice"
+                android:onClick="startExportJobService"
+                android:text="@string/startExportJobService"
                 app:layout_constraintEnd_toStartOf="@+id/button5"
                 app:layout_constraintStart_toStartOf="@+id/button2"
                 app:layout_constraintTop_toBottomOf="@+id/button2" />

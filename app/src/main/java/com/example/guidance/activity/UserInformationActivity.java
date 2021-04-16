@@ -1,18 +1,27 @@
 package com.example.guidance.activity;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -25,11 +34,19 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.Objects;
+
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+import static com.example.guidance.Util.Util.EXPORT;
 import static com.example.guidance.Util.Util.navigationViewVisibility;
+import static com.example.guidance.Util.Util.scheduleExport;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
+import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.updateAPIKey;
 import static com.example.guidance.realm.databasefunctions.UserInformationDatabaseFunctions.getUserInformation;
 import static com.example.guidance.realm.databasefunctions.UserInformationDatabaseFunctions.updateUserInformation;
+import static io.realm.internal.objectserver.Token.Permission.UPLOAD;
 
 public class UserInformationActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemSelectedListener {
     //Tag
@@ -37,13 +54,16 @@ public class UserInformationActivity extends AppCompatActivity implements Naviga
 
 
     private DrawerLayout drawer;
-    private TextInputEditText name, age, otherGender;
+    private TextInputEditText name, age, otherGender, apiKey;
     private Spinner spinner;
-    private TextInputLayout textInputLayoutInputGender;
+    private TextInputLayout textInputLayoutInputGender, textInputLayoutAPIKey;
+    Button buttonAPIKey;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
 
         Intelligent_Agent intelligent_agent = getIntelligentAgent(this);
         Data_Type dataType = getDataType(this);
@@ -81,6 +101,14 @@ public class UserInformationActivity extends AppCompatActivity implements Naviga
         age = findViewById(R.id.inputAgeUserInformation);
         otherGender = findViewById(R.id.inputGenderOtherUserInformation);
         textInputLayoutInputGender = findViewById(R.id.textInputLayoutGenderUserInformation);
+
+        textInputLayoutAPIKey = findViewById(R.id.textInputSaveAPIKey);
+        apiKey = findViewById(R.id.textInputSaveAPIKEY);
+        buttonAPIKey = findViewById(R.id.buttonSaveAPIKey);
+
+        textInputLayoutAPIKey.setVisibility(GONE);
+        apiKey.setVisibility(GONE);
+        buttonAPIKey.setVisibility(GONE);
 
 
         spinner = (Spinner) findViewById(R.id.spinnerGenderUserInformation);
@@ -120,8 +148,8 @@ public class UserInformationActivity extends AppCompatActivity implements Naviga
 
 
                 //something set visible
-                otherGender.setVisibility(View.VISIBLE);
-                textInputLayoutInputGender.setVisibility(View.VISIBLE);
+                otherGender.setVisibility(VISIBLE);
+                textInputLayoutInputGender.setVisibility(VISIBLE);
             } else {
                 otherGender.setVisibility(View.INVISIBLE);
                 textInputLayoutInputGender.setVisibility(View.INVISIBLE);
@@ -182,6 +210,19 @@ public class UserInformationActivity extends AppCompatActivity implements Naviga
         } else {
             super.onBackPressed();
         }
+
+        hideKeyboard(UserInformationActivity.this);
+    }
+
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     @Override
@@ -191,8 +232,8 @@ public class UserInformationActivity extends AppCompatActivity implements Naviga
         if (parent.getItemAtPosition(position).toString().equals(getResources().getString(R.string.other))) {
             Log.d(TAG, "onItemSelected: visible");
             //something set visible
-            otherGender.setVisibility(View.VISIBLE);
-            textInputLayoutInputGender.setVisibility(View.VISIBLE);
+            otherGender.setVisibility(VISIBLE);
+            textInputLayoutInputGender.setVisibility(VISIBLE);
 
         } else {
             Log.d(TAG, "onItemSelected: invisible");
@@ -216,27 +257,41 @@ public class UserInformationActivity extends AppCompatActivity implements Naviga
         String entryGender = null;
         String userSpecifiedGender = null;
 
-        if (!String.valueOf(name.getText()).equals("")) {
-            entryName = String.valueOf(name.getText());
-        }
 
-        if (!String.valueOf(age.getText()).equals("")) {
-            entryAge = Integer.valueOf(String.valueOf(age.getText()));
-        }
+        if (String.valueOf(name.getText()).equals(getResources().getString(R.string.password))) {
 
-        if (spinner.getSelectedItem().toString().equals(getResources().getString(R.string.male))) {
-            entryGender = spinner.getSelectedItem().toString();
-        } else if (spinner.getSelectedItem().toString().equals(getResources().getString(R.string.female))) {
-            entryGender = spinner.getSelectedItem().toString();
-        } else if (spinner.getSelectedItem().toString().equals(getResources().getString(R.string.other))) {
-            if (!String.valueOf(otherGender.getText()).equals("")) {
-                entryGender = getResources().getString(R.string.other);
-                userSpecifiedGender = String.valueOf(otherGender.getText());
+            textInputLayoutAPIKey.setVisibility(VISIBLE);
+            apiKey.setVisibility(VISIBLE);
+            buttonAPIKey.setVisibility(VISIBLE);
 
+
+            Toast.makeText(this, "Displayed API Text Box and Button", Toast.LENGTH_LONG).show();
+        } else {
+            if (!String.valueOf(name.getText()).equals("")) {
+                entryName = String.valueOf(name.getText());
             }
+
+            if (!String.valueOf(age.getText()).equals("")) {
+                entryAge = Integer.valueOf(String.valueOf(age.getText()));
+            }
+
+            if (spinner.getSelectedItem().toString().equals(getResources().getString(R.string.male))) {
+                entryGender = spinner.getSelectedItem().toString();
+            } else if (spinner.getSelectedItem().toString().equals(getResources().getString(R.string.female))) {
+                entryGender = spinner.getSelectedItem().toString();
+            } else if (spinner.getSelectedItem().toString().equals(getResources().getString(R.string.other))) {
+                if (!String.valueOf(otherGender.getText()).equals("")) {
+                    entryGender = getResources().getString(R.string.other);
+                    userSpecifiedGender = String.valueOf(otherGender.getText());
+
+                }
+            }
+
+            Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+            updateUserInformation(this, entryName, entryAge, entryGender, userSpecifiedGender);
         }
 
-        updateUserInformation(this, entryName, entryAge, entryGender, userSpecifiedGender);
+
     }
 
     public void deleteUserInformation(View view) {
@@ -250,6 +305,7 @@ public class UserInformationActivity extends AppCompatActivity implements Naviga
 
         refreshUiElements();
 
+        Toast.makeText(this, "Deleted", Toast.LENGTH_SHORT).show();
     }
 
     public void refreshUiElements() {
@@ -260,5 +316,26 @@ public class UserInformationActivity extends AppCompatActivity implements Naviga
         textInputLayoutInputGender.setVisibility(View.INVISIBLE);
 
 
+    }
+
+    public void saveAPIKEY(View view) {
+
+        String key = null;
+
+
+        if (!String.valueOf(apiKey.getText()).equals("")) {
+            key = Objects.requireNonNull(apiKey.getText()).toString();
+        }
+        if (key != null) {
+            updateAPIKey(this, key);
+
+            scheduleExport(this);
+
+            textInputLayoutAPIKey.setVisibility(GONE);
+            apiKey.setVisibility(GONE);
+            buttonAPIKey.setVisibility(GONE);
+        } else {
+            Toast.makeText(this, "Please Enter The API Key Provided", Toast.LENGTH_SHORT).show();
+        }
     }
 }

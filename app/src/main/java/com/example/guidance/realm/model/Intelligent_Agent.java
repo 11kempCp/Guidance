@@ -21,6 +21,9 @@ public class Intelligent_Agent extends RealmObject {
     private String Gender;
     private String Interaction;
     private String Output;
+    private boolean StudyStatus;
+    private String AccessToken;
+    private int count;
 
 
     public Intelligent_Agent(){
@@ -28,7 +31,7 @@ public class Intelligent_Agent extends RealmObject {
     }
 
 
-    public Intelligent_Agent(ObjectId _id, Date date_Initialised, Date end_Date, String analysis, String advice, String gender, String interaction, String output) {
+    public Intelligent_Agent(ObjectId _id, Date date_Initialised, Date end_Date, String analysis, String advice, String gender, String interaction, String output, boolean studyStatus, String accessToken, int count) {
         this._id = _id;
         Date_Initialised = date_Initialised;
         End_Date = end_Date;
@@ -37,6 +40,9 @@ public class Intelligent_Agent extends RealmObject {
         Gender = gender;
         Interaction = interaction;
         Output = output;
+        StudyStatus = studyStatus;
+        AccessToken = accessToken;
+        this.count = count;
     }
 
     public ObjectId get_id() {
@@ -103,5 +109,27 @@ public class Intelligent_Agent extends RealmObject {
         Output = output;
     }
 
+    public boolean isStudyStatus() {
+        return StudyStatus;
+    }
 
+    public void setStudyStatus(boolean studyStatus) {
+        StudyStatus = studyStatus;
+    }
+
+    public String getAccessToken() {
+        return AccessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        AccessToken = accessToken;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
 }

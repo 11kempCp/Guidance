@@ -41,6 +41,19 @@ public class AdviceDatabaseFunctions {
 
     private static final String TAG = "AdviceDatabaseFunctions";
 
+    public static RealmResults<AdviceUsageData> getAllAdviceUsageData( Realm realm) {
+
+
+        RealmQuery<AdviceUsageData> query = realm.where(AdviceUsageData.class);
+        RealmResults<AdviceUsageData> result = query.sort("dateTimeAdviceGiven", Sort.DESCENDING).findAll();
+
+        realm.close();
+
+
+        return result;
+
+    }
+
     public static RealmResults<Advice> getAllAdvice( Realm realm, Date currentTime) {
 
 

@@ -10,8 +10,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
 import android.os.Build;
 import android.util.Log;
 
@@ -23,6 +21,7 @@ import com.example.guidance.jobServices.AdviceFollowedJobService;
 import com.example.guidance.jobServices.AdviceJobService;
 import com.example.guidance.jobServices.AmbientTempJobService;
 import com.example.guidance.jobServices.DailyQuestionJobService;
+import com.example.guidance.jobServices.ExportJobService;
 import com.example.guidance.jobServices.LocationJobService;
 import com.example.guidance.jobServices.QuestionnaireJobService;
 import com.example.guidance.jobServices.ScreentimeJobService;
@@ -69,6 +68,7 @@ public class Util {
     public static final int SCREENTIME = 7;
     public static final int ADVICE = 8;
     public static final int ADVICE_FOLLOWED = 9;
+    public static final int EXPORT = 10;
 
     //  todo change back so that WEATHER is called
     //todo fix weather being spammed constantly
@@ -91,6 +91,29 @@ public class Util {
         JobInfo info = new JobInfo.Builder(jobId, componentName)
                 .setPersisted(true)
                 .setPeriodic(minutes * 60 * 1000)
+                .build();
+
+        JobScheduler jobScheduler = context.getSystemService(JobScheduler.class);
+        int resultCode = jobScheduler.schedule(info);
+        if (resultCode == JobScheduler.RESULT_SUCCESS) {
+            Log.d(TAG, "Job " + jobId + "  Scheduled " + currentTime);
+            return true;
+        } else {
+            Log.d(TAG, "Job " + jobId + " Scheduling Failed " + " resultCode: " + currentTime);
+            return false;
+        }
+    }
+
+    /**
+     * @param context      Context allows access to application-specific resources and classes
+     * @param serviceClass The jobClass being scheduled
+     * @param jobId        The jobId of the job to be scheduled
+     * @return returns if the job has been scheduled or not
+     */
+    public static boolean scheduleJob(Context context, Class<?> serviceClass, int jobId) {
+        Date currentTime = Calendar.getInstance().getTime();
+        ComponentName componentName = new ComponentName(context, serviceClass);
+        JobInfo info = new JobInfo.Builder(jobId, componentName)
                 .build();
 
         JobScheduler jobScheduler = context.getSystemService(JobScheduler.class);
@@ -363,6 +386,8 @@ public class Util {
 
 
     }
+
+
 
     /**
      * checks the permissions required for the job and if the device has the rehired feature for the job to function before scheduling it
@@ -751,6 +776,17 @@ public class Util {
      */
     public static boolean scheduleAdviceFollowed(Context context) {
         return scheduleJob(context, AdviceFollowedJobService.class, ADVICE_FOLLOWED, context.getResources().getInteger(R.integer.advice_followed), true);
+    }
+
+    /**
+     * schedules the ExportJobService
+     *
+     * @param context Context allows access to application-specific resources and classes
+     * @return returns if the ExportJobService has been scheduled
+     */
+    public static boolean scheduleExport(Context context) {
+        return scheduleJob(context, ExportJobService.class, EXPORT);
+
     }
 
     /**

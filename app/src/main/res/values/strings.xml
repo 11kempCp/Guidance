@@ -3,6 +3,8 @@
     <!--Start of Core Strings-->
     <string name="app_name">Guidance</string>
     <string name="contact">KempCP@cardiff.ac.uk</string>
+
+    <!--    //TODO ENSURE THIS IS SET TO THE CORRECT NUMBER: 7-->
     <integer name="study_period_length_days">7</integer>
     <!--End of Core Strings-->
 
@@ -62,6 +64,9 @@
     <string name="intelligent_agent_not_initialised">"Intelligent Agent Not Initialised "</string>
     <string name="startAdviceJobService">Start AdviceJobService</string>
     <string name="startAdviceFollowedJobService">Start startAdviceFollowedJobService</string>
+    <string name="exportStudyData">Export Study Data</string>
+    <string name="uploadFile">Upload File</string>
+    <string name="startExportJobService">exportJobService</string>
 
     <!--End of Debug Strings-->
 
@@ -256,6 +261,7 @@
     <string name="gender_specify">Please Specify (optional)</string>
     <string name="update_user_information">Update User Information</string>
     <string name="delete_user_information">Delete User Information</string>
+    <string name="save_api_key">Save API Key</string>
 
 
     <string-array name="gender">

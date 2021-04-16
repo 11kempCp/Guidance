@@ -26,9 +26,17 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.guidance.R;
 import com.example.guidance.ServiceReceiver.onPauseServiceReceiver;
 import com.example.guidance.Util.Util;
+import com.example.guidance.gsonTemplates.AdviceUsageDataSerializer;
+import com.example.guidance.gsonTemplates.DataTypeSerializer;
+import com.example.guidance.gsonTemplates.DataTypeUsageDataSerializer;
+import com.example.guidance.gsonTemplates.IntelligentAgentSerializer;
+import com.example.guidance.gsonTemplates.QuestionnaireSerializer;
+import com.example.guidance.gsonTemplates.RankingUsageDataSerializer;
+import com.example.guidance.gsonTemplates.UserInformationSerializer;
 import com.example.guidance.jobServices.ScreentimeJobService;
 import com.example.guidance.jobServices.WeatherJobService;
 import com.example.guidance.realm.model.Advice;
+import com.example.guidance.realm.model.AdviceUsageData;
 import com.example.guidance.realm.model.Ambient_Temperature;
 import com.example.guidance.realm.model.AppData;
 import com.example.guidance.realm.model.DataTypeUsageData;
@@ -38,23 +46,34 @@ import com.example.guidance.realm.model.Location;
 import com.example.guidance.realm.model.Mood;
 import com.example.guidance.realm.model.Question;
 import com.example.guidance.realm.model.Questionnaire;
+import com.example.guidance.realm.model.RankingUsageData;
 import com.example.guidance.realm.model.Screentime;
 import com.example.guidance.realm.model.Socialness;
 import com.example.guidance.realm.model.Step;
+import com.example.guidance.realm.model.User_Information;
 import com.example.guidance.realm.model.Weather;
 import com.example.guidance.services.StepsService;
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import java.util.Calendar;
 import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmObject;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
 import static com.example.guidance.Util.IA.FEMALE;
 import static com.example.guidance.Util.IA.MALE;
+import static com.example.guidance.Util.Output.create;
+import static com.example.guidance.Util.Output.isFilePresent;
+import static com.example.guidance.Util.Output.read;
 import static com.example.guidance.Util.Util.ADVICE;
 import static com.example.guidance.Util.Util.LOCATION;
 import static com.example.guidance.Util.Util.SCREENTIME;
@@ -62,19 +81,28 @@ import static com.example.guidance.Util.Util.WEATHER;
 import static com.example.guidance.Util.Util.getUnscheduledJobs;
 import static com.example.guidance.Util.Util.navigationViewVisibility;
 import static com.example.guidance.Util.Util.scheduleAdvice;
+import static com.example.guidance.Util.Util.scheduleExport;
 import static com.example.guidance.Util.Util.scheduleJob;
 import static com.example.guidance.Util.Util.scheduleLocation;
 import static com.example.guidance.Util.Util.scheduledUnscheduledJobs;
 import static com.example.guidance.Util.Util.utilList;
+import static com.example.guidance.realm.databasefunctions.AdviceDatabaseFunctions.getAllAdviceUsageData;
+import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getAllUsageData;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.intelligentAgentEntry;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.intelligentAgentSetGender;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.isIntelligentAgentInitialised;
+import static com.example.guidance.realm.databasefunctions.QuestionnaireDatabaseFunctions.getAllQuestionnaire;
+import static com.example.guidance.realm.databasefunctions.RankingDatabaseFunctions.getRankingUsageData;
+import static com.example.guidance.realm.databasefunctions.UserInformationDatabaseFunctions.getUserInformation;
 
 public class DebugActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "DebugActivity";
+
+
+    private static String mfilename;
     static Realm realm;
     DrawerLayout drawer;
     TextView displayTextView;
@@ -182,11 +210,10 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
         });
 
 
-
         Toast.makeText(this, "Deleted Everything In Realm", Toast.LENGTH_SHORT).show();
     }
 
-    public void deleteAdvice(View view){
+    public void deleteAdvice(View view) {
         realm.executeTransactionAsync(r -> {
             Log.d(TAG, "deleted advice");
             r.delete(Advice.class);
@@ -515,7 +542,7 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
     }
 
 
-    public void displayAdvice(View view){
+    public void displayAdvice(View view) {
         RealmQuery<Advice> adviceRealmQuery = realm.where(Advice.class);
 //        RealmResults<Mood> mood = moodRealmQuery.findAll();
         RealmResults<Advice> advice = adviceRealmQuery.sort("dateTimeAdviceGiven", Sort.DESCENDING).findAll();
@@ -590,5 +617,123 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
 
 
     }
+
+
+    public void exportStudyData(View view) {
+        Realm.init(this);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+
+        RealmResults<DataTypeUsageData> dataTypeRealmResults = getAllUsageData(realm);
+        User_Information user_information = getUserInformation(this);
+
+        Gson gson = new GsonBuilder()
+                .setExclusionStrategies(new ExclusionStrategy() {
+                    @Override
+                    public boolean shouldSkipField(FieldAttributes f) {
+                        return f.getDeclaringClass().equals(RealmObject.class);
+                    }
+
+                    @Override
+                    public boolean shouldSkipClass(Class<?> clazz) {
+                        return false;
+                    }
+                })
+                .registerTypeAdapter(Data_Type.class, new DataTypeSerializer())
+                .registerTypeAdapter(DataTypeUsageData.class, new DataTypeUsageDataSerializer())
+                .registerTypeAdapter(User_Information.class, new UserInformationSerializer())
+                .registerTypeAdapter(AdviceUsageData.class, new AdviceUsageDataSerializer())
+                .registerTypeAdapter(RankingUsageData.class, new RankingUsageDataSerializer())
+                .registerTypeAdapter(Questionnaire.class, new QuestionnaireSerializer())
+                .registerTypeAdapter(Intelligent_Agent.class, new IntelligentAgentSerializer())
+                .create();
+
+//
+//
+        String json;
+        StringBuilder dataTypeUsageData = new StringBuilder();
+
+        String data_type = gson.toJson(realm.copyFromRealm(getDataType(this)));
+
+        for (DataTypeUsageData d : dataTypeRealmResults) {
+            json = gson.toJson(realm.copyFromRealm(d));
+            dataTypeUsageData.append(json);
+        }
+
+        String userInfo = gson.toJson(realm.copyFromRealm(user_information));
+        String adviceUsageData = gson.toJson(realm.copyFromRealm(getAllAdviceUsageData(realm)));
+        String rankingUsageData = gson.toJson(realm.copyFromRealm(getRankingUsageData(realm)));
+        String questionnaire = gson.toJson(realm.copyFromRealm(getAllQuestionnaire(realm)));
+        String intelligent_agent = gson.toJson(realm.copyFromRealm(getIntelligentAgent(this)));
+
+
+//        System.out.println("data_type " + data_type);
+//        System.out.println("dataTypeUsageData " + dataTypeUsageData);
+//        System.out.println("userInfo " + userInfo);
+//        System.out.println("adviceUsageData " + adviceUsageData);
+//        System.out.println("rankingUsageData " + rankingUsageData);
+//        System.out.println("questionnaire " + questionnaire);
+//        System.out.println("intelligent_agent " + intelligent_agent);
+        Intelligent_Agent IA = getIntelligentAgent(this);
+
+
+        String name = IA.getAnalysis() + IA.getAdvice() + IA.getGender() + IA.getInteraction() + IA.getOutput();
+        String date = Calendar.getInstance().getTime().toString();
+        String endJson = ".json";
+        String filename = name + date + endJson;
+
+        String jsonString = gson.toJson(realm.copyFromRealm(user_information))
+                + gson.toJson(realm.copyFromRealm(getAllAdviceUsageData(realm)))
+                + gson.toJson(realm.copyFromRealm(getRankingUsageData(realm)))
+                + gson.toJson(realm.copyFromRealm(getAllQuestionnaire(realm)))
+                + gson.toJson(realm.copyFromRealm(getIntelligentAgent(this)));
+
+        Log.d(TAG, "exportStudyData: " + jsonString);
+
+
+        boolean isFP = isFilePresent(this, filename);
+        if (isFP) {
+            String pppp = read(this, filename);
+
+            Log.d(TAG, "exportStudyData: isFP " + true + "data is " + pppp);
+
+            //do the json parsing here and do the rest of functionality of app
+        } else {
+            boolean isFileCreated = create(this, filename, jsonString);
+            if (isFileCreated) {
+
+                Log.d(TAG, "exportStudyData: isFileCreated" + true);
+            } else {
+                //show error or try again.
+
+                Log.d(TAG, "exportStudyData: isFileCreated" + false);
+
+
+            }
+        }
+
+
+        if (isFilePresent(this, filename)) {
+            mfilename = filename;
+            Log.d(TAG, "exportStudyData: " + filename);
+        }
+
+    }
+
+
+    public void uploadFileAc(View view) {
+        Log.d(TAG, "uploadFileAc: ");
+        scheduleExport(this);
+
+    }
+
+
+    public void startExportJobService(View view) {
+        scheduleExport(this);
+
+    }
+
 
 }

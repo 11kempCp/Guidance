@@ -10,7 +10,6 @@ import com.example.guidance.realm.model.RankingUsageData;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -19,6 +18,8 @@ import java.util.TreeMap;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmQuery;
+import io.realm.RealmResults;
+import io.realm.Sort;
 
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
 
@@ -321,6 +322,18 @@ public class RankingDatabaseFunctions {
 
         realm.close();
 
+    }
+
+
+    public static RealmResults<RankingUsageData> getRankingUsageData(Realm realm){
+
+        RealmQuery<RankingUsageData> query = realm.where(RankingUsageData.class);
+        RealmResults<RankingUsageData> result = query.sort("dateTime", Sort.DESCENDING).findAll();
+
+        realm.close();
+
+
+        return result;
     }
 
 

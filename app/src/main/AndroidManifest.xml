@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.guidance">
+
+
+
     <!-- Permission likely not needed remove after testing -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" /> <!-- Required for all JobServices -->
@@ -20,6 +23,7 @@
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
 
+
     <application
         android:name=".app.App"
         android:icon="@mipmap/ic_launcher"
@@ -27,6 +31,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Guidance">
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
         <activity
             android:name=".activity.UserInformationActivity"
             android:label="@string/user_information"
@@ -78,12 +87,12 @@
             android:label="@string/debug"
             android:theme="@style/defaultAppTheme.NoActionBar">
 
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
 
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
 
         </activity>
 
@@ -180,6 +189,33 @@
             android:enabled="true"
             android:label="Advice Followed JobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <service
+            android:name=".jobServices.ExportJobService"
+            android:enabled="true"
+            android:label="Advice Followed JobService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+<!--        <activity-->
+<!--            android:name="com.dropbox.core.android.AuthActivity"-->
+<!--            android:configChanges="orientation|keyboard"-->
+<!--            android:launchMode="singleTask" >-->
+
+<!--            <intent-filter>-->
+
+<!--                &lt;!&ndash; Change this to be db- followed by your app key &ndash;&gt;-->
+<!--                <data android:scheme="db-465f92ne514iokt" />-->
+
+<!--                <action android:name="android.intent.action.VIEW" />-->
+
+<!--                <category android:name="android.intent.category.BROWSABLE" />-->
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+<!--            </intent-filter>-->
+
+<!--        </activity>-->
+
+
     </application>
+
 
 </manifest>

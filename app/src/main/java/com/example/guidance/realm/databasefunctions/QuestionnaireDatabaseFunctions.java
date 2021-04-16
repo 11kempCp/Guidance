@@ -14,6 +14,7 @@ import java.util.Date;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmQuery;
+import io.realm.RealmResults;
 
 /**
  * Created by Conor K on 20/03/2021.
@@ -95,6 +96,14 @@ public class QuestionnaireDatabaseFunctions {
 //        realm.close();
 
         return tasksQuery.findFirst();
+    }
+
+    public static RealmResults<Questionnaire> getAllQuestionnaire(Realm realm) {
+
+        RealmQuery<Questionnaire> tasksQuery = realm.where(Questionnaire.class);
+//        realm.close();
+
+        return tasksQuery.findAll();
     }
 
     public static int getSizeAllQuestionnaire(Context context) {

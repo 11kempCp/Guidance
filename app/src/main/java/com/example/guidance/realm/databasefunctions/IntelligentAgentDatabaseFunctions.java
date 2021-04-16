@@ -2,9 +2,11 @@ package com.example.guidance.realm.databasefunctions;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.guidance.R;
 import com.example.guidance.realm.model.Intelligent_Agent;
+import com.example.guidance.realm.model.User_Information;
 
 import org.bson.types.ObjectId;
 
@@ -34,7 +36,7 @@ public class IntelligentAgentDatabaseFunctions {
     private static final String TAG = "IntelligentAgentDatabaseFunctions";
 
 
-    public static void initialiseIntelligentAgent(Context context, String passcode, int study_duration_days) {
+    public static void initialiseIntelligentAgent(Context context, String passcode, int study_duration_days, boolean studyStatus, String accessToken) {
         Realm.init(context);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
@@ -97,6 +99,8 @@ public class IntelligentAgentDatabaseFunctions {
             init.setGender(Gender);
             init.setInteraction(Interaction);
             init.setOutput(Output);
+            init.setStudyStatus(studyStatus);
+            init.setAccessToken(accessToken);
 
 
         }, new Realm.Transaction.OnSuccess() {
@@ -120,7 +124,7 @@ public class IntelligentAgentDatabaseFunctions {
 
 
         if (!isIntelligentAgentInitialised(context)) {
-            initialiseIntelligentAgent(context, passcode, R.integer.study_period_length_days);
+            initialiseIntelligentAgent(context, passcode, R.integer.study_period_length_days, false, null);
         } else {
             Log.d(TAG, "intelligentAgentEntry: IA already initialised");
         }
@@ -188,6 +192,114 @@ public class IntelligentAgentDatabaseFunctions {
 //        realm.close();
 
         return tasksQuery.findFirst();
+    }
+
+
+    public static void updateIntelligentAgent(Context context, boolean status){
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+        realm.executeTransactionAsync(r -> {
+            RealmQuery<Intelligent_Agent> query = r.where(Intelligent_Agent.class);
+            Intelligent_Agent result = query.findFirst();
+
+            if (result == null) {
+                Log.d(TAG, "isThereAnEntryToday: ERROR");
+            } else {
+                Log.d(TAG, "settingStepCount");
+                result.setStudyStatus(status);
+                r.insertOrUpdate(result);
+            }
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                Log.d(TAG, "executed transaction : updateUserInformation" );
+
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                // Transaction failed and was automatically canceled.
+                Log.e(TAG, "updateUserInformation transaction failed: ", error);
+
+            }
+        });
+
+
+    }
+
+    public static void updateAPIKey(Context context, String key){
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+
+        realm.executeTransactionAsync(r -> {
+            RealmQuery<Intelligent_Agent> query = r.where(Intelligent_Agent.class);
+            Intelligent_Agent result = query.findFirst();
+
+            if (result == null) {
+                Log.d(TAG, "isThereAnEntryToday: ERROR");
+            } else {
+                Log.d(TAG, "settingStepCount");
+                result.setAccessToken(key);
+                r.insertOrUpdate(result);
+            }
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                Log.d(TAG, "executed transaction : updateAPIKey" );
+                Toast.makeText(context, "Updated API Key", Toast.LENGTH_SHORT).show();
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                // Transaction failed and was automatically canceled.
+                Log.e(TAG, "updateAPIKey transaction failed: ", error);
+
+            }
+        });
+
+
+    }
+
+    public static void updateCount(Context context, int count){
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+
+        realm.executeTransactionAsync(r -> {
+            RealmQuery<Intelligent_Agent> query = r.where(Intelligent_Agent.class);
+            Intelligent_Agent result = query.findFirst();
+
+            if (result == null) {
+                Log.d(TAG, "isThereAnEntryToday: ERROR");
+            } else {
+                Log.d(TAG, "settingStepCount");
+                result.setCount(count);
+                r.insertOrUpdate(result);
+            }
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                Log.d(TAG, "executed transaction : updateAPIKey" );
+                Toast.makeText(context, "Updated API Key", Toast.LENGTH_SHORT).show();
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                // Transaction failed and was automatically canceled.
+                Log.e(TAG, "updateAPIKey transaction failed: ", error);
+
+            }
+        });
+
+
     }
 
 }
