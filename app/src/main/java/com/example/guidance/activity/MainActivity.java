@@ -39,6 +39,7 @@ import static com.example.guidance.Util.IA.WITH_JUSTIFICATION;
 import static com.example.guidance.Util.Util.navigationViewVisibility;
 import static com.example.guidance.realm.databasefunctions.AdviceDatabaseFunctions.getAdviceOnDate;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
+import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.isAllDataType;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.isIntelligentAgentInitialised;
 import static com.example.guidance.realm.databasefunctions.QuestionnaireDatabaseFunctions.isQuestionaireAnswered;
@@ -46,7 +47,7 @@ import static com.example.guidance.realm.databasefunctions.QuestionnaireDatabase
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     static Realm realm;
 
-    TextView noAdvice, currentGraph;
+    TextView noAdvice, currentGraph, noDataTypes;
     private DrawerLayout drawer;
     private boolean questionnaire;
     Toolbar toolbar;
@@ -88,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         currentGraph = findViewById(R.id.textViewCurrentGraph);
         drawer = findViewById(R.id.drawer_layout_main_activity);
         noAdvice = findViewById(R.id.textViewNoAdvice);
+        noDataTypes = findViewById(R.id.textViewNoDataTypes);
 
         toolbar = findViewById(R.id.toolbar);
         navigationView = findViewById(R.id.nav_view);
@@ -141,6 +143,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
 
+        noDataTypes(dataType);
+
     }
 
     @Override
@@ -173,6 +177,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         this.sendBroadcast(broadcastIntent);
         super.onPause();
+    }
+
+   public void  noDataTypes(Data_Type dataType){
+        if (!isAllDataType(dataType)) {
+            noDataTypes.setVisibility(View.VISIBLE);
+        }else{
+            noDataTypes.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -225,6 +237,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onResume() {
+
+        noDataTypes(getDataType(this));
+
         if (isIntelligentAgentInitialised(this) && !isQuestionaireAnswered(this) && !questionnaire) {
 
             //sets the toolbar color to gender of the intelligent agent

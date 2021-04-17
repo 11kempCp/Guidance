@@ -31,18 +31,18 @@
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
             <Button
-                android:id="@+id/button18"
+                android:id="@+id/buttonUpdateRanking"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
+                android:onClick="saveRankingPreference"
                 android:text="@string/save_ranking_pereference"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:onClick="saveRankingPreference"
-                />
+                app:layout_constraintStart_toStartOf="parent" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayoutidealStepcount"
@@ -101,12 +101,23 @@
                 android:layout_height="0dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                app:layout_constraintBottom_toTopOf="@+id/button18"
+                app:layout_constraintBottom_toTopOf="@+id/buttonUpdateRanking"
                 app:layout_constraintEnd_toEndOf="@+id/textInputLayoutScreenlimit"
                 app:layout_constraintStart_toStartOf="@+id/textInputLayoutScreenlimit"
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayoutScreenlimit"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 />
+
+            <TextView
+                android:id="@+id/textViewNoDataTypesRanking"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/no_data_types_selected"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

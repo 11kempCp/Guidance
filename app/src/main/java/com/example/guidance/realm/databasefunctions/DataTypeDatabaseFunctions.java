@@ -1,6 +1,7 @@
 package com.example.guidance.realm.databasefunctions;
 
 import android.content.Context;
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.example.guidance.realm.model.DataTypeUsageData;
@@ -129,4 +130,10 @@ public class DataTypeDatabaseFunctions {
 
     }
 
+
+    public static boolean isAllDataType(Data_Type dataType){
+        return dataType.isSteps() && dataType.isLocation() && dataType.isAmbient_temp() && dataType.isScreentime()
+                && dataType.isSleep_tracking() && dataType.isSocialness() && dataType.isMood();
+
+    }
 }

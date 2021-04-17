@@ -48,6 +48,7 @@ import static com.example.guidance.Util.IA.FEMALE;
 import static com.example.guidance.Util.IA.MALE;
 import static com.example.guidance.Util.IA.withJustification;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
+import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.isAllDataType;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.databasefunctions.QuestionnaireDatabaseFunctions.isQuestionaireAnswered;
 import static io.realm.Realm.getApplicationContext;
@@ -302,7 +303,7 @@ public class Util {
         Data_Type data = getDataType(context);
 
 
-        if (data != null && isQuestionaireAnswered(context) && getIntelligentAgent(context)!=null) {
+        if (data != null && isQuestionaireAnswered(context) && getIntelligentAgent(context) != null) {
 
             PackageManager packageManager = context.getPackageManager();
             for (int job : unscheduledJobs) {
@@ -390,7 +391,6 @@ public class Util {
 
 
     }
-
 
 
     /**
@@ -660,6 +660,7 @@ public class Util {
 
         navigationViewIntelligentAgent(navigationView, intelligent_agent);
         navigationViewDailyQuestion(navigationView, dataType);
+        navigationViewAdviceRanking(navigationView, dataType);
 
     }
 
@@ -691,6 +692,50 @@ public class Util {
             }
 
         }
+    }
+
+    /**
+     * Sets the nav_daily_question item to visible if either the mood or socialness data type are selected by the user
+     * sets the nav_daily_question item to invisible if both the mood and socialness data types are deselected by the user
+     *
+     * @param navigationView the navigationView whose items need to be corrected
+     * @param visibility      that viability change of the navigation element
+     */
+    public static void navigationViewDailyQuestion(NavigationView navigationView, boolean visibility) {
+
+        navigationView.getMenu().findItem(R.id.nav_daily_question).setVisible(visibility);
+
+    }
+
+    /**
+     * Sets the nav_ranking item to visible if a data type has been selected by the user
+     * sets the nav_ranking item to invisible if no data type has been selected by the user
+     *
+     * @param navigationView the navigationView whose items need to be corrected
+     * @param dataType       the current dataTypes to be collected by the user
+     */
+    public static void navigationViewAdviceRanking(NavigationView navigationView, Data_Type dataType) {
+        if (dataType != null) {
+
+            if (!isAllDataType(dataType)) {
+                navigationView.getMenu().findItem(R.id.nav_ranking).setVisible(false);
+            }
+
+        }
+    }
+
+    /**
+     * Sets the nav_ranking item to visible if a data type has been selected by the user
+     * sets the nav_ranking item to invisible if no data type has been selected by the user
+     *
+     * @param navigationView the navigationView whose items need to be corrected
+     * @param visibility      that viability change of the navigation element
+     */
+    public static void navigationViewAdviceRanking(NavigationView navigationView, boolean visibility) {
+
+        navigationView.getMenu().findItem(R.id.nav_ranking).setVisible(visibility);
+
+
     }
 
     /**
@@ -759,8 +804,7 @@ public class Util {
      * @return returns if the WeatherJobService has been scheduled
      */
     public static boolean scheduleWeather(Context context) {
-//        return scheduleJob(context, WeatherJobService.class, WEATHER, context.getResources().getInteger(R.integer.weather), JobInfo.NETWORK_TYPE_UNMETERED);
-        return false;
+        return scheduleJob(context, WeatherJobService.class, WEATHER, context.getResources().getInteger(R.integer.weather), JobInfo.NETWORK_TYPE_UNMETERED);
     }
 
     /**
@@ -825,7 +869,6 @@ public class Util {
     }
 
 
-
     /**
      * Changes the date inputed by x amount of days
      *
@@ -853,7 +896,6 @@ public class Util {
         df.setRoundingMode(RoundingMode.DOWN);
         return Double.parseDouble(df.format(coordinate));
     }
-
 
 
 }

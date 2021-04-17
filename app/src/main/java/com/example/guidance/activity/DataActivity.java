@@ -51,6 +51,8 @@ import static com.example.guidance.Util.Util.WEATHER;
 import static com.example.guidance.Util.Util.isPermsLocation;
 import static com.example.guidance.Util.Util.isPermsSteps;
 import static com.example.guidance.Util.Util.isPermsUsageStats;
+import static com.example.guidance.Util.Util.navigationViewAdviceRanking;
+import static com.example.guidance.Util.Util.navigationViewDailyQuestion;
 import static com.example.guidance.Util.Util.navigationViewVisibility;
 import static com.example.guidance.Util.Util.requestPermsFineLocation;
 import static com.example.guidance.Util.Util.requestPermsSteps;
@@ -142,7 +144,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
 
             //if there is no step counter sensor on the device then the viability of the
             //steps switch will be set to GONE
-            if(isStepsSensor(mSensorManager)){
+            if (isStepsSensor(mSensorManager)) {
                 steps.setVisibility(View.VISIBLE);
 
                 //if the permissions required for the stepsJobService is not given then the switch
@@ -152,10 +154,9 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 } else {
                     steps.setChecked(false);
                 }
-            }else{
+            } else {
                 steps.setVisibility(View.GONE);
             }
-
 
 
 //            distance_traveled.setChecked(data_type.isDistance_traveled());
@@ -170,10 +171,10 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
 
             //if there is no ambient temperature sensor on the device then the viability of the
             //ambient temperature switch will be set to GONE
-            if(isAmbientTemperatureSensor(mSensorManager)){
+            if (isAmbientTemperatureSensor(mSensorManager)) {
                 ambient_temp.setVisibility(View.VISIBLE);
                 ambient_temp.setChecked(data_type.isAmbient_temp());
-            }else{
+            } else {
                 ambient_temp.setVisibility(View.GONE);
             }
 
@@ -260,7 +261,15 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
     public void switchSteps(View view) {
         Date currentTime = Calendar.getInstance().getTime();
 
+
+        if (allSwitchesFalse()) {
+            navigationViewAdviceRanking(navigationView, false);
+        }
+
+
         if (steps.isChecked()) {
+            navigationViewAdviceRanking(navigationView, true);
+
             //requests the permissions relevant to the Steps job
             requestPermsSteps(this, DataActivity.this);
         } else {
@@ -331,7 +340,14 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
     public void switchLocation(View view) {
         Date currentTime = Calendar.getInstance().getTime();
 
+        if (allSwitchesFalse()) {
+            navigationViewAdviceRanking(navigationView, false);
+        }
+
         if (location.isChecked()) {
+
+            navigationViewAdviceRanking(navigationView, true);
+
             //requests the permissions relevant to the location job
             requestPermsFineLocation(this, DataActivity.this);
         } else {
@@ -368,6 +384,10 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
     public void switchAmbientTemp(View view) {
         Date currentTime = Calendar.getInstance().getTime();
 
+        if (allSwitchesFalse()) {
+            navigationViewAdviceRanking(navigationView, false);
+        }
+
         if (!ambient_temp.isChecked()) {
             unscheduledJob(this, AMBIENT_TEMP);
 
@@ -379,6 +399,9 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
 
+
+        } else {
+            navigationViewAdviceRanking(navigationView, true);
 
         }
 
@@ -402,6 +425,10 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
     public void switchScreentime(View view) {
         Date currentTime = Calendar.getInstance().getTime();
 
+        if (allSwitchesFalse()) {
+            navigationViewAdviceRanking(navigationView, false);
+        }
+
 
         if (!screentime.isChecked()) {
             Log.d(TAG, "switchScreentime: unscheduledJob SCREENTIME");
@@ -414,6 +441,9 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
             } else {
                 scheduleScreentime(this);
             }
+
+            navigationViewAdviceRanking(navigationView, true);
+
         }
 
         //updates the Data_Type class to reflect the status of the screentime switch
@@ -436,7 +466,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
     double longitude;
     double latitude;
 
-    public void displayAlertDialog(Switch switchName, View view){
+    public void displayAlertDialog(Switch switchName, View view) {
         Context context = this;
         AlertDialog alert = new AlertDialog.Builder(this).create();
 
@@ -456,24 +486,25 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 boolean loc = createLocation(context, input.getText().toString());
 //                boolean loc = createLocation(context, "Cardiff");
 
-                if(loc){
+                if (loc) {
                     Date currentTime = Calendar.getInstance().getTime();
-                    insertLocation(context, currentTime,  Util.truncate(latitude),  Util.truncate(longitude));
+                    insertLocation(context, currentTime, Util.truncate(latitude), Util.truncate(longitude));
 //                    switchWeather(view);
 
-                    if (!scheduleWeather(context)){
-                        switchName.setChecked(false);
-                        Toast.makeText(context, "Job scheduling failed please try again.", Toast.LENGTH_SHORT).show();
+                    if(!isExistingWeatherWeek(context, currentTime)){
+                        if (!scheduleWeather(context)) {
+                            switchName.setChecked(false);
+                            Toast.makeText(context, "Job scheduling failed please try again.", Toast.LENGTH_SHORT).show();
+                        }
                     }
+
 
                     alert.dismiss();
 
-                }else{
+                } else {
                     Toast.makeText(context, "Location not recognised, please enter another location", Toast.LENGTH_SHORT).show();
                     switchName.setChecked(false);
                 }
-
-
 
 
             }
@@ -492,18 +523,18 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         alert.show();
     }
 
-    public boolean createLocation(Context context, String locationName){
+    public boolean createLocation(Context context, String locationName) {
 
         try {
             Geocoder geocoder = new Geocoder(context);
             List<Address> addresses;
 
-            addresses = geocoder.getFromLocationName( locationName, 1);
-            if(addresses.size() > 0) {
-                double latitude= addresses.get(0).getLatitude();
-                double longitude= addresses.get(0).getLongitude();
+            addresses = geocoder.getFromLocationName(locationName, 1);
+            if (addresses.size() > 0) {
+                double latitude = addresses.get(0).getLatitude();
+                double longitude = addresses.get(0).getLongitude();
 
-                Log.d(TAG, "createLocation: " +  Util.truncate(latitude) + " , " +  Util.truncate(longitude));
+                Log.d(TAG, "createLocation: " + Util.truncate(latitude) + " , " + Util.truncate(longitude));
 
 
                 return true;
@@ -521,6 +552,10 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
     public void switchWeather(View view) {
         Date currentTime = Calendar.getInstance().getTime();
 
+        if (allSwitchesFalse()) {
+            navigationViewAdviceRanking(navigationView, false);
+        }
+
         if (!weather.isChecked() && !external_temp.isChecked() && !sun.isChecked()) {
             unscheduledJob(this, WEATHER);
 
@@ -533,17 +568,19 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
 
         } else {
 
-            if(!isLocation(this)){
+            if (!isLocation(this)) {
                 displayAlertDialog(weather, view);
-            }else{
+            } else {
                 if (!isExistingWeatherWeek(this, currentTime)) {
-                    if (!scheduleWeather(this)){
+                    if (!scheduleWeather(this)) {
                         weather.setChecked(false);
                         Toast.makeText(this, "Job scheduling failed please try again.", Toast.LENGTH_SHORT).show();
                     }
 
                 }
             }
+
+
         }
 
         //updates the Data_Type class to reflect the status of the weather switch
@@ -566,6 +603,10 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
     public void switchExternalTemp(View view) {
         Date currentTime = Calendar.getInstance().getTime();
 
+        if (allSwitchesFalse()) {
+            navigationViewAdviceRanking(navigationView, false);
+        }
+
         if (!weather.isChecked() && !external_temp.isChecked() && !sun.isChecked()) {
             unscheduledJob(this, WEATHER);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -576,13 +617,16 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
             }
         } else {
 
-            if(!isLocation(this)){
+            if (!isLocation(this)) {
                 displayAlertDialog(external_temp, view);
-            }else{
-                if (!scheduleWeather(this)){
-                    weather.setChecked(false);
-                    Toast.makeText(this, "Job scheduling failed please try again.", Toast.LENGTH_SHORT).show();
+            } else {
+                if (!isExistingWeatherWeek(this, currentTime)) {
+                    if (!scheduleWeather(this)) {
+                        weather.setChecked(false);
+                        Toast.makeText(this, "Job scheduling failed please try again.", Toast.LENGTH_SHORT).show();
+                    }
                 }
+
             }
 
 
@@ -608,6 +652,10 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
     public void switchSun(View view) {
         Date currentTime = Calendar.getInstance().getTime();
 
+        if (allSwitchesFalse()) {
+            navigationViewAdviceRanking(navigationView, false);
+        }
+
         if (!weather.isChecked() && !external_temp.isChecked() && !sun.isChecked()) {
             unscheduledJob(this, WEATHER);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -617,11 +665,11 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         } else {
-            if(!isLocation(this)){
+            if (!isLocation(this)) {
                 displayAlertDialog(sun, view);
-            }else{
+            } else {
                 if (!isExistingWeatherWeek(this, currentTime)) {
-                    if (!scheduleWeather(this)){
+                    if (!scheduleWeather(this)) {
                         weather.setChecked(false);
                         Toast.makeText(this, "Job scheduling failed please try again.", Toast.LENGTH_SHORT).show();
                     }
@@ -682,15 +730,22 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
     public void switchSocialness(View view) {
         Date currentTime = Calendar.getInstance().getTime();
 
+        if (allSwitchesFalse()) {
+            navigationViewAdviceRanking(navigationView, false);
+        }
+
         //if both socialness and mood are disabled then the DAILY_QUESTION job service will be unscheduled
         // and the Daily Question Activity button on the navigation menu made unavailable
         //If either socialness or mood (or both) are enabled then the Daily Question Activity button on the navigation menu made available
         if (!socialness.isChecked() && !mood.isChecked()) {
             unscheduledJob(this, DAILY_QUESTION);
             stopBackgroundNotification(DAILY_QUESTION);
-            navigationView.getMenu().findItem(R.id.nav_daily_question).setVisible(false);
+
+            navigationViewDailyQuestion(navigationView, false);
         } else {
-            navigationView.getMenu().findItem(R.id.nav_daily_question).setVisible(true);
+            navigationViewAdviceRanking(navigationView, true);
+            navigationViewDailyQuestion(navigationView, true);
+
             scheduleDailyQuestions(this);
         }
 
@@ -715,6 +770,10 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
     public void switchMood(View view) {
         Date currentTime = Calendar.getInstance().getTime();
 
+        if (allSwitchesFalse()) {
+            navigationViewAdviceRanking(navigationView, false);
+        }
+
         //if both socialness and mood are disabled then the DAILY_QUESTION job service will be unscheduled
         // and the Daily Question Activity button on the navigation menu made unavailable
         //If either socialness or mood (or both) are enabled then the Daily Question Activity button on the navigation menu made available
@@ -722,8 +781,10 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         if (!socialness.isChecked() && !mood.isChecked()) {
             unscheduledJob(this, DAILY_QUESTION);
             stopBackgroundNotification(DAILY_QUESTION);
-            navigationView.getMenu().findItem(R.id.nav_daily_question).setVisible(false);
+            navigationViewDailyQuestion(navigationView, false);
         } else {
+            navigationViewAdviceRanking(navigationView, true);
+
             navigationView.getMenu().findItem(R.id.nav_daily_question).setVisible(true);
             scheduleDailyQuestions(this);
         }
@@ -765,6 +826,15 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
     //returns if there is a step counter sensor on the device
     public boolean isStepsSensor(SensorManager mSensorManager) {
         return mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) != null;
+    }
+
+    public boolean allSwitchesFalse() {
+        return !steps.isChecked() &&
+                !location.isChecked() &&
+                !ambient_temp.isChecked() &&
+                !screentime.isChecked() &&
+                !socialness.isChecked() &&
+                !mood.isChecked();
     }
 
 }

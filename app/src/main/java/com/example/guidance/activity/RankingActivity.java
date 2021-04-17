@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +38,7 @@ import java.util.Date;
 
 import static com.example.guidance.Util.Util.navigationViewVisibility;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
+import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.isAllDataType;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.databasefunctions.RankingDatabaseFunctions.getRanking;
 import static com.example.guidance.realm.databasefunctions.RankingDatabaseFunctions.getRankingList;
@@ -56,6 +58,8 @@ public class RankingActivity extends AppCompatActivity implements NavigationView
     private DrawerLayout drawer;
     private TextInputEditText idealSteps, screentimeLimit;
     private TextInputLayout idealStepsLayout, screentimeLimitLayout;
+    private TextView noDataTypes;
+    private Button updateRanking;
 
     //Tag
     private static final String TAG = "RankingActivity";
@@ -89,6 +93,10 @@ public class RankingActivity extends AppCompatActivity implements NavigationView
         screentimeLimit = findViewById(R.id.textInputEditTextScreenlimit);
         screentimeLimitLayout = findViewById(R.id.textInputLayoutScreenlimit);
         mRecyclerView = findViewById(R.id.recyclerViewRanking);
+        noDataTypes = findViewById(R.id.textViewNoDataTypesRanking);
+        updateRanking = findViewById(R.id.buttonUpdateRanking);
+
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         NavigationView navigationView = findViewById(R.id.nav_view);
 
@@ -110,6 +118,8 @@ public class RankingActivity extends AppCompatActivity implements NavigationView
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+
+        noDataTypes(dataType);
 
         initRecyclerView();
         fillRecyclerView();
@@ -147,6 +157,16 @@ public class RankingActivity extends AppCompatActivity implements NavigationView
         ranking.addAll(getRankingList(this, rankingListSize));
         rankingRecyclerAdapter.notifyDataSetChanged();
 
+    }
+
+    public void  noDataTypes(Data_Type dataType){
+        if (!isAllDataType(dataType)) {
+            noDataTypes.setVisibility(View.VISIBLE);
+            updateRanking.setVisibility(View.GONE);
+        }else{
+            noDataTypes.setVisibility(View.GONE);
+            updateRanking.setVisibility(View.VISIBLE);
+        }
     }
 
 
@@ -321,8 +341,12 @@ public class RankingActivity extends AppCompatActivity implements NavigationView
     protected void onResume() {
         super.onResume();
 
+
         Data_Type dataType = getDataType(this);
         Ranking ranking = getRanking(this);
+
+
+        noDataTypes(dataType);
 
         //If the user has enabled/disabled data types since last being on the activity
         //then the relevant data types on disabled will be made visible/invisible

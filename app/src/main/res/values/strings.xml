@@ -303,6 +303,7 @@
     <string name="no_advice_for_today">No advice available for today</string>
     <string name="date_advice_for">Date Advice is for: &#160;</string>
     <string name="no_Advice_Currently">No Advice has been given yet.</string>
+    <string name="no_data_types_selected">No Advice Data Types have been selected.</string>
     <!--End of Application Strings-->
 
     <!--Start of Activity Name Strings-->
