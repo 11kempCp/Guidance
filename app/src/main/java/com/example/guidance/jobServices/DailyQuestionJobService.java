@@ -54,7 +54,6 @@ public class DailyQuestionJobService extends JobService {
                     PendingIntent resultPendingIntent =
                             stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                    //TODO "DAILY_QUESTION" ?
                     NotificationCompat.Builder builder = new NotificationCompat.Builder(this, App.CHANNEL_ID);
                     builder.setContentIntent(resultPendingIntent)
                             .setContentTitle(getString(R.string.daily_question))

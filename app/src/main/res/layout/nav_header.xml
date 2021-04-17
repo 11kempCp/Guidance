@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="8dp"
         android:contentDescription="TODO"
-        android:src="@mipmap/ic_launcher_round" />
+        android:src="@mipmap/ic_logo_round" />
 
     <TextView
         android:layout_width="match_parent"

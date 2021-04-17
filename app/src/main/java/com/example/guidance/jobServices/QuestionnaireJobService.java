@@ -13,14 +13,12 @@ import androidx.core.app.NotificationManagerCompat;
 import com.example.guidance.R;
 import com.example.guidance.activity.QuestionaireActivity;
 import com.example.guidance.app.App;
-import com.example.guidance.realm.model.Questionnaire;
 
 import java.util.Calendar;
 import java.util.Date;
 
 import static com.example.guidance.Util.Util.QUESTIONNAIRE;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
-import static com.example.guidance.realm.databasefunctions.QuestionnaireDatabaseFunctions.getQuestionnaire;
 import static com.example.guidance.realm.databasefunctions.QuestionnaireDatabaseFunctions.getSizeAllQuestionnaire;
 import static com.example.guidance.realm.databasefunctions.QuestionnaireDatabaseFunctions.isQuestionnaire;
 
