@@ -14,6 +14,7 @@ import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
@@ -48,7 +49,6 @@ import static androidx.core.app.ActivityCompat.requestPermissions;
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 import static com.example.guidance.Util.IA.FEMALE;
 import static com.example.guidance.Util.IA.MALE;
-import static com.example.guidance.Util.IA.withJustification;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.isAllDataType;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
@@ -672,7 +672,6 @@ public class Util {
     }
 
 
-
     private static void studyStatus(NavigationView navigationView, Intelligent_Agent intelligent_agent) {
 
         View header = navigationView.getHeaderView(0);
@@ -683,7 +682,7 @@ public class Util {
         Date currentDate = Calendar.getInstance().getTime();
         String text = "Study Status: Not Started";
 
-        if(intelligent_agent!=null){
+        if (intelligent_agent != null) {
             if (currentDate.after(intelligent_agent.getEnd_Date())) {
                 text = "Study Status: Finished";
             } else {
@@ -691,7 +690,6 @@ public class Util {
 
             }
         }
-
 
 
         studyStatus.setText(text);
@@ -739,9 +737,28 @@ public class Util {
      * @param navigationView the navigationView whose items need to be corrected
      * @param visibility     that viability change of the navigation element
      */
-    public static void navigationViewDailyQuestion(NavigationView navigationView, boolean visibility) {
+    public static void navigationViewDailyQuestion(Context context, NavigationView navigationView, boolean visibility) {
+
+        if (!navigationView.getMenu().findItem(R.id.nav_daily_question).isVisible()) {
+
+            if (visibility) {
+
+                Toast.makeText(context, "Daily Question Available", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+
+        if (navigationView.getMenu().findItem(R.id.nav_daily_question).isVisible()) {
+
+            if (!visibility) {
+
+                Toast.makeText(context, "Daily Question Unavailable", Toast.LENGTH_SHORT).show();
+            }
+
+        }
 
         navigationView.getMenu().findItem(R.id.nav_daily_question).setVisible(visibility);
+
 
     }
 
@@ -769,7 +786,22 @@ public class Util {
      * @param navigationView the navigationView whose items need to be corrected
      * @param visibility     that viability change of the navigation element
      */
-    public static void navigationViewAdviceRanking(NavigationView navigationView, boolean visibility) {
+    public static void navigationViewAdviceRanking(Context context, NavigationView navigationView, boolean visibility) {
+
+
+        if (!navigationView.getMenu().findItem(R.id.nav_ranking).isVisible()) {
+
+            if (visibility) {
+                Toast.makeText(context, "Advice Ranking Available", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        if (navigationView.getMenu().findItem(R.id.nav_ranking).isVisible()) {
+
+            if (!visibility) {
+                Toast.makeText(context, "Advice Ranking Unavailable", Toast.LENGTH_SHORT).show();
+            }
+        }
 
         navigationView.getMenu().findItem(R.id.nav_ranking).setVisible(visibility);
 

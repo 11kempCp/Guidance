@@ -266,12 +266,12 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
 
 
         if (allSwitchesFalse()) {
-            navigationViewAdviceRanking(navigationView, false);
+            navigationViewAdviceRanking(this,navigationView, false);
         }
 
 
         if (steps.isChecked()) {
-            navigationViewAdviceRanking(navigationView, true);
+            navigationViewAdviceRanking(this,navigationView, true);
 
             //requests the permissions relevant to the Steps job
             requestPermsSteps(this, DataActivity.this);
@@ -344,12 +344,12 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         Date currentTime = Calendar.getInstance().getTime();
 
         if (allSwitchesFalse()) {
-            navigationViewAdviceRanking(navigationView, false);
+            navigationViewAdviceRanking(this,navigationView, false);
         }
 
         if (location.isChecked()) {
 
-            navigationViewAdviceRanking(navigationView, true);
+            navigationViewAdviceRanking(this,navigationView, true);
 
             //requests the permissions relevant to the location job
             requestPermsFineLocation(this, DataActivity.this);
@@ -388,7 +388,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         Date currentTime = Calendar.getInstance().getTime();
 
         if (allSwitchesFalse()) {
-            navigationViewAdviceRanking(navigationView, false);
+            navigationViewAdviceRanking(this,navigationView, false);
         }
 
         if (!ambient_temp.isChecked()) {
@@ -404,7 +404,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
 
 
         } else {
-            navigationViewAdviceRanking(navigationView, true);
+            navigationViewAdviceRanking(this,navigationView, true);
 
         }
 
@@ -429,7 +429,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         Date currentTime = Calendar.getInstance().getTime();
 
         if (allSwitchesFalse()) {
-            navigationViewAdviceRanking(navigationView, false);
+            navigationViewAdviceRanking(this,navigationView, false);
         }
 
 
@@ -445,7 +445,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 scheduleScreentime(this);
             }
 
-            navigationViewAdviceRanking(navigationView, true);
+            navigationViewAdviceRanking(this,navigationView, true);
 
         }
 
@@ -556,7 +556,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         Date currentTime = Calendar.getInstance().getTime();
 
         if (allSwitchesFalse()) {
-            navigationViewAdviceRanking(navigationView, false);
+            navigationViewAdviceRanking(this,navigationView, false);
         }
 
         if (!weather.isChecked() && !external_temp.isChecked() && !sun.isChecked()) {
@@ -612,7 +612,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         Date currentTime = Calendar.getInstance().getTime();
 
         if (allSwitchesFalse()) {
-            navigationViewAdviceRanking(navigationView, false);
+            navigationViewAdviceRanking(this,navigationView, false);
         }
 
         if (!weather.isChecked() && !external_temp.isChecked() && !sun.isChecked()) {
@@ -666,7 +666,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         Date currentTime = Calendar.getInstance().getTime();
 
         if (allSwitchesFalse()) {
-            navigationViewAdviceRanking(navigationView, false);
+            navigationViewAdviceRanking(this,navigationView, false);
         }
 
         if (!weather.isChecked() && !external_temp.isChecked() && !sun.isChecked()) {
@@ -749,7 +749,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         Date currentTime = Calendar.getInstance().getTime();
 
         if (allSwitchesFalse()) {
-            navigationViewAdviceRanking(navigationView, false);
+            navigationViewAdviceRanking(this,navigationView, false);
         }
 
         //if both socialness and mood are disabled then the DAILY_QUESTION job service will be unscheduled
@@ -759,10 +759,10 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
             unscheduledJob(this, DAILY_QUESTION);
             stopBackgroundNotification(DAILY_QUESTION);
 
-            navigationViewDailyQuestion(navigationView, false);
+            navigationViewDailyQuestion(this,navigationView, false);
         } else {
-            navigationViewAdviceRanking(navigationView, true);
-            navigationViewDailyQuestion(navigationView, true);
+            navigationViewAdviceRanking(this,navigationView, true);
+            navigationViewDailyQuestion(this,navigationView, true);
 
             scheduleDailyQuestions(this);
         }
@@ -789,7 +789,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         Date currentTime = Calendar.getInstance().getTime();
 
         if (allSwitchesFalse()) {
-            navigationViewAdviceRanking(navigationView, false);
+            navigationViewAdviceRanking(this, navigationView, false);
         }
 
         //if both socialness and mood are disabled then the DAILY_QUESTION job service will be unscheduled
@@ -799,11 +799,11 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         if (!socialness.isChecked() && !mood.isChecked()) {
             unscheduledJob(this, DAILY_QUESTION);
             stopBackgroundNotification(DAILY_QUESTION);
-            navigationViewDailyQuestion(navigationView, false);
+            navigationViewDailyQuestion(this,navigationView, false);
         } else {
-            navigationViewAdviceRanking(navigationView, true);
+            navigationViewAdviceRanking(this,navigationView, true);
+            navigationViewDailyQuestion(this,navigationView, true);
 
-            navigationView.getMenu().findItem(R.id.nav_daily_question).setVisible(true);
             scheduleDailyQuestions(this);
         }
 
