@@ -34,6 +34,8 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Objects;
 
 import static android.view.View.GONE;
@@ -260,12 +262,21 @@ public class UserInformationActivity extends AppCompatActivity implements Naviga
 
         if (String.valueOf(name.getText()).equals(getResources().getString(R.string.password))) {
 
-            textInputLayoutAPIKey.setVisibility(VISIBLE);
-            apiKey.setVisibility(VISIBLE);
-            buttonAPIKey.setVisibility(VISIBLE);
+            Date currentDate = Calendar.getInstance().getTime();
+
+            if(currentDate.after(getIntelligentAgent(this).getEnd_Date())){
+                textInputLayoutAPIKey.setVisibility(VISIBLE);
+                apiKey.setVisibility(VISIBLE);
+                buttonAPIKey.setVisibility(VISIBLE);
+                Toast.makeText(this, "Displayed API Text Box and Button", Toast.LENGTH_LONG).show();
+
+            }else{
+                Toast.makeText(this, "Study still Ongoing", Toast.LENGTH_SHORT).show();
+            }
 
 
-            Toast.makeText(this, "Displayed API Text Box and Button", Toast.LENGTH_LONG).show();
+
+
         } else {
             if (!String.valueOf(name.getText()).equals("")) {
                 entryName = String.valueOf(name.getText());

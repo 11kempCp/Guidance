@@ -87,6 +87,86 @@ public class WeatherDatabaseFunctions {
         return task != null;
     }
 
+    public static boolean isExistingWeatherNull(Context context, Date currentTime) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(currentTime);
+        cal.add(Calendar.DATE, 7);
+        Date end_date = cal.getTime();
+
+        RealmQuery<Weather> query = realm.where(Weather.class).between("dateTime", currentTime, end_date);
+
+        RealmResults<Weather> task = query.sort("dateTime", Sort.DESCENDING).findAll();
+//        Log.d(TAG, "isExistingWeather: " + task);
+
+
+        for(Weather weather: task){
+            if(weather.getWeather()!=null){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isExistingExternalTempNull(Context context, Date currentTime) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(currentTime);
+        cal.add(Calendar.DATE, 7);
+        Date end_date = cal.getTime();
+
+        RealmQuery<Weather> query = realm.where(Weather.class).between("dateTime", currentTime, end_date);
+
+        RealmResults<Weather> task = query.sort("dateTime", Sort.DESCENDING).findAll();
+//        Log.d(TAG, "isExistingWeather: " + task);
+
+
+        for(Weather weather: task){
+            if(weather.getFeels_like_day()!=null){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isExistingSunNull(Context context, Date currentTime) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(currentTime);
+        cal.add(Calendar.DATE, 7);
+        Date end_date = cal.getTime();
+
+        RealmQuery<Weather> query = realm.where(Weather.class).between("dateTime", currentTime, end_date);
+
+        RealmResults<Weather> task = query.sort("dateTime", Sort.DESCENDING).findAll();
+//        Log.d(TAG, "isExistingWeather: " + task);
+
+
+        for(Weather weather: task){
+            if(weather.getSunRise()!=null && weather.getSunSet()!=null){
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+
 
     public static void insertWeather(Context context, Date currentTime, String weather, Date sunrise,
                                      Date sunset, double feels_like_morn, double feels_like_day,

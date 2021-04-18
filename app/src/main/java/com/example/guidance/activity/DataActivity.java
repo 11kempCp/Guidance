@@ -67,6 +67,9 @@ import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunct
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.databasefunctions.LocationDatabaseFunctions.insertLocation;
 import static com.example.guidance.realm.databasefunctions.LocationDatabaseFunctions.isLocation;
+import static com.example.guidance.realm.databasefunctions.WeatherDatabaseFunctions.isExistingExternalTempNull;
+import static com.example.guidance.realm.databasefunctions.WeatherDatabaseFunctions.isExistingSunNull;
+import static com.example.guidance.realm.databasefunctions.WeatherDatabaseFunctions.isExistingWeatherNull;
 import static com.example.guidance.realm.databasefunctions.WeatherDatabaseFunctions.isExistingWeatherWeek;
 
 public class DataActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -577,6 +580,11 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                         Toast.makeText(this, "Job scheduling failed please try again.", Toast.LENGTH_SHORT).show();
                     }
 
+                }else if(isExistingWeatherNull(this, currentTime)){
+                    if (!scheduleWeather(this)) {
+                        weather.setChecked(false);
+                        Toast.makeText(this, "Job scheduling failed please try again.", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
@@ -622,7 +630,12 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
             } else {
                 if (!isExistingWeatherWeek(this, currentTime)) {
                     if (!scheduleWeather(this)) {
-                        weather.setChecked(false);
+                        external_temp.setChecked(false);
+                        Toast.makeText(this, "Job scheduling failed please try again.", Toast.LENGTH_SHORT).show();
+                    }
+                }else if(isExistingExternalTempNull(this, currentTime)){
+                    if (!scheduleWeather(this)) {
+                        external_temp.setChecked(false);
                         Toast.makeText(this, "Job scheduling failed please try again.", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -670,7 +683,12 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
             } else {
                 if (!isExistingWeatherWeek(this, currentTime)) {
                     if (!scheduleWeather(this)) {
-                        weather.setChecked(false);
+                        sun.setChecked(false);
+                        Toast.makeText(this, "Job scheduling failed please try again.", Toast.LENGTH_SHORT).show();
+                    }
+                }else if(isExistingSunNull(this, currentTime)){
+                    if (!scheduleWeather(this)) {
+                        sun.setChecked(false);
                         Toast.makeText(this, "Job scheduling failed please try again.", Toast.LENGTH_SHORT).show();
                     }
                 }

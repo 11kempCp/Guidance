@@ -97,6 +97,7 @@ public class AdviceJobService extends JobService {
 
     //the amount of days with which to look over data
     private static final int days = 3;
+    private static int location_days;
 
 
     LinkedHashMap<String, Boolean> rankingLinkedHashMap = new LinkedHashMap<>();
@@ -107,6 +108,10 @@ public class AdviceJobService extends JobService {
     public boolean onStartJob(JobParameters params) {
         Log.d(TAG, "onStartJob: ");
         Intelligent_Agent intelligent_agent = getIntelligentAgent(this);
+
+        //todo delete
+//        determineAdvice(currentTime);
+
 
         //validation to ensure that the starting day immediately causes a null advice to be given
         if (currentTime.after(changeDayStartOfDay(intelligent_agent.getDate_Initialised(), 1))) {
@@ -372,12 +377,12 @@ public class AdviceJobService extends JobService {
 
         RealmResults<Location> previousDaysLocations = getLocationOverPreviousDays(this, currentTime, days);
 
-        if (previousDaysLocations.isEmpty()) {
+        if (previousDaysLocations.isEmpty() || previousDaysLocations.size()<=3) {
             //insufficient data
             Log.d(TAG, "adviceLocation: insufficient data ");
 
 
-            return previousDaysLocations;
+            return null;
         }
 
         Log.d(TAG, "adviceLocation: " + previousDaysLocations.size() + " " + previousDaysLocations);
@@ -437,9 +442,15 @@ public class AdviceJobService extends JobService {
 
         first = true;
         ArrayList<Float> listDistanceInMeters = new ArrayList<>();
-
+        location_days = arrayLists.size();
         for (ArrayList<Location> f : arrayLists) {
-            Log.d(TAG, "adviceLocation: f " + f.size() + " " + f);
+
+            if(f.isEmpty()){
+                location_days--;
+            }
+
+            Log.d(TAG, "adviceLocation: f " + f.size() + " " + f );
+            Log.d(TAG, "adviceLocation: arrayLists " + arrayLists.size() + " " + arrayLists );
 
             for (Location loc : f) {
                 if (first) {
@@ -484,6 +495,8 @@ public class AdviceJobService extends JobService {
         }
 
         if (rankingLinkedHashMap.get(location)) {
+
+            Log.d(TAG, "adviceLocation: location_days " + location_days);
             return previousDaysLocations;
         }
 
@@ -782,12 +795,13 @@ public class AdviceJobService extends JobService {
 
         if (adviceKey.equals(location)) {
             Log.d(TAG, "giveAdvice: " + location);
+            Log.d(TAG, "giveAdvice: weather!=null = " + (weather!=null));
+
             //if the user has provided their name to the IA
             if (nameExists && weather != null) {
                 //if the user is in the WITH_JUSTIFICATION group
                 if (withJustification(intelligent_agent)) {
-                    //todo location days is not the same (potentially)
-                    text = getLocationAdvice(0, days, name, weather.getDateTime(), weather.getWeather(), weather.getFeels_like_day(), weather.getSunRise(), weather.getSunSet());
+                    text = getLocationAdvice(0, location_days, name, weather.getDateTime(), weather.getWeather(), weather.getFeels_like_day(), weather.getSunRise(), weather.getSunSet());
                     insertAdvice(this, currentTime, location, weather.getDateTime(), text, null, null, null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
                             convertSocialnessToRealmList(this, adviceJustification.getJustificationSocialness()), convertMoodToRealmList(this, adviceJustification.getJustificationMood()));
                     //if the user is in the NO_JUSTIFICATION group
@@ -800,8 +814,7 @@ public class AdviceJobService extends JobService {
             } else if (nameExists) {
                 //if the user is in the WITH_JUSTIFICATION group
                 if (withJustification(intelligent_agent)) {
-                    //todo location days is not the same (potentially)
-                    text = getLocationAdvice(0, days, name);
+                    text = getLocationAdvice(0, location_days, name);
 
                     insertAdvice(this, currentTime, location, Util.changeDayEndOfDay(currentTime, 1), text, null, null, null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
                             convertSocialnessToRealmList(this, adviceJustification.getJustificationSocialness()), convertMoodToRealmList(this, adviceJustification.getJustificationMood()));
@@ -812,11 +825,26 @@ public class AdviceJobService extends JobService {
                     insertAdvice(this, currentTime, location, Util.changeDayEndOfDay(currentTime, 1), text, null, null, null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
                             convertSocialnessToRealmList(this, adviceJustification.getJustificationSocialness()), convertMoodToRealmList(this, adviceJustification.getJustificationMood()));
                 }
+            }else if (weather !=null){
+
+                //if the user is in the WITH_JUSTIFICATION group
+                if (withJustification(intelligent_agent)) {
+                    text = getLocationAdvice(0, location_days, weather.getDateTime(), weather.getWeather(), weather.getFeels_like_day(), weather.getSunRise(), weather.getSunSet());
+                    insertAdvice(this, currentTime, location, weather.getDateTime(), text, null, null, null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
+                            convertSocialnessToRealmList(this, adviceJustification.getJustificationSocialness()), convertMoodToRealmList(this, adviceJustification.getJustificationMood()));
+                    //if the user is in the NO_JUSTIFICATION group
+                } else if (noJustification(intelligent_agent)) {
+                    //todo give a date with which to go out for
+                    text = getLocationAdvice(0, weather.getDateTime(), weather.getWeather(), weather.getFeels_like_day(), weather.getSunRise(), weather.getSunSet());
+                    insertAdvice(this, currentTime, location, Util.changeDayEndOfDay(currentTime, 1), text, null, null, null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
+                            convertSocialnessToRealmList(this, adviceJustification.getJustificationSocialness()), convertMoodToRealmList(this, adviceJustification.getJustificationMood()));
+                }
+
+
             } else {
                 //if the user is in the WITH_JUSTIFICATION group
                 if (withJustification(intelligent_agent)) {
-                    //todo location days is not the same (potentially)
-                    text = getLocationAdvice(0, days);
+                    text = getLocationAdvice(0, location_days);
 
                     insertAdvice(this, currentTime, location, Util.changeDayEndOfDay(currentTime, 1), text, null, null, null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
                             convertSocialnessToRealmList(this, adviceJustification.getJustificationSocialness()), convertMoodToRealmList(this, adviceJustification.getJustificationMood()));

@@ -68,8 +68,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:onClick="exportStudyData"
-                android:text="@string/exportStudyData"
+                android:onClick="displayWeather"
+                android:text="@string/display_weather"
                 app:layout_constraintEnd_toStartOf="@+id/button8"
                 app:layout_constraintStart_toStartOf="@+id/button6"
                 app:layout_constraintTop_toBottomOf="@+id/button6" />
