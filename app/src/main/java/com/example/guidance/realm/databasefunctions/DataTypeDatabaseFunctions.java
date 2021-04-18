@@ -130,6 +130,16 @@ public class DataTypeDatabaseFunctions {
 
     }
 
+    public static boolean isADataType(Data_Type dataType){
+        if(dataType==null){
+            return false;
+        }
+
+        return dataType.isSteps() || dataType.isLocation() || dataType.isAmbient_temp() || dataType.isScreentime()
+                || dataType.isSleep_tracking() || dataType.isSocialness() || dataType.isMood();
+
+    }
+
 
     public static boolean isAllDataType(Data_Type dataType){
         if(dataType==null){

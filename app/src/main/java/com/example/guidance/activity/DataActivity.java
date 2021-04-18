@@ -71,6 +71,9 @@ import static com.example.guidance.realm.databasefunctions.WeatherDatabaseFuncti
 import static com.example.guidance.realm.databasefunctions.WeatherDatabaseFunctions.isExistingSunNull;
 import static com.example.guidance.realm.databasefunctions.WeatherDatabaseFunctions.isExistingWeatherNull;
 import static com.example.guidance.realm.databasefunctions.WeatherDatabaseFunctions.isExistingWeatherWeek;
+import static com.example.guidance.realm.databasefunctions.WeatherDatabaseFunctions.setAllExternalTempNull;
+import static com.example.guidance.realm.databasefunctions.WeatherDatabaseFunctions.setAllSunNull;
+import static com.example.guidance.realm.databasefunctions.WeatherDatabaseFunctions.setAllWeatherNull;
 
 public class DataActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     static Realm realm;
@@ -266,12 +269,12 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
 
 
         if (allSwitchesFalse()) {
-            navigationViewAdviceRanking(this,navigationView, false);
+            navigationViewAdviceRanking(this, navigationView, false);
         }
 
 
         if (steps.isChecked()) {
-            navigationViewAdviceRanking(this,navigationView, true);
+            navigationViewAdviceRanking(this, navigationView, true);
 
             //requests the permissions relevant to the Steps job
             requestPermsSteps(this, DataActivity.this);
@@ -344,12 +347,12 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         Date currentTime = Calendar.getInstance().getTime();
 
         if (allSwitchesFalse()) {
-            navigationViewAdviceRanking(this,navigationView, false);
+            navigationViewAdviceRanking(this, navigationView, false);
         }
 
         if (location.isChecked()) {
 
-            navigationViewAdviceRanking(this,navigationView, true);
+            navigationViewAdviceRanking(this, navigationView, true);
 
             //requests the permissions relevant to the location job
             requestPermsFineLocation(this, DataActivity.this);
@@ -388,7 +391,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         Date currentTime = Calendar.getInstance().getTime();
 
         if (allSwitchesFalse()) {
-            navigationViewAdviceRanking(this,navigationView, false);
+            navigationViewAdviceRanking(this, navigationView, false);
         }
 
         if (!ambient_temp.isChecked()) {
@@ -404,7 +407,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
 
 
         } else {
-            navigationViewAdviceRanking(this,navigationView, true);
+            navigationViewAdviceRanking(this, navigationView, true);
 
         }
 
@@ -429,7 +432,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         Date currentTime = Calendar.getInstance().getTime();
 
         if (allSwitchesFalse()) {
-            navigationViewAdviceRanking(this,navigationView, false);
+            navigationViewAdviceRanking(this, navigationView, false);
         }
 
 
@@ -445,7 +448,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 scheduleScreentime(this);
             }
 
-            navigationViewAdviceRanking(this,navigationView, true);
+            navigationViewAdviceRanking(this, navigationView, true);
 
         }
 
@@ -494,7 +497,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                     insertLocation(context, currentTime, Util.truncate(latitude), Util.truncate(longitude));
 //                    switchWeather(view);
 
-                    if(!isExistingWeatherWeek(context, currentTime)){
+                    if (!isExistingWeatherWeek(context, currentTime)) {
                         if (!scheduleWeather(context)) {
                             switchName.setChecked(false);
                             Toast.makeText(context, "Job scheduling failed please try again.", Toast.LENGTH_SHORT).show();
@@ -556,10 +559,12 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         Date currentTime = Calendar.getInstance().getTime();
 
         if (allSwitchesFalse()) {
-            navigationViewAdviceRanking(this,navigationView, false);
+            navigationViewAdviceRanking(this, navigationView, false);
         }
 
-        
+        if (!weather.isChecked()) {
+            setAllWeatherNull(this, currentTime);
+        }
 
         if (!weather.isChecked() && !external_temp.isChecked() && !sun.isChecked()) {
             unscheduledJob(this, WEATHER);
@@ -582,7 +587,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                         Toast.makeText(this, "Job scheduling failed please try again.", Toast.LENGTH_SHORT).show();
                     }
 
-                }else if(isExistingWeatherNull(this, currentTime)){
+                } else if (isExistingWeatherNull(this, currentTime)) {
                     if (!scheduleWeather(this)) {
                         weather.setChecked(false);
                         Toast.makeText(this, "Job scheduling failed please try again.", Toast.LENGTH_SHORT).show();
@@ -614,7 +619,11 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         Date currentTime = Calendar.getInstance().getTime();
 
         if (allSwitchesFalse()) {
-            navigationViewAdviceRanking(this,navigationView, false);
+            navigationViewAdviceRanking(this, navigationView, false);
+        }
+
+        if (!external_temp.isChecked()) {
+            setAllExternalTempNull(this, currentTime);
         }
 
         if (!weather.isChecked() && !external_temp.isChecked() && !sun.isChecked()) {
@@ -635,7 +644,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                         external_temp.setChecked(false);
                         Toast.makeText(this, "Job scheduling failed please try again.", Toast.LENGTH_SHORT).show();
                     }
-                }else if(isExistingExternalTempNull(this, currentTime)){
+                } else if (isExistingExternalTempNull(this, currentTime)) {
                     if (!scheduleWeather(this)) {
                         external_temp.setChecked(false);
                         Toast.makeText(this, "Job scheduling failed please try again.", Toast.LENGTH_SHORT).show();
@@ -668,7 +677,11 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         Date currentTime = Calendar.getInstance().getTime();
 
         if (allSwitchesFalse()) {
-            navigationViewAdviceRanking(this,navigationView, false);
+            navigationViewAdviceRanking(this, navigationView, false);
+        }
+
+        if (!sun.isChecked()) {
+            setAllSunNull(this, currentTime);
         }
 
         if (!weather.isChecked() && !external_temp.isChecked() && !sun.isChecked()) {
@@ -688,7 +701,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                         sun.setChecked(false);
                         Toast.makeText(this, "Job scheduling failed please try again.", Toast.LENGTH_SHORT).show();
                     }
-                }else if(isExistingSunNull(this, currentTime)){
+                } else if (isExistingSunNull(this, currentTime)) {
                     if (!scheduleWeather(this)) {
                         sun.setChecked(false);
                         Toast.makeText(this, "Job scheduling failed please try again.", Toast.LENGTH_SHORT).show();
@@ -751,7 +764,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         Date currentTime = Calendar.getInstance().getTime();
 
         if (allSwitchesFalse()) {
-            navigationViewAdviceRanking(this,navigationView, false);
+            navigationViewAdviceRanking(this, navigationView, false);
         }
 
         //if both socialness and mood are disabled then the DAILY_QUESTION job service will be unscheduled
@@ -761,10 +774,10 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
             unscheduledJob(this, DAILY_QUESTION);
             stopBackgroundNotification(DAILY_QUESTION);
 
-            navigationViewDailyQuestion(this,navigationView, false);
+            navigationViewDailyQuestion(this, navigationView, false);
         } else {
-            navigationViewAdviceRanking(this,navigationView, true);
-            navigationViewDailyQuestion(this,navigationView, true);
+            navigationViewAdviceRanking(this, navigationView, true);
+            navigationViewDailyQuestion(this, navigationView, true);
 
             scheduleDailyQuestions(this);
         }
@@ -801,10 +814,10 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         if (!socialness.isChecked() && !mood.isChecked()) {
             unscheduledJob(this, DAILY_QUESTION);
             stopBackgroundNotification(DAILY_QUESTION);
-            navigationViewDailyQuestion(this,navigationView, false);
+            navigationViewDailyQuestion(this, navigationView, false);
         } else {
-            navigationViewAdviceRanking(this,navigationView, true);
-            navigationViewDailyQuestion(this,navigationView, true);
+            navigationViewAdviceRanking(this, navigationView, true);
+            navigationViewDailyQuestion(this, navigationView, true);
 
             scheduleDailyQuestions(this);
         }

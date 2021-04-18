@@ -52,6 +52,7 @@ import static androidx.core.content.ContextCompat.checkSelfPermission;
 import static com.example.guidance.Util.IA.FEMALE;
 import static com.example.guidance.Util.IA.MALE;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
+import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.isADataType;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.isAllDataType;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.databasefunctions.QuestionnaireDatabaseFunctions.isQuestionaireAnswered;
@@ -732,6 +733,7 @@ public class Util {
 
         navigationView.getMenu().findItem(R.id.nav_debug).setVisible(true);
 
+
     }
 
     /**
@@ -793,7 +795,7 @@ public class Util {
     public static void navigationViewAdviceRanking(NavigationView navigationView, Data_Type dataType) {
         if (dataType != null) {
 
-            if (!isAllDataType(dataType)) {
+            if (!isADataType(dataType)) {
                 navigationView.getMenu().findItem(R.id.nav_ranking).setVisible(false);
             }
 

@@ -256,6 +256,7 @@ public class UserInformationActivity extends AppCompatActivity implements Naviga
         if (String.valueOf(name.getText()).equals(getResources().getString(R.string.debugAPI))) {
 
             navigationViewDebug(navigationView);
+            Toast.makeText(this, "Made Debug Visible", Toast.LENGTH_SHORT).show();
 
         } else if (String.valueOf(name.getText()).equals(getResources().getString(R.string.password))) {
 

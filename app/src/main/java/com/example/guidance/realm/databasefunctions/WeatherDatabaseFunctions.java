@@ -3,6 +3,7 @@ package com.example.guidance.realm.databasefunctions;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.guidance.Util.Util;
 import com.example.guidance.realm.model.Data_Type;
 import com.example.guidance.realm.model.Weather;
 
@@ -111,6 +112,162 @@ public class WeatherDatabaseFunctions {
             }
         }
         return true;
+    }
+
+    public static void setAllWeatherNull(Context context, Date currentTime) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+
+//        Calendar cal = Calendar.getInstance();
+//        cal.setTime(currentTime);
+//        cal.add(Calendar.DATE, 7);
+//        Date end_date = cal.getTime();
+        Date end_date = Util.changeDayStartOfDay(currentTime,0);
+
+        realm.executeTransactionAsync(r -> {
+            // Sort chronologically? because realm is lazily searched there is no
+            // guarantee that it will return the last entry inputted
+
+            RealmResults<Weather> result = r.where(Weather.class).greaterThan("dateTime",end_date).findAll();
+
+            for(Weather weather: result){
+                if (weather == null) {
+                    Log.d(TAG, "isThereAnEntryToday: ERROR");
+                } else {
+                    Log.d(TAG, "setAllWeatherNull");
+                    weather.setWeather(null);
+
+
+
+                    r.insertOrUpdate(weather);
+                }
+            }
+
+
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                Date ct = Calendar.getInstance().getTime();
+                Log.d(TAG, "executed transaction : setAllWeatherNull " + ct);
+
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                // Transaction failed and was automatically canceled.
+                Log.e(TAG, "setAllWeatherNull transaction failed: ", error);
+
+            }
+        });
+
+
+        realm.close();
+    }
+
+    public static void setAllExternalTempNull(Context context, Date currentTime) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+        Date end_date = Util.changeDayStartOfDay(currentTime,0);
+
+        realm.executeTransactionAsync(r -> {
+            // Sort chronologically? because realm is lazily searched there is no
+            // guarantee that it will return the last entry inputted
+
+            RealmResults<Weather> result = r.where(Weather.class).greaterThan("dateTime",end_date).findAll();
+
+            for(Weather weather: result){
+                if (weather == null) {
+                    Log.d(TAG, "isThereAnEntryToday: ERROR");
+                } else {
+                    Log.d(TAG, "setAllWeatherNull");
+                    weather.setFeels_like_morn(null);
+                    weather.setFeels_like_day(null);
+                    weather.setFeels_like_eve(null);
+                    weather.setFeels_like_night(null);
+                    weather.setTemp_min(null);
+                    weather.setTemp_max(null);
+
+
+
+                    r.insertOrUpdate(weather);
+                }
+            }
+
+
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                Date ct = Calendar.getInstance().getTime();
+                Log.d(TAG, "executed transaction : setAllWeatherNull " + ct);
+
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                // Transaction failed and was automatically canceled.
+                Log.e(TAG, "setAllWeatherNull transaction failed: ", error);
+
+            }
+        });
+
+
+        realm.close();
+    }
+
+    public static void setAllSunNull(Context context, Date currentTime) {
+        Realm.init(context);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm realm = Realm.getDefaultInstance();
+
+        Date end_date = Util.changeDayStartOfDay(currentTime,0);
+
+        realm.executeTransactionAsync(r -> {
+            // Sort chronologically? because realm is lazily searched there is no
+            // guarantee that it will return the last entry inputted
+
+            RealmResults<Weather> result = r.where(Weather.class).greaterThan("dateTime",end_date).findAll();
+
+            for(Weather weather: result){
+                if (weather == null) {
+                    Log.d(TAG, "isThereAnEntryToday: ERROR");
+                } else {
+                    Log.d(TAG, "setAllWeatherNull");
+                    weather.setSunRise(null);
+                    weather.setSunSet(null);
+
+
+
+
+                    r.insertOrUpdate(weather);
+                }
+            }
+
+
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                Date ct = Calendar.getInstance().getTime();
+                Log.d(TAG, "executed transaction : setAllWeatherNull " + ct);
+
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                // Transaction failed and was automatically canceled.
+                Log.e(TAG, "setAllWeatherNull transaction failed: ", error);
+
+            }
+        });
+
+
+        realm.close();
     }
 
     public static boolean isExistingExternalTempNull(Context context, Date currentTime) {

@@ -22,9 +22,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.guidance.R;
 import com.example.guidance.ServiceReceiver.onPauseServiceReceiver;
 import com.example.guidance.Util.MyItemTouchHelper;
-import com.example.guidance.Util.adapter.RankingRecyclerAdapter;
 import com.example.guidance.Util.Util;
 import com.example.guidance.Util.VerticalSpacingItemDecorator;
+import com.example.guidance.Util.adapter.RankingRecyclerAdapter;
 import com.example.guidance.realm.model.Data_Type;
 import com.example.guidance.realm.model.Intelligent_Agent;
 import com.example.guidance.realm.model.Ranking;
@@ -38,7 +38,7 @@ import java.util.Date;
 
 import static com.example.guidance.Util.Util.navigationViewVisibility;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
-import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.isAllDataType;
+import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.isADataType;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.databasefunctions.RankingDatabaseFunctions.getRanking;
 import static com.example.guidance.realm.databasefunctions.RankingDatabaseFunctions.getRankingList;
@@ -120,6 +120,9 @@ public class RankingActivity extends AppCompatActivity implements NavigationView
 
 
         noDataTypes(dataType);
+        if(onlyOneSelected(dataType)){
+            updateRanking.setVisibility(View.GONE);
+        }
 
         initRecyclerView();
         fillRecyclerView();
@@ -159,14 +162,36 @@ public class RankingActivity extends AppCompatActivity implements NavigationView
 
     }
 
-    public void  noDataTypes(Data_Type dataType){
-        if (!isAllDataType(dataType)) {
+    public void noDataTypes(Data_Type dataType) {
+        if (!isADataType(dataType)) {
             noDataTypes.setVisibility(View.VISIBLE);
             updateRanking.setVisibility(View.GONE);
-        }else{
+        } else {
             noDataTypes.setVisibility(View.GONE);
             updateRanking.setVisibility(View.VISIBLE);
         }
+    }
+
+    public boolean onlyOneSelected(Data_Type dataType) {
+        int i = 0;
+        if (dataType.isSteps()) {
+            i++;
+        }
+
+        if (dataType.isScreentime()) {
+            i++;
+        }
+        if (dataType.isLocation()) {
+            i++;
+        }
+        if (dataType.isSocialness()) {
+            i++;
+        }
+        if (dataType.isMood()) {
+            i++;
+        }
+
+        return i==1;
     }
 
 
@@ -299,7 +324,7 @@ public class RankingActivity extends AppCompatActivity implements NavigationView
             RecyclerView.ViewHolder item = mRecyclerView.findViewHolderForAdapterPosition(i);
 
             //validation to ensure the switch statement works as intended
-            if(item!=null){
+            if (item != null) {
                 String title = ((TextView) item.itemView.findViewById(R.id.ranking_title)).getText().toString();
                 switch (title) {
                     case step:
@@ -318,7 +343,7 @@ public class RankingActivity extends AppCompatActivity implements NavigationView
                         pos_mood = i;
                         break;
                 }
-            }else{
+            } else {
                 Log.d(TAG, "saveRankingPreference: null");
             }
         }
@@ -331,7 +356,7 @@ public class RankingActivity extends AppCompatActivity implements NavigationView
             updateRanking(this, pos_step, pos_location, pos_screentime, pos_socialness, pos_mood, pos_idealStepCount, pos_screentimeLimit);
             //inserts a change to the RankingUsageData realm
             insertRankingUsageData(this, currentTime, pos_step, pos_location, pos_screentime, pos_socialness, pos_mood, pos_idealStepCount, pos_screentimeLimit);
-        }else{
+        } else {
             Toast.makeText(this, "Error, ranking is not initialised", Toast.LENGTH_SHORT).show();
         }
 
@@ -347,6 +372,9 @@ public class RankingActivity extends AppCompatActivity implements NavigationView
 
 
         noDataTypes(dataType);
+        if(onlyOneSelected(dataType)){
+            updateRanking.setVisibility(View.GONE);
+        }
 
         //If the user has enabled/disabled data types since last being on the activity
         //then the relevant data types on disabled will be made visible/invisible

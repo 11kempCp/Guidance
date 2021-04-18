@@ -39,6 +39,7 @@ import static com.example.guidance.Util.IA.WITH_JUSTIFICATION;
 import static com.example.guidance.Util.Util.navigationViewVisibility;
 import static com.example.guidance.realm.databasefunctions.AdviceDatabaseFunctions.getAdviceOnDate;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
+import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.isADataType;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.isAllDataType;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.isIntelligentAgentInitialised;
@@ -183,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
    public void  noDataTypes(Data_Type dataType){
-        if (!isAllDataType(dataType)) {
+        if (!isADataType(dataType)) {
             noDataTypes.setVisibility(View.VISIBLE);
         }else{
             noDataTypes.setVisibility(View.GONE);
