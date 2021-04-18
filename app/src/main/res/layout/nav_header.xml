@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="176dp"
+    android:layout_height="200dp"
     android:background="@color/femaleColourAccent"
     android:gravity="bottom"
     android:orientation="vertical"
@@ -12,8 +12,8 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="8dp"
         android:contentDescription="TODO"
+        android:paddingTop="8dp"
         android:src="@mipmap/ic_logo_round" />
 
     <TextView
@@ -21,8 +21,8 @@
         android:layout_height="wrap_content"
         android:paddingTop="8dp"
         android:text="@string/app_name"
-        android:textSize="@dimen/text_size_large"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textSize="@dimen/text_size_large" />
 
     <TextView
         android:layout_width="match_parent"
@@ -30,5 +30,15 @@
         android:paddingTop="8dp"
         android:text="@string/contact"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+    <TextView
+        android:id="@+id/textViewStudyStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:text="@string/study_status"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+
+        />
 
 </LinearLayout>

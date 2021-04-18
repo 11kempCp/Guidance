@@ -5,6 +5,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.guidance.R;
+import com.example.guidance.Util.Util;
 import com.example.guidance.realm.model.Intelligent_Agent;
 import com.example.guidance.realm.model.User_Information;
 
@@ -27,6 +28,7 @@ import static com.example.guidance.Util.IA.SPEECH;
 import static com.example.guidance.Util.IA.TEXT;
 import static com.example.guidance.Util.IA.TRADITIONAL_PROGRAMMING;
 import static com.example.guidance.Util.IA.WITH_JUSTIFICATION;
+import static com.example.guidance.Util.Util.changeDayStartOfDay;
 
 /**
  * Created by Conor K on 20/03/2021.
@@ -86,11 +88,13 @@ public class IntelligentAgentDatabaseFunctions {
             Date currentTime = Calendar.getInstance().getTime();
 
 
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(currentTime);
-            cal.add(Calendar.DATE, study_duration_days);
+//            Calendar cal = Calendar.getInstance();
+//            cal.setTime(currentTime);
+//            cal.add(Calendar.DATE, study_duration_days);
 
-            Date end_date = cal.getTime();
+
+
+            Date end_date =  changeDayStartOfDay(currentTime, study_duration_days);
 
             init.setDate_Initialised(currentTime);
             init.setEnd_Date(end_date);
@@ -124,7 +128,9 @@ public class IntelligentAgentDatabaseFunctions {
 
 
         if (!isIntelligentAgentInitialised(context)) {
-            initialiseIntelligentAgent(context, passcode, R.integer.study_period_length_days, false, null);
+
+//            initialiseIntelligentAgent(context, passcode, R.integer.study_period_length_days, false, null);
+            initialiseIntelligentAgent(context, passcode, 7, false, null);
         } else {
             Log.d(TAG, "intelligentAgentEntry: IA already initialised");
         }

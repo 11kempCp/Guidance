@@ -170,7 +170,7 @@ public class WeatherDatabaseFunctions {
         realm.executeTransactionAsync(r -> {
             // Sort chronologically? because realm is lazily searched there is no
             // guarantee that it will return the last entry inputted
-            // TODO Check that this returns the correct result
+
             RealmQuery<Weather> query = r.where(Weather.class).equalTo("dateTime", currentTime);
             Weather result = query.sort("dateTime", Sort.DESCENDING).findFirst();
 

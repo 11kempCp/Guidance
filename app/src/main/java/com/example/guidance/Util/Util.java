@@ -12,6 +12,8 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Build;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
@@ -288,7 +290,7 @@ public class Util {
      */
     //todo api level 29 requirement
     public static boolean isPermsSteps(Context context) {
-            return checkSelfPermission(context, ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED;
+        return checkSelfPermission(context, ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED;
     }
 
 
@@ -665,6 +667,34 @@ public class Util {
         navigationViewDailyQuestion(navigationView, dataType);
         navigationViewAdviceRanking(navigationView, dataType);
 
+        studyStatus(navigationView, intelligent_agent);
+
+    }
+
+    private static void studyStatus(NavigationView navigationView, Intelligent_Agent intelligent_agent) {
+
+        View header = navigationView.getHeaderView(0);
+        TextView studyStatus = (TextView) header.findViewById(R.id.textViewStudyStatus);
+
+//         studyStatus = navigationView.getHeaderView(0).get(R.id.textViewStudyStatus);
+
+        Date currentDate = Calendar.getInstance().getTime();
+        String text = "Study Status: Not Started";
+
+        if(intelligent_agent!=null){
+            if (currentDate.after(intelligent_agent.getEnd_Date())) {
+                text = "Study Status: Finished";
+            } else {
+                text = "Study Status: Ongoing";
+
+            }
+        }
+
+
+
+        studyStatus.setText(text);
+
+
     }
 
     /**
@@ -702,7 +732,7 @@ public class Util {
      * sets the nav_daily_question item to invisible if both the mood and socialness data types are deselected by the user
      *
      * @param navigationView the navigationView whose items need to be corrected
-     * @param visibility      that viability change of the navigation element
+     * @param visibility     that viability change of the navigation element
      */
     public static void navigationViewDailyQuestion(NavigationView navigationView, boolean visibility) {
 
@@ -732,7 +762,7 @@ public class Util {
      * sets the nav_ranking item to invisible if no data type has been selected by the user
      *
      * @param navigationView the navigationView whose items need to be corrected
-     * @param visibility      that viability change of the navigation element
+     * @param visibility     that viability change of the navigation element
      */
     public static void navigationViewAdviceRanking(NavigationView navigationView, boolean visibility) {
 
@@ -740,6 +770,7 @@ public class Util {
 
 
     }
+
 
     /**
      * schedules the AmbientTempJobService
