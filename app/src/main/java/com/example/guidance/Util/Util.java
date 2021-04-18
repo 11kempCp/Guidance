@@ -36,11 +36,13 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -676,11 +678,13 @@ public class Util {
 
         View header = navigationView.getHeaderView(0);
         TextView studyStatus = (TextView) header.findViewById(R.id.textViewStudyStatus);
+        TextView studyEndDate = (TextView) header.findViewById(R.id.textViewStudyEndDate);
 
 //         studyStatus = navigationView.getHeaderView(0).get(R.id.textViewStudyStatus);
 
         Date currentDate = Calendar.getInstance().getTime();
         String text = "Study Status: Not Started";
+        String endDate = "Study End Date: ";
 
         if (intelligent_agent != null) {
             if (currentDate.after(intelligent_agent.getEnd_Date())) {
@@ -689,10 +693,20 @@ public class Util {
                 text = "Study Status: Ongoing";
 
             }
+
+            SimpleDateFormat standardDateFormat = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH);
+
+            endDate= endDate + standardDateFormat.format( intelligent_agent.getEnd_Date());
+
         }
 
 
+
+
+
+
         studyStatus.setText(text);
+        studyEndDate.setText(endDate);
 
 
     }

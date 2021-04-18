@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
+    android:layout_height="230dp"
     android:background="@color/femaleColourAccent"
     android:gravity="bottom"
     android:orientation="vertical"
@@ -40,5 +40,13 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
 
         />
+
+    <TextView
+        android:id="@+id/textViewStudyEndDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:text="@string/study_end_date"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
 </LinearLayout>
