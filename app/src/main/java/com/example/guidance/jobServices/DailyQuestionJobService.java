@@ -43,7 +43,6 @@ public class DailyQuestionJobService extends JobService {
             //timeframe in which the notification will be displayed
             if (currentTime.getHours() >= 14 && currentTime.getHours() <= 22) {
 
-                //TODO if user has selected one but not the other
                 if(!isSocialnessEntryDate(this, currentTime) || !isMoodEntryToday(this,currentTime)){
                     //Create an Intent for the activity you want to start
                     Intent resultIntent = new Intent(this, DailyQuestionActivity.class);

@@ -72,7 +72,7 @@ public class AdviceDatabaseFunctions {
 
     }
 
-    public static RealmResults<Advice> getAllValidAdviceNotToday(Context context, Realm realm, Date currentTime) {
+    public static RealmResults<Advice> getAllValidAdviceNotToday( Realm realm, Date currentTime) {
 //        Realm.init(context);
 //        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
 //        Realm.setDefaultConfiguration(realmConfiguration);
@@ -84,7 +84,6 @@ public class AdviceDatabaseFunctions {
 
 
 
-        //todo filter out values for the current date
         RealmQuery<Advice> query = realm.where(Advice.class).notEqualTo("adviceType", noAdvice);
         RealmResults<Advice> result = query.sort("dateTimeAdviceFor", Sort.DESCENDING).lessThanOrEqualTo("dateTimeAdviceFor", yesterday).or().greaterThanOrEqualTo("dateTimeAdviceFor", tomorrow).findAll();
 

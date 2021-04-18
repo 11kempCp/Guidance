@@ -8,7 +8,7 @@ import android.app.job.JobService;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.util.Log;
-import android.widget.Toast;
+import android.view.View;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -52,7 +52,6 @@ import static com.example.guidance.Util.IA.LOW;
 import static com.example.guidance.Util.IA.noJustification;
 import static com.example.guidance.Util.IA.withJustification;
 import static com.example.guidance.Util.Util.ADVICE;
-import static com.example.guidance.Util.Util.WEATHER;
 import static com.example.guidance.Util.Util.changeDayStartOfDay;
 import static com.example.guidance.Util.Util.isSameDate;
 import static com.example.guidance.realm.databasefunctions.AdviceDatabaseFunctions.convertLocationToRealmList;
@@ -89,7 +88,7 @@ public class AdviceJobService extends JobService {
     //Predefined ideal's for the relevant advice's
     private static int idealStepCount = 3000; //steps
     private static int idealScreentimeUsage = 60; //minutes
-    private static final int idealThresholdDistance = 50; //meters
+    private static final int idealThresholdDistance = 20; //meters
     private static final double idealMood = 2.5; //average of more than this
     private static final double idealSocialness = 2.5; //average of more than this
 
@@ -110,7 +109,7 @@ public class AdviceJobService extends JobService {
         Intelligent_Agent intelligent_agent = getIntelligentAgent(this);
 
         //validation to ensure that the starting day immediately causes a null advice to be given
-        if(currentTime.after(changeDayStartOfDay(intelligent_agent.getDate_Initialised(),1))){
+        if (currentTime.after(changeDayStartOfDay(intelligent_agent.getDate_Initialised(), 1))) {
 
             //Ensures that advice is given between 12am and 8pm
             if (currentTime.getHours() >= 12 && currentTime.getHours() <= 20) {
@@ -269,20 +268,26 @@ public class AdviceJobService extends JobService {
             Log.d(TAG, "No Advice Available");
 //            Toast.makeText(this, "No Advice Available", Toast.LENGTH_SHORT).show();
 
+            //Create an Intent for the activity you want to start
+            Intent resultIntent = new Intent(this, AdviceActivity.class);
+            // Create the TaskStackBuilder and add the intent, which inflates the back stack
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+            stackBuilder.addNextIntentWithParentStack(resultIntent);
+            // Get the PendingIntent containing the entire back stack
+            PendingIntent resultPendingIntent =
+                    stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
-            Intent notificationIntent = new Intent(this, MainActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-            Notification notification = new NotificationCompat.Builder(this, App.CHANNEL_ID)
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, App.CHANNEL_ID);
+
+            builder.setContentIntent(resultPendingIntent)
                     .setContentTitle(getString(R.string.advice))
                     .setContentText(getString(R.string.no_advice_for_today))
                     .setSmallIcon(R.drawable.ic_advice)
-                    .setContentIntent(pendingIntent)
-                    .setPriority(NotificationCompat.PRIORITY_LOW)
-                    .build();
+                    .setContentIntent(resultPendingIntent)
+                    .setPriority(NotificationCompat.PRIORITY_LOW);
 
-            startForeground(ADVICE, notification);
-
-
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+            notificationManager.notify(ADVICE, builder.build());
 
 
             insertAdvice(this, currentTime, noAdvice, null, null, null,
@@ -294,63 +299,189 @@ public class AdviceJobService extends JobService {
     }
 
 
+//    public RealmResults<Location> adviceLocation() {
+//        Log.d(TAG, "adviceLocation: ");
+//        Date currentTime = Calendar.getInstance().getTime();
+//
+//        RealmResults<Location> previousDaysLocations = getLocationOverPreviousDays(this, currentTime, days);
+//
+//        if (previousDaysLocations.isEmpty()) {
+//            //insufficient data
+//            Log.d(TAG, "adviceLocation: insufficient data ");
+//
+//
+//            return null;
+//        }
+//
+//        Log.d(TAG, "adviceLocation: " + previousDaysLocations + " " + previousDaysLocations.size());
+//
+////        Location previous_location = null;
+//        android.location.Location previous_location = new android.location.Location("");
+//        android.location.Location new_location = new android.location.Location("");
+//
+//        boolean first = true;
+//        Date skipThisDay = null;
+//
+//        //todo likely incorrect? triggers to early? needs to look over all locations in a day before
+//        // setting rankingLinkedHashMap.put(location, true);
+//        for (Location loc : previousDaysLocations) {
+//
+//            if (skipThisDay != null) {
+//                if (isSameDate(loc.getDateTime(), skipThisDay)) {
+//                    first = true;
+//                    continue;
+//                }
+//            }
+//
+//            if (first) {
+//                first = false;
+//            } else {
+//
+//
+//                new_location.setLatitude(loc.getLatitude());
+//                new_location.setLongitude(loc.getLongitude());
+//                float distanceInMeters = previous_location.distanceTo(new_location);
+////                Log.d(TAG, "adviceLocation: distanceInMeters " + distanceInMeters);
+//
+//
+//                if (!(distanceInMeters <= idealThresholdDistance)) {
+//                    rankingLinkedHashMap.put(location, true);
+//                    skipThisDay = loc.getDateTime();
+//                }
+//
+//
+//            }
+//
+//            previous_location.setLatitude(loc.getLatitude());
+//            previous_location.setLongitude(loc.getLongitude());
+//        }
+//
+//
+//        if (rankingLinkedHashMap.get(location)) {
+//            return previousDaysLocations;
+//        }
+//
+//        return null;
+//    }
+
     public RealmResults<Location> adviceLocation() {
+
+        boolean user_has_gone_outside = false;
         Log.d(TAG, "adviceLocation: ");
         Date currentTime = Calendar.getInstance().getTime();
 
         RealmResults<Location> previousDaysLocations = getLocationOverPreviousDays(this, currentTime, days);
 
-        if (previousDaysLocations == null) {
+        if (previousDaysLocations.isEmpty()) {
             //insufficient data
             Log.d(TAG, "adviceLocation: insufficient data ");
 
 
-            return null;
+            return previousDaysLocations;
         }
 
-        Log.d(TAG, "adviceLocation: " + previousDaysLocations + " " + previousDaysLocations.size());
+        Log.d(TAG, "adviceLocation: " + previousDaysLocations.size() + " " + previousDaysLocations);
 
-//        Location previous_location = null;
+
         android.location.Location previous_location = new android.location.Location("");
         android.location.Location new_location = new android.location.Location("");
 
         boolean first = true;
-        Date skipThisDay = null;
 
-        //todo likely incorrect? triggers to early? needs to look over all locations in a day before
-        // setting rankingLinkedHashMap.put(location, true);
-        for (Location loc : previousDaysLocations) {
-
-            if (skipThisDay != null) {
-                if (isSameDate(loc.getDateTime(), skipThisDay)) {
-                    first = true;
-                    continue;
-                }
-            }
-
-            if (first) {
-                first = false;
-            } else {
+        Location previous_loc = null;
 
 
-                new_location.setLatitude(loc.getLatitude());
-                new_location.setLongitude(loc.getLongitude());
-                float distanceInMeters = previous_location.distanceTo(new_location);
-//                Log.d(TAG, "adviceLocation: distanceInMeters " + distanceInMeters);
+        List<ArrayList<Location>> arrayLists = new ArrayList<>();
 
 
-                if (!(distanceInMeters <= idealThresholdDistance)) {
-                    rankingLinkedHashMap.put(location, true);
-                    skipThisDay = loc.getDateTime();
-                }
+        int dayNumber = 0;
+        int amountPerDay = 0;
 
 
-            }
+        for (int i = 0; i < days; i++) {
+            ArrayList<Location> list1 = new ArrayList<>();
+            arrayLists.add(dayNumber, list1);
 
-            previous_location.setLatitude(loc.getLatitude());
-            previous_location.setLongitude(loc.getLongitude());
         }
 
+
+        for (Location loc : previousDaysLocations) {
+            amountPerDay++;
+
+            if (!first) {
+                if (!isSameDate(loc.getDateTime(), previous_loc.getDateTime())) {
+                    dayNumber++;
+                    amountPerDay = 1;
+                }
+
+            }
+            ArrayList<Location> list1;
+            list1 = arrayLists.get(dayNumber);
+            list1.add(loc);
+            arrayLists.set(dayNumber, list1);
+            first = false;
+            previous_loc = loc;
+
+        }
+
+
+        for (ArrayList<Location> f : arrayLists) {
+            Log.d(TAG, "adviceLocation: f " + f.size() + " " + f);
+
+        }
+
+        Log.d(TAG, "adviceLocation: listIntegerDays" + arrayLists);
+        Log.d(TAG, "adviceLocation: dayNumber " + dayNumber);
+        Log.d(TAG, "adviceLocation: amountPerDay " + amountPerDay);
+
+
+        first = true;
+        ArrayList<Float> listDistanceInMeters = new ArrayList<>();
+
+        for (ArrayList<Location> f : arrayLists) {
+            Log.d(TAG, "adviceLocation: f " + f.size() + " " + f);
+
+            for (Location loc : f) {
+                if (first) {
+                    first = false;
+                } else {
+
+                    new_location.setLatitude(loc.getLatitude());
+                    new_location.setLongitude(loc.getLongitude());
+                    float distanceInMeters = previous_location.distanceTo(new_location);
+                    Log.d(TAG, "adviceLocation: distanceInMeters " + distanceInMeters);
+                    listDistanceInMeters.add(distanceInMeters);
+
+                }
+                previous_location.setLatitude(loc.getLatitude());
+                previous_location.setLongitude(loc.getLongitude());
+
+            }
+
+            for (Float distance : listDistanceInMeters) {
+
+                if (distance >= idealThresholdDistance) {
+                    user_has_gone_outside = true;
+                    Log.d(TAG, "adviceLocation: user_has_gone_outside " + user_has_gone_outside);
+                    break;
+                }
+            }
+
+            if (!user_has_gone_outside) {
+
+                rankingLinkedHashMap.put(location, true);
+            }else{
+                rankingLinkedHashMap.put(location, false);
+                return null;
+            }
+
+
+
+        }
+
+        if(rankingLinkedHashMap.get(location) == null){
+            Log.e(TAG, "adviceLocation: rankingLinkedHashMap.get(location) == null" );
+        }
 
         if (rankingLinkedHashMap.get(location)) {
             return previousDaysLocations;
@@ -358,6 +489,7 @@ public class AdviceJobService extends JobService {
 
         return null;
     }
+
 
     public AppData[] adviceScreentime() {
 
@@ -388,9 +520,9 @@ public class AdviceJobService extends JobService {
 
             if (!sort) {
 
-                if(x == appDataList.length){
+                if (x == appDataList.length) {
                     sort = true;
-                }else{
+                } else {
 
                     if (appDataList[x] == null) {
                         appDataList[x] = appData;
@@ -422,7 +554,7 @@ public class AdviceJobService extends JobService {
             Log.d(TAG, i + " + adviceScreentime: date " + most_visible_screentime.getDateTime() + " " + appData.getPackageName() + " TotalTimeInForeground " + TotalTimeInForeground + " TotalTimeVisible " + TotalTimeVisible + " TotalTimeForegroundServiceUsed " + TotalTimeForegroundServiceUsed);
         }
 
-        if (idealScreentimeUsage <= TimeUnit.MILLISECONDS.toMinutes(appDataList[appDataList.length-1].getTotalTimeInForeground())) {
+        if (idealScreentimeUsage <= TimeUnit.MILLISECONDS.toMinutes(appDataList[appDataList.length - 1].getTotalTimeInForeground())) {
             rankingLinkedHashMap.put(screentime, true);
             return appDataList;
         }
@@ -471,7 +603,7 @@ public class AdviceJobService extends JobService {
 
         RealmResults<Socialness> socialnessOverPreviousDays = getSocialnessOverPreviousDays(this, currentTime, days);
 
-        if (socialnessOverPreviousDays == null) {
+        if (socialnessOverPreviousDays.isEmpty()) {
             //insufficient data
             Log.d(TAG, "adviceSocialness: insufficient data ");
 
@@ -503,7 +635,7 @@ public class AdviceJobService extends JobService {
 
         RealmResults<Mood> moodOverPreviousDays = getMoodOverPreviousDays(this, currentTime, days);
 
-        if (moodOverPreviousDays == null) {
+        if (moodOverPreviousDays.isEmpty()) {
             //insufficient data
 
             Log.d(TAG, "adviceMood: insufficient data ");
@@ -617,30 +749,30 @@ public class AdviceJobService extends JobService {
                 //if the user is in the WITH_JUSTIFICATION group
                 if (withJustification(intelligent_agent)) {
 
-                    text = getScreentimeAdvice(1, getApplicationName(screentimeAppdata[screentimeAppdata.length-1].getPackageName()), TimeUnit.MILLISECONDS.toMinutes(screentimeAppdata[screentimeAppdata.length-1].getTotalTimeInForeground()), name);
+                    text = getScreentimeAdvice(1, getApplicationName(screentimeAppdata[screentimeAppdata.length - 1].getPackageName()), TimeUnit.MILLISECONDS.toMinutes(screentimeAppdata[screentimeAppdata.length - 1].getTotalTimeInForeground()), name);
 
-                    insertAdvice(this, currentTime, screentime, Util.changeDayEndOfDay(currentTime, 1), text, null, screentimeAppdata[screentimeAppdata.length-1], null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
+                    insertAdvice(this, currentTime, screentime, Util.changeDayEndOfDay(currentTime, 1), text, null, screentimeAppdata[screentimeAppdata.length - 1], null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
                             convertSocialnessToRealmList(this, adviceJustification.getJustificationSocialness()), convertMoodToRealmList(this, adviceJustification.getJustificationMood()));
 
                     //if the user is in the NO_JUSTIFICATION group
                 } else if (noJustification(intelligent_agent)) {
-                    text = getScreentimeAdvice(1, getApplicationName(screentimeAppdata[screentimeAppdata.length-1].getPackageName()), name);
+                    text = getScreentimeAdvice(1, getApplicationName(screentimeAppdata[screentimeAppdata.length - 1].getPackageName()), name);
 
-                    insertAdvice(this, currentTime, screentime, Util.changeDayEndOfDay(currentTime, 1), text, null, screentimeAppdata[screentimeAppdata.length-1], null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
+                    insertAdvice(this, currentTime, screentime, Util.changeDayEndOfDay(currentTime, 1), text, null, screentimeAppdata[screentimeAppdata.length - 1], null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
                             convertSocialnessToRealmList(this, adviceJustification.getJustificationSocialness()), convertMoodToRealmList(this, adviceJustification.getJustificationMood()));
                 }
             } else {
                 //if the user is in the WITH_JUSTIFICATION group
                 if (withJustification(intelligent_agent)) {
-                    text = getScreentimeAdvice(1, getApplicationName(screentimeAppdata[screentimeAppdata.length-1].getPackageName()), TimeUnit.MILLISECONDS.toMinutes(screentimeAppdata[screentimeAppdata.length-1].getTotalTimeInForeground()));
+                    text = getScreentimeAdvice(1, getApplicationName(screentimeAppdata[screentimeAppdata.length - 1].getPackageName()), TimeUnit.MILLISECONDS.toMinutes(screentimeAppdata[screentimeAppdata.length - 1].getTotalTimeInForeground()));
 
-                    insertAdvice(this, currentTime, screentime, Util.changeDayEndOfDay(currentTime, 1), text, null, screentimeAppdata[screentimeAppdata.length-1], null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
+                    insertAdvice(this, currentTime, screentime, Util.changeDayEndOfDay(currentTime, 1), text, null, screentimeAppdata[screentimeAppdata.length - 1], null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
                             convertSocialnessToRealmList(this, adviceJustification.getJustificationSocialness()), convertMoodToRealmList(this, adviceJustification.getJustificationMood()));
                     //if the user is in the NO_JUSTIFICATION group
                 } else if (noJustification(intelligent_agent)) {
-                    text = getScreentimeAdvice(1, getApplicationName(screentimeAppdata[screentimeAppdata.length-1].getPackageName()));
+                    text = getScreentimeAdvice(1, getApplicationName(screentimeAppdata[screentimeAppdata.length - 1].getPackageName()));
 
-                    insertAdvice(this, currentTime, screentime, Util.changeDayEndOfDay(currentTime, 1), text, null, screentimeAppdata[screentimeAppdata.length-1], null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
+                    insertAdvice(this, currentTime, screentime, Util.changeDayEndOfDay(currentTime, 1), text, null, screentimeAppdata[screentimeAppdata.length - 1], null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
                             convertSocialnessToRealmList(this, adviceJustification.getJustificationSocialness()), convertMoodToRealmList(this, adviceJustification.getJustificationMood()));
                 }
             }
@@ -832,11 +964,11 @@ public class AdviceJobService extends JobService {
     }
 
 
-    public String getApplicationName(String packageName)  {
+    public String getApplicationName(String packageName) {
 
         try {
-            PackageManager packageManager= getApplicationContext().getPackageManager();
-            return  (String) packageManager.getApplicationLabel(packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA));
+            PackageManager packageManager = getApplicationContext().getPackageManager();
+            return (String) packageManager.getApplicationLabel(packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA));
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }

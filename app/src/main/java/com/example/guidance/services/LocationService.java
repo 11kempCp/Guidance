@@ -93,8 +93,9 @@ public class LocationService extends Service {
             createLocationRequest();
         }
 
+        //todo check if this is fine being removed
         //gets the last location
-        getLastLocation(this);
+//        getLastLocation(this);
 
         //requests the newest location of the device
         startLocationUpdates();

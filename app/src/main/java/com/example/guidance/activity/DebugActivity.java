@@ -59,7 +59,9 @@ import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import io.realm.Realm;
@@ -79,6 +81,7 @@ import static com.example.guidance.Util.Util.LOCATION;
 import static com.example.guidance.Util.Util.SCREENTIME;
 import static com.example.guidance.Util.Util.WEATHER;
 import static com.example.guidance.Util.Util.getUnscheduledJobs;
+import static com.example.guidance.Util.Util.isSameDate;
 import static com.example.guidance.Util.Util.navigationViewVisibility;
 import static com.example.guidance.Util.Util.scheduleAdvice;
 import static com.example.guidance.Util.Util.scheduleExport;
@@ -93,6 +96,7 @@ import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatab
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.intelligentAgentEntry;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.intelligentAgentSetGender;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.isIntelligentAgentInitialised;
+import static com.example.guidance.realm.databasefunctions.LocationDatabaseFunctions.getLocationOverPreviousDays;
 import static com.example.guidance.realm.databasefunctions.QuestionnaireDatabaseFunctions.getAllQuestionnaire;
 import static com.example.guidance.realm.databasefunctions.RankingDatabaseFunctions.getRankingUsageData;
 import static com.example.guidance.realm.databasefunctions.UserInformationDatabaseFunctions.getUserInformation;
@@ -347,7 +351,6 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
 
     public void startAdviceJobService(View view) {
 
-        PackageManager packageManager = this.getPackageManager();
 
         Log.d(TAG, "scheduledUnscheduledJobs: " + ADVICE);
 
@@ -739,9 +742,127 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
 
 
     public void startExportJobService(View view) {
-        scheduleExport(this);
+//        scheduleExport(this);
 
     }
 
+    private static final int days = 3;
+    private static final int idealThresholdDistance = 20; //meters
 
+    public void adviceLocation(View view) {
+
+        boolean triggered = false;
+        Log.d(TAG, "adviceLocation: ");
+        Date currentTime = Calendar.getInstance().getTime();
+
+        RealmResults<Location> previousDaysLocations = getLocationOverPreviousDays(this, currentTime, days);
+
+        if (previousDaysLocations.isEmpty()) {
+            //insufficient data
+            Log.d(TAG, "adviceLocation: insufficient data ");
+
+
+            return;
+        }
+
+        Log.d(TAG, "adviceLocation: " + previousDaysLocations.size() + " " + previousDaysLocations);
+
+
+        android.location.Location previous_location = new android.location.Location("");
+        android.location.Location new_location = new android.location.Location("");
+
+        boolean first = true;
+
+        Location previous_loc = null;
+
+
+        List<ArrayList<Location>> arrayLists = new ArrayList<>();
+
+
+        int dayNumber = 0;
+        int amountPerDay = 0;
+
+
+        for (int i = 0; i < days; i++) {
+            ArrayList<Location> list1 = new ArrayList<>();
+            arrayLists.add(dayNumber, list1);
+
+        }
+
+
+        for (Location loc : previousDaysLocations) {
+            amountPerDay++;
+
+            if (!first) {
+                if (!isSameDate(loc.getDateTime(), previous_loc.getDateTime())) {
+                    dayNumber++;
+                    amountPerDay = 1;
+                }
+
+            }
+            ArrayList<Location> list1;
+            list1 = arrayLists.get(dayNumber);
+            list1.add(loc);
+            arrayLists.set(dayNumber, list1);
+            first = false;
+            previous_loc = loc;
+
+        }
+
+
+        for (ArrayList<Location> f : arrayLists) {
+            Log.d(TAG, "adviceLocation: f " + f.size() + " " + f);
+
+        }
+
+        Log.d(TAG, "adviceLocation: listIntegerDays" + arrayLists);
+        Log.d(TAG, "adviceLocation: dayNumber " + dayNumber);
+        Log.d(TAG, "adviceLocation: amountPerDay " + amountPerDay);
+
+
+        first = true;
+        ArrayList<Float> listDistanceInMeters = new ArrayList<>();
+
+        for (ArrayList<Location> f : arrayLists) {
+            Log.d(TAG, "adviceLocation: f " + f.size() + " " + f);
+
+            for (Location loc : f) {
+                if (first) {
+                    first = false;
+                } else {
+
+                    new_location.setLatitude(loc.getLatitude());
+                    new_location.setLongitude(loc.getLongitude());
+                    float distanceInMeters = previous_location.distanceTo(new_location);
+                    Log.d(TAG, "adviceLocation: distanceInMeters " + distanceInMeters);
+                    listDistanceInMeters.add(distanceInMeters);
+
+                }
+                previous_location.setLatitude(loc.getLatitude());
+                previous_location.setLongitude(loc.getLongitude());
+
+            }
+
+            for (Float distance : listDistanceInMeters) {
+
+                if (distance >= idealThresholdDistance) {
+                    triggered = true;
+                    Log.d(TAG, "adviceLocation: TRIGGERED " + triggered);
+
+                    break;
+                }
+            }
+
+            if(triggered ){
+                break;
+            }
+
+        }
+
+        if (!triggered) {
+            Log.d(TAG, "adviceLocation: TRIGGERED " + triggered);
+        }
+
+//        return null;
+    }
 }

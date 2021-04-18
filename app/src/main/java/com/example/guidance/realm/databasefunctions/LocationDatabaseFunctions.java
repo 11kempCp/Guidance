@@ -70,6 +70,8 @@ public class LocationDatabaseFunctions {
 
     public static void locationEntry(Context context, Date currentTime, double latitude, double longitude) {
 
+//        insertLocation(context, currentTime, latitude, longitude);
+        //todo renable
         if (!isLocationStoredAlready(context, currentTime, latitude, longitude)) {
             insertLocation(context, currentTime, latitude, longitude);
         } else {

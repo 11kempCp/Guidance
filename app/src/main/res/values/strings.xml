@@ -5,7 +5,7 @@
     <string name="contact">KempCP@cardiff.ac.uk</string>
 
     <!--    //TODO ENSURE THIS IS SET TO THE CORRECT NUMBER: 7-->
-    <integer name="study_period_length_days">1</integer>
+    <integer name="study_period_length_days">7</integer>
     <!--End of Core Strings-->
 
 
@@ -71,6 +71,7 @@
     <string name="exportStudyData">Export Study Data</string>
     <string name="uploadFile">Upload File</string>
     <string name="startExportJobService">exportJobService</string>
+    <string name="adviceLocation">adviceLocation</string>
 
     <!--End of Debug Strings-->
 

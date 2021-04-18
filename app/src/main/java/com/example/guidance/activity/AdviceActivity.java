@@ -78,7 +78,7 @@ public class AdviceActivity extends AppCompatActivity implements NavigationView.
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
         realm = Realm.getDefaultInstance();
-        RealmResults<Advice> allValidAdvice = getAllValidAdviceNotToday(this, realm, currentTime);
+        RealmResults<Advice> allValidAdvice = getAllValidAdviceNotToday( realm, currentTime);
         RealmResults<Advice> adviceToday = getAdviceOnDate(this, realm, currentTime);
 
         super.onCreate(savedInstanceState);

@@ -189,7 +189,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
 
 //            sleep_tracking.setChecked(data_type.isSleep_tracking());
 
-            //todo if internet access not given?
+
             weather.setChecked(data_type.isWeather());
             external_temp.setChecked(data_type.isExternal_temp());
             sun.setChecked(data_type.isSun());

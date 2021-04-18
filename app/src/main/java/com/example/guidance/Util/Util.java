@@ -51,6 +51,7 @@ import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunct
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.isAllDataType;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.databasefunctions.QuestionnaireDatabaseFunctions.isQuestionaireAnswered;
+import static com.example.guidance.realm.databasefunctions.WeatherDatabaseFunctions.isExistingWeatherWeek;
 import static io.realm.Realm.getApplicationContext;
 
 
@@ -76,11 +77,11 @@ public class Util {
     public static final int EXPORT = 10;
 
     //  todo change back so that WEATHER is called
-    //todo fix weather being spammed constantly
     /**
      * List of the Above jobID's, used to identify which jobs are currently not scheduled as well as schedule them
      */
-    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, QUESTIONNAIRE, SCREENTIME, ADVICE, ADVICE_FOLLOWED);
+//    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, QUESTIONNAIRE, SCREENTIME, ADVICE, ADVICE_FOLLOWED);
+    public static final List<Integer> utilList = Arrays.asList();
 //    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION,WEATHER, QUESTIONNAIRE, SCREENTIME, ADVICE ,ADVICE_FOLLOWED);
 
     /**
@@ -287,7 +288,7 @@ public class Util {
      */
     //todo api level 29 requirement
     public static boolean isPermsSteps(Context context) {
-        return ContextCompat.checkSelfPermission(context, ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED;
+            return checkSelfPermission(context, ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED;
     }
 
 
@@ -362,8 +363,10 @@ public class Util {
 
                         if (data.isWeather() || data.isSun() || data.isExternal_temp()) {
                             Log.d(TAG, "scheduledUnscheduledJobs: " + WEATHER);
-
-                            scheduleWeather(context);
+                            Date currentTime = Calendar.getInstance().getTime();
+                            if (!isExistingWeatherWeek(context, currentTime)) {
+                                scheduleWeather(context);
+                            }
                         }
 
                         break;
