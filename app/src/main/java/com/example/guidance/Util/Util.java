@@ -85,8 +85,8 @@ public class Util {
      * List of the Above jobID's, used to identify which jobs are currently not scheduled as well as schedule them
      */
 //    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, QUESTIONNAIRE, SCREENTIME, ADVICE, ADVICE_FOLLOWED);
-    public static final List<Integer> utilList = Arrays.asList();
-//    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION,WEATHER, QUESTIONNAIRE, SCREENTIME, ADVICE ,ADVICE_FOLLOWED);
+//    public static final List<Integer> utilList = Arrays.asList();
+    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, WEATHER, QUESTIONNAIRE, SCREENTIME, ADVICE, ADVICE_FOLLOWED);
 
     /**
      * @param context      Context allows access to application-specific resources and classes
@@ -696,13 +696,9 @@ public class Util {
 
             SimpleDateFormat standardDateFormat = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH);
 
-            endDate= endDate + standardDateFormat.format( intelligent_agent.getEnd_Date());
+            endDate = endDate + standardDateFormat.format(intelligent_agent.getEnd_Date());
 
         }
-
-
-
-
 
 
         studyStatus.setText(text);
@@ -725,6 +721,17 @@ public class Util {
             //kept invisible because nav_justification has not yet been implemented
             navigationView.getMenu().findItem(R.id.nav_justification).setVisible(false);
         }
+    }
+
+    /**
+     * Sets the nav_debug item to visible
+     *
+     * @param navigationView    the navigationView whose items need to be corrected
+     */
+    public static void navigationViewDebug(NavigationView navigationView) {
+
+        navigationView.getMenu().findItem(R.id.nav_debug).setVisible(true);
+
     }
 
     /**

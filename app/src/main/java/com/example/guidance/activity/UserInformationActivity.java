@@ -1,10 +1,7 @@
 package com.example.guidance.activity;
 
-import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -20,8 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -40,7 +35,7 @@ import java.util.Objects;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static com.example.guidance.Util.Util.EXPORT;
+import static com.example.guidance.Util.Util.navigationViewDebug;
 import static com.example.guidance.Util.Util.navigationViewVisibility;
 import static com.example.guidance.Util.Util.scheduleExport;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
@@ -48,7 +43,6 @@ import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatab
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.updateAPIKey;
 import static com.example.guidance.realm.databasefunctions.UserInformationDatabaseFunctions.getUserInformation;
 import static com.example.guidance.realm.databasefunctions.UserInformationDatabaseFunctions.updateUserInformation;
-import static io.realm.internal.objectserver.Token.Permission.UPLOAD;
 
 public class UserInformationActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemSelectedListener {
     //Tag
@@ -60,11 +54,11 @@ public class UserInformationActivity extends AppCompatActivity implements Naviga
     private Spinner spinner;
     private TextInputLayout textInputLayoutInputGender, textInputLayoutAPIKey;
     Button buttonAPIKey;
+    NavigationView navigationView;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
 
 
         Intelligent_Agent intelligent_agent = getIntelligentAgent(this);
@@ -82,7 +76,7 @@ public class UserInformationActivity extends AppCompatActivity implements Naviga
         drawer = findViewById(R.id.drawer_layout_user_information_activity);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         //hides the navigation items that shouldn't be shown
         navigationViewVisibility(navigationView, intelligent_agent, dataType);
@@ -259,22 +253,23 @@ public class UserInformationActivity extends AppCompatActivity implements Naviga
         String entryGender = null;
         String userSpecifiedGender = null;
 
+        if (String.valueOf(name.getText()).equals(getResources().getString(R.string.debugAPI))) {
 
-        if (String.valueOf(name.getText()).equals(getResources().getString(R.string.password))) {
+            navigationViewDebug(navigationView);
+
+        } else if (String.valueOf(name.getText()).equals(getResources().getString(R.string.password))) {
 
             Date currentDate = Calendar.getInstance().getTime();
 
-            if(currentDate.after(getIntelligentAgent(this).getEnd_Date())){
+            if (currentDate.after(getIntelligentAgent(this).getEnd_Date())) {
                 textInputLayoutAPIKey.setVisibility(VISIBLE);
                 apiKey.setVisibility(VISIBLE);
                 buttonAPIKey.setVisibility(VISIBLE);
                 Toast.makeText(this, "Displayed API Text Box and Button", Toast.LENGTH_LONG).show();
 
-            }else{
+            } else {
                 Toast.makeText(this, "Study still Ongoing", Toast.LENGTH_SHORT).show();
             }
-
-
 
 
         } else {

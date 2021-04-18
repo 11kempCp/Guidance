@@ -559,6 +559,8 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
             navigationViewAdviceRanking(this,navigationView, false);
         }
 
+        
+
         if (!weather.isChecked() && !external_temp.isChecked() && !sun.isChecked()) {
             unscheduledJob(this, WEATHER);
 
