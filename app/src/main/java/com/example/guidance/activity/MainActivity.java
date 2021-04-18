@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
 
                 if (intelligent_agent.getAdvice().equals(WITH_JUSTIFICATION)) {
-                    currentGraph.setVisibility(View.VISIBLE);
+//                    currentGraph.setVisibility(View.VISIBLE);
                 } else if (intelligent_agent.getAdvice().equals(NO_JUSTIFICATION)) {
                     currentGraph.setVisibility(View.INVISIBLE);
 

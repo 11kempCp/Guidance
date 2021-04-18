@@ -663,13 +663,15 @@ public class Util {
      */
     public static void navigationViewVisibility(NavigationView navigationView, Intelligent_Agent intelligent_agent, Data_Type dataType) {
 
-        navigationViewIntelligentAgent(navigationView, intelligent_agent);
+        navigationViewJustification(navigationView, intelligent_agent);
         navigationViewDailyQuestion(navigationView, dataType);
         navigationViewAdviceRanking(navigationView, dataType);
 
         studyStatus(navigationView, intelligent_agent);
 
     }
+
+
 
     private static void studyStatus(NavigationView navigationView, Intelligent_Agent intelligent_agent) {
 
@@ -704,9 +706,12 @@ public class Util {
      * @param navigationView    the navigationView whose items need to be corrected
      * @param intelligent_agent The attributes of the intelligent agent currently on the device
      */
-    public static void navigationViewIntelligentAgent(NavigationView navigationView, Intelligent_Agent intelligent_agent) {
+    public static void navigationViewJustification(NavigationView navigationView, Intelligent_Agent intelligent_agent) {
         if (intelligent_agent != null) {
-            navigationView.getMenu().findItem(R.id.nav_justification).setVisible(withJustification(intelligent_agent));
+//            navigationView.getMenu().findItem(R.id.nav_justification).setVisible(withJustification(intelligent_agent));
+
+            //kept invisible because nav_justification has not yet been implemented
+            navigationView.getMenu().findItem(R.id.nav_justification).setVisible(false);
         }
     }
 
