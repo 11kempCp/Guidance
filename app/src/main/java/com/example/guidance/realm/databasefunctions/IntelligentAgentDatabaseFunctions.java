@@ -4,10 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.guidance.R;
-import com.example.guidance.Util.Util;
 import com.example.guidance.realm.model.Intelligent_Agent;
-import com.example.guidance.realm.model.User_Information;
 
 import org.bson.types.ObjectId;
 
@@ -93,11 +90,17 @@ public class IntelligentAgentDatabaseFunctions {
 //            cal.add(Calendar.DATE, study_duration_days);
 
 
+            //todo change back to normal
+//            Date end_date = changeDayStartOfDay(currentTime, -1);
+//            init.setDate_Initialised(changeDayStartOfDay(currentTime,-7));
+//            init.setEnd_Date(end_date);
+
 
             Date end_date =  changeDayStartOfDay(currentTime, study_duration_days);
-
             init.setDate_Initialised(currentTime);
             init.setEnd_Date(end_date);
+
+
             init.setAnalysis(Analysis);
             init.setAdvice(Advice);
             init.setGender(Gender);
@@ -201,7 +204,7 @@ public class IntelligentAgentDatabaseFunctions {
     }
 
 
-    public static void updateIntelligentAgent(Context context, boolean status){
+    public static void updateIntelligentAgent(Context context, boolean status) {
         Realm.init(context);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
@@ -221,7 +224,7 @@ public class IntelligentAgentDatabaseFunctions {
         }, new Realm.Transaction.OnSuccess() {
             @Override
             public void onSuccess() {
-                Log.d(TAG, "executed transaction : updateUserInformation" );
+                Log.d(TAG, "executed transaction : updateUserInformation");
 
             }
         }, new Realm.Transaction.OnError() {
@@ -236,7 +239,7 @@ public class IntelligentAgentDatabaseFunctions {
 
     }
 
-    public static void updateAPIKey(Context context, String key){
+    public static void updateAPIKey(Context context, String key) {
         Realm.init(context);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
@@ -257,8 +260,8 @@ public class IntelligentAgentDatabaseFunctions {
         }, new Realm.Transaction.OnSuccess() {
             @Override
             public void onSuccess() {
-                Log.d(TAG, "executed transaction : updateAPIKey" );
-                Toast.makeText(context, "Updated API Key", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "executed transaction : updateAPIKey");
+//                Toast.makeText(context, "Updated API Key", Toast.LENGTH_SHORT).show();
             }
         }, new Realm.Transaction.OnError() {
             @Override
@@ -272,7 +275,7 @@ public class IntelligentAgentDatabaseFunctions {
 
     }
 
-    public static void updateCount(Context context, int count){
+    public static void updateCount(Context context, int count) {
         Realm.init(context);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
@@ -293,8 +296,8 @@ public class IntelligentAgentDatabaseFunctions {
         }, new Realm.Transaction.OnSuccess() {
             @Override
             public void onSuccess() {
-                Log.d(TAG, "executed transaction : updateAPIKey" );
-                Toast.makeText(context, "Updated API Key", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "executed transaction : updateAPIKey");
+//                Toast.makeText(context, "Updated API Key", Toast.LENGTH_SHORT).show();
             }
         }, new Realm.Transaction.OnError() {
             @Override

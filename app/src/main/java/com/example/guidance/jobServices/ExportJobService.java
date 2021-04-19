@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.StrictMode;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -90,10 +91,18 @@ public class ExportJobService extends JobService {
 
             //todo see if exportStudyData can return true
             //todo display message to user that the study is over
-            exportStudyData(this);
-            updateIntelligentAgent(this, true);
+            if( exportStudyData(this)){
+                updateIntelligentAgent(this, true);
 
-            createNotification();
+                createNotification();
+
+            }else{
+                Toast.makeText(this, "Error With Uploading please try again", Toast.LENGTH_LONG).show();
+            }
+
+
+
+
         }
 
 
@@ -143,7 +152,7 @@ public class ExportJobService extends JobService {
         return false;
     }
 
-    public static void exportStudyData(Context context){
+    public static boolean exportStudyData(Context context){
 
         Realm.init(context);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
@@ -282,9 +291,12 @@ public class ExportJobService extends JobService {
                         FileMetadata metadata = client.files().uploadBuilder(file.getPath())
                                 .uploadAndFinish(in);
 
+                        updateCount(context, IA.getCount()+1);
 
 
                         Log.d(TAG, "exportStudyData: " + metadata.getExportInfo());
+
+                        return true;
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -295,11 +307,14 @@ public class ExportJobService extends JobService {
 
             } catch (DbxException e) {
                 e.printStackTrace();
+
+                return false;
             }
 
         }
 
-        updateCount(context, IA.getCount()+1);
+
+        return false;
     }
 
 

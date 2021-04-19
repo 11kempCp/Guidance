@@ -87,7 +87,7 @@ public class Util {
      */
 //    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, QUESTIONNAIRE, SCREENTIME, ADVICE, ADVICE_FOLLOWED);
 //    public static final List<Integer> utilList = Arrays.asList();
-    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, WEATHER, QUESTIONNAIRE, SCREENTIME, ADVICE, ADVICE_FOLLOWED);
+    public static final List<Integer> utilList = Arrays.asList(AMBIENT_TEMP, STEPS, LOCATION, DAILY_QUESTION, WEATHER, SCREENTIME, ADVICE, ADVICE_FOLLOWED);
 
     /**
      * @param context      Context allows access to application-specific resources and classes
@@ -375,9 +375,9 @@ public class Util {
                         }
 
                         break;
-                    case QUESTIONNAIRE:
-                        scheduleJob(context, QuestionnaireJobService.class, QUESTIONNAIRE, context.getResources().getInteger(R.integer.questionnaire));
-                        break;
+//                    case QUESTIONNAIRE:
+//                        scheduleJob(context, QuestionnaireJobService.class, QUESTIONNAIRE, context.getResources().getInteger(R.integer.questionnaire));
+//                        break;
 
                     case SCREENTIME:
                         if (data.isScreentime()) {

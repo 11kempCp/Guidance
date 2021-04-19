@@ -41,6 +41,7 @@ import static com.example.guidance.Util.Util.scheduleExport;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.updateAPIKey;
+import static com.example.guidance.realm.databasefunctions.QuestionnaireDatabaseFunctions.getSizeAllQuestionnaire;
 import static com.example.guidance.realm.databasefunctions.UserInformationDatabaseFunctions.getUserInformation;
 import static com.example.guidance.realm.databasefunctions.UserInformationDatabaseFunctions.updateUserInformation;
 
@@ -260,13 +261,25 @@ public class UserInformationActivity extends AppCompatActivity implements Naviga
 
         } else if (String.valueOf(name.getText()).equals(getResources().getString(R.string.password))) {
 
+
+            if(getSizeAllQuestionnaire(this)<2){
+//                questionnaire = true;
+
+                Intent intent = new Intent(this, QuestionaireActivity.class);
+                startActivity(intent);
+            }
+
+
+
+
+
             Date currentDate = Calendar.getInstance().getTime();
 
             if (currentDate.after(getIntelligentAgent(this).getEnd_Date())) {
                 textInputLayoutAPIKey.setVisibility(VISIBLE);
                 apiKey.setVisibility(VISIBLE);
                 buttonAPIKey.setVisibility(VISIBLE);
-                Toast.makeText(this, "Displayed API Text Box and Button", Toast.LENGTH_LONG).show();
+//                Toast.makeText(this, "Displayed API Text Box and Button", Toast.LENGTH_LONG).show();
 
             } else {
                 Toast.makeText(this, "Study still Ongoing", Toast.LENGTH_SHORT).show();
@@ -338,9 +351,13 @@ public class UserInformationActivity extends AppCompatActivity implements Naviga
 
             scheduleExport(this);
 
-            textInputLayoutAPIKey.setVisibility(GONE);
-            apiKey.setVisibility(GONE);
-            buttonAPIKey.setVisibility(GONE);
+            if(getIntelligentAgent(this).isStudyStatus()){
+                textInputLayoutAPIKey.setVisibility(GONE);
+                apiKey.setVisibility(GONE);
+                buttonAPIKey.setVisibility(GONE);
+            }
+
+
         } else {
             Toast.makeText(this, "Please Enter The API Key Provided", Toast.LENGTH_SHORT).show();
         }

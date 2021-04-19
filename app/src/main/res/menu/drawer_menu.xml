@@ -46,7 +46,7 @@
             android:icon="@drawable/ic_data"
             android:title="@string/data" />
 
-
+<!--todo set visible to false-->
         <item
             android:id="@+id/nav_debug"
             android:icon="@drawable/ic_debug"
