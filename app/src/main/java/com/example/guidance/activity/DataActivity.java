@@ -65,8 +65,10 @@ import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunct
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.initialiseDataType;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.insertDataTypeUsageData;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
+import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.isIntelligentAgentInitialised;
 import static com.example.guidance.realm.databasefunctions.LocationDatabaseFunctions.insertLocation;
 import static com.example.guidance.realm.databasefunctions.LocationDatabaseFunctions.isLocation;
+import static com.example.guidance.realm.databasefunctions.QuestionnaireDatabaseFunctions.isQuestionaireAnswered;
 import static com.example.guidance.realm.databasefunctions.WeatherDatabaseFunctions.isExistingExternalTempNull;
 import static com.example.guidance.realm.databasefunctions.WeatherDatabaseFunctions.isExistingSunNull;
 import static com.example.guidance.realm.databasefunctions.WeatherDatabaseFunctions.isExistingWeatherNull;
@@ -96,6 +98,8 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
     Switch mood;
 
     private NavigationView navigationView;
+    Toolbar toolbar;
+    boolean questionnaire;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +116,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_data);
         drawer = findViewById(R.id.drawer_layout_data_activity);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+         toolbar = findViewById(R.id.toolbar);
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -868,6 +872,24 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
                 !screentime.isChecked() &&
                 !socialness.isChecked() &&
                 !mood.isChecked();
+    }
+
+    @Override
+    protected void onResume() {
+
+
+        if (isIntelligentAgentInitialised(this) && !isQuestionaireAnswered(this) && !questionnaire) {
+
+            //sets the toolbar color to gender of the intelligent agent
+            Util.setToolbarColor(getIntelligentAgent(this), toolbar, getResources());
+            Util.navigationViewVisibility(navigationView, getIntelligentAgent(this), getDataType(this));
+
+            questionnaire = true;
+            Intent intent = new Intent(this, QuestionaireActivity.class);
+            startActivity(intent);
+        }
+
+        super.onResume();
     }
 
 }

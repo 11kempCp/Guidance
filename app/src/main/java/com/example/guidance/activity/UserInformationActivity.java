@@ -40,8 +40,10 @@ import static com.example.guidance.Util.Util.navigationViewVisibility;
 import static com.example.guidance.Util.Util.scheduleExport;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
+import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.isIntelligentAgentInitialised;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.updateAPIKey;
 import static com.example.guidance.realm.databasefunctions.QuestionnaireDatabaseFunctions.getSizeAllQuestionnaire;
+import static com.example.guidance.realm.databasefunctions.QuestionnaireDatabaseFunctions.isQuestionaireAnswered;
 import static com.example.guidance.realm.databasefunctions.UserInformationDatabaseFunctions.getUserInformation;
 import static com.example.guidance.realm.databasefunctions.UserInformationDatabaseFunctions.updateUserInformation;
 
@@ -56,6 +58,8 @@ public class UserInformationActivity extends AppCompatActivity implements Naviga
     private TextInputLayout textInputLayoutInputGender, textInputLayoutAPIKey;
     Button buttonAPIKey;
     NavigationView navigationView;
+    Toolbar toolbar;
+    boolean questionnaire;
 
 
     @Override
@@ -76,8 +80,8 @@ public class UserInformationActivity extends AppCompatActivity implements Naviga
 
         drawer = findViewById(R.id.drawer_layout_user_information_activity);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-         navigationView = findViewById(R.id.nav_view);
+        toolbar = findViewById(R.id.toolbar);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         //hides the navigation items that shouldn't be shown
         navigationViewVisibility(navigationView, intelligent_agent, dataType);
@@ -262,15 +266,12 @@ public class UserInformationActivity extends AppCompatActivity implements Naviga
         } else if (String.valueOf(name.getText()).equals(getResources().getString(R.string.password))) {
 
 
-            if(getSizeAllQuestionnaire(this)<2){
+            if (getSizeAllQuestionnaire(this) < 2) {
 //                questionnaire = true;
 
                 Intent intent = new Intent(this, QuestionaireActivity.class);
                 startActivity(intent);
             }
-
-
-
 
 
             Date currentDate = Calendar.getInstance().getTime();
@@ -351,7 +352,7 @@ public class UserInformationActivity extends AppCompatActivity implements Naviga
 
             scheduleExport(this);
 
-            if(getIntelligentAgent(this).isStudyStatus()){
+            if (getIntelligentAgent(this).isStudyStatus()) {
                 textInputLayoutAPIKey.setVisibility(GONE);
                 apiKey.setVisibility(GONE);
                 buttonAPIKey.setVisibility(GONE);
@@ -361,5 +362,24 @@ public class UserInformationActivity extends AppCompatActivity implements Naviga
         } else {
             Toast.makeText(this, "Please Enter The API Key Provided", Toast.LENGTH_SHORT).show();
         }
+    }
+
+
+    @Override
+    protected void onResume() {
+
+
+        if (isIntelligentAgentInitialised(this) && !isQuestionaireAnswered(this) && !questionnaire) {
+
+            //sets the toolbar color to gender of the intelligent agent
+            Util.setToolbarColor(getIntelligentAgent(this), toolbar, getResources());
+            Util.navigationViewVisibility(navigationView, getIntelligentAgent(this), getDataType(this));
+
+            questionnaire = true;
+            Intent intent = new Intent(this, QuestionaireActivity.class);
+            startActivity(intent);
+        }
+
+        super.onResume();
     }
 }

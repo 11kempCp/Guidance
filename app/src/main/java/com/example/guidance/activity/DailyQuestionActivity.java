@@ -33,9 +33,11 @@ import static com.example.guidance.Util.Util.DAILY_QUESTION;
 import static com.example.guidance.Util.Util.navigationViewVisibility;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
+import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.isIntelligentAgentInitialised;
 import static com.example.guidance.realm.databasefunctions.MoodDatabaseFunctions.getMoodEntryDate;
 import static com.example.guidance.realm.databasefunctions.MoodDatabaseFunctions.isMoodEntryToday;
 import static com.example.guidance.realm.databasefunctions.MoodDatabaseFunctions.moodEntry;
+import static com.example.guidance.realm.databasefunctions.QuestionnaireDatabaseFunctions.isQuestionaireAnswered;
 import static com.example.guidance.realm.databasefunctions.SocialnessDatabaseFunctions.getSocialnessEntryDate;
 import static com.example.guidance.realm.databasefunctions.SocialnessDatabaseFunctions.isSocialnessEntryDate;
 import static com.example.guidance.realm.databasefunctions.SocialnessDatabaseFunctions.socialnessEntry;
@@ -47,6 +49,9 @@ public class DailyQuestionActivity extends AppCompatActivity implements Navigati
     private RadioGroup radioGroupSocialness, radioGroupMood;
     private TextView socialnessDailyQuestion, moodDailyQuestion, socialnessClarification, moodClarification;
     private RadioButton socialnessButtonOne, socialnessButtonTwo, socialnessButtonThree, socialnessButtonFour, moodButtonOne, moodButtonTwo, moodButtonThree, moodButtonFour;
+    NavigationView navigationView;
+    boolean questionnaire = false;
+    Toolbar toolbar;
 
 
     @SuppressLint("NonConstantResourceId")
@@ -66,8 +71,8 @@ public class DailyQuestionActivity extends AppCompatActivity implements Navigati
 
         drawer = findViewById(R.id.drawer_layout_daily_question_activity);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        toolbar = findViewById(R.id.toolbar);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
 
@@ -110,7 +115,7 @@ public class DailyQuestionActivity extends AppCompatActivity implements Navigati
         moodButtonFour = findViewById(R.id.radioButton4QuestionTwo);
 
         Date ct = Calendar.getInstance().getTime();
-        setAllRadioButtonStatus(dataType,ct);
+        setAllRadioButtonStatus(dataType, ct);
 
         radioGroupSocialness.setOnCheckedChangeListener((group, checkedId) -> {
             Util.stopBackgroundNotification(DAILY_QUESTION);
@@ -239,52 +244,64 @@ public class DailyQuestionActivity extends AppCompatActivity implements Navigati
     protected void onResume() {
         super.onResume();
         Date ct = Calendar.getInstance().getTime();
-        setAllRadioButtonStatus(getDataType(this),ct);
+        setAllRadioButtonStatus(getDataType(this), ct);
+
+        if (isIntelligentAgentInitialised(this) && !isQuestionaireAnswered(this) && !questionnaire) {
+
+            //sets the toolbar color to gender of the intelligent agent
+            Util.setToolbarColor(getIntelligentAgent(this), toolbar, getResources());
+            Util.navigationViewVisibility(navigationView, getIntelligentAgent(this), getDataType(this));
+
+            questionnaire = true;
+            Intent intent = new Intent(this, QuestionaireActivity.class);
+            startActivity(intent);
+        }
+
     }
 
-    private void setAllRadioButtonStatus(Data_Type dataType , Date ct){
+    private void setAllRadioButtonStatus(Data_Type dataType, Date ct) {
 
-        if(dataType.isSocialness()){
+        if (dataType.isSocialness()) {
             setSocialnessRadioButton(ct);
             socialnessVisible();
-        }else{
+        } else {
             socialnessInvisible();
         }
 
-        if(dataType.isMood()){
+        if (dataType.isMood()) {
             setMoodRadioButton(ct);
             moodVisible();
-        }else{
+        } else {
             moodInvisible();
         }
     }
 
-    private void moodVisible(){
+    private void moodVisible() {
         moodDailyQuestion.setVisibility(View.VISIBLE);
         moodClarification.setVisibility(View.VISIBLE);
         radioGroupMood.setVisibility(View.VISIBLE);
     }
 
-    private void moodInvisible(){
+    private void moodInvisible() {
         moodDailyQuestion.setVisibility(View.GONE);
         moodClarification.setVisibility(View.GONE);
         radioGroupMood.setVisibility(View.GONE);
     }
 
 
-    private void socialnessVisible(){
+    private void socialnessVisible() {
         socialnessDailyQuestion.setVisibility(View.VISIBLE);
         socialnessClarification.setVisibility(View.VISIBLE);
         radioGroupSocialness.setVisibility(View.VISIBLE);
     }
 
-    private void socialnessInvisible(){
+    private void socialnessInvisible() {
         socialnessDailyQuestion.setVisibility(View.GONE);
         socialnessClarification.setVisibility(View.GONE);
         radioGroupSocialness.setVisibility(View.GONE);
     }
 
-    private void setSocialnessRadioButton(Date ct){
+    private void setSocialnessRadioButton(Date ct) {
 
 
         if (isSocialnessEntryDate(this, ct)) {
@@ -294,10 +311,9 @@ public class DailyQuestionActivity extends AppCompatActivity implements Navigati
         }
 
 
-
     }
 
-    private void setMoodRadioButton(Date ct){
+    private void setMoodRadioButton(Date ct) {
         if (isMoodEntryToday(this, ct)) {
             int value = Objects.requireNonNull(getMoodEntryDate(this, ct)).getRating();
 
@@ -305,9 +321,7 @@ public class DailyQuestionActivity extends AppCompatActivity implements Navigati
         }
 
 
-
-
-
     }
+
 
 }

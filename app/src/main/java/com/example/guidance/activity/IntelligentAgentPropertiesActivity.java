@@ -23,13 +23,16 @@ import static com.example.guidance.Util.Util.navigationViewVisibility;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.isIntelligentAgentInitialised;
+import static com.example.guidance.realm.databasefunctions.QuestionnaireDatabaseFunctions.isQuestionaireAnswered;
 
 public class IntelligentAgentPropertiesActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     //Tag
     private static final String TAG = "IntelligentAgentPropertiesActivity";
     private DrawerLayout drawer;
-
+    Toolbar toolbar;
+    NavigationView navigationView;
+    boolean questionnaire;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +61,8 @@ public class IntelligentAgentPropertiesActivity extends AppCompatActivity implem
 
 
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+         toolbar = findViewById(R.id.toolbar);
+         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         //hides the navigation items that shouldn't be shown
         navigationViewVisibility(navigationView,intelligent_agent, dataType);
@@ -156,6 +159,24 @@ public class IntelligentAgentPropertiesActivity extends AppCompatActivity implem
         }
 
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+
+
+        if (isIntelligentAgentInitialised(this) && !isQuestionaireAnswered(this) && !questionnaire) {
+
+            //sets the toolbar color to gender of the intelligent agent
+            Util.setToolbarColor(getIntelligentAgent(this), toolbar, getResources());
+            Util.navigationViewVisibility(navigationView, getIntelligentAgent(this), getDataType(this));
+
+            questionnaire = true;
+            Intent intent = new Intent(this, QuestionaireActivity.class);
+            startActivity(intent);
+        }
+
+        super.onResume();
     }
 
 }

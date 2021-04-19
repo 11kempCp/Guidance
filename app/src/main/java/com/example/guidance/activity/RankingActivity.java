@@ -40,6 +40,8 @@ import static com.example.guidance.Util.Util.navigationViewVisibility;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.getDataType;
 import static com.example.guidance.realm.databasefunctions.DataTypeDatabaseFunctions.isADataType;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.getIntelligentAgent;
+import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.isIntelligentAgentInitialised;
+import static com.example.guidance.realm.databasefunctions.QuestionnaireDatabaseFunctions.isQuestionaireAnswered;
 import static com.example.guidance.realm.databasefunctions.RankingDatabaseFunctions.getRanking;
 import static com.example.guidance.realm.databasefunctions.RankingDatabaseFunctions.getRankingList;
 import static com.example.guidance.realm.databasefunctions.RankingDatabaseFunctions.insertRankingUsageData;
@@ -72,6 +74,9 @@ public class RankingActivity extends AppCompatActivity implements NavigationView
     private RankingRecyclerAdapter rankingRecyclerAdapter;
     private final int rankingListSize = 5;
 
+    boolean questionnaire;
+    Toolbar toolbar;
+    NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,8 +102,8 @@ public class RankingActivity extends AppCompatActivity implements NavigationView
         updateRanking = findViewById(R.id.buttonUpdateRanking);
 
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        toolbar = findViewById(R.id.toolbar);
+        navigationView = findViewById(R.id.nav_view);
 
         //changes the visibility of input boxes to the correct visibility status
         changeVisibility(dataType, ranking);
@@ -120,7 +125,7 @@ public class RankingActivity extends AppCompatActivity implements NavigationView
 
 
         noDataTypes(dataType);
-        if(onlyOneSelected(dataType)){
+        if (onlyOneSelected(dataType)) {
             updateRanking.setVisibility(View.GONE);
         }
 
@@ -191,7 +196,7 @@ public class RankingActivity extends AppCompatActivity implements NavigationView
             i++;
         }
 
-        return i==1;
+        return i == 1;
     }
 
 
@@ -366,13 +371,24 @@ public class RankingActivity extends AppCompatActivity implements NavigationView
     protected void onResume() {
         super.onResume();
 
+        if (isIntelligentAgentInitialised(this) && !isQuestionaireAnswered(this) && !questionnaire) {
+
+            //sets the toolbar color to gender of the intelligent agent
+            Util.setToolbarColor(getIntelligentAgent(this), toolbar, getResources());
+            Util.navigationViewVisibility(navigationView, getIntelligentAgent(this), getDataType(this));
+
+            questionnaire = true;
+            Intent intent = new Intent(this, QuestionaireActivity.class);
+            startActivity(intent);
+        }
+
 
         Data_Type dataType = getDataType(this);
         Ranking ranking = getRanking(this);
 
 
         noDataTypes(dataType);
-        if(onlyOneSelected(dataType)){
+        if (onlyOneSelected(dataType)) {
             updateRanking.setVisibility(View.GONE);
         }
 
