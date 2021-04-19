@@ -327,7 +327,6 @@ public class AdviceJobService extends JobService {
 //        boolean first = true;
 //        Date skipThisDay = null;
 //
-//        //todo likely incorrect? triggers to early? needs to look over all locations in a day before
 //        // setting rankingLinkedHashMap.put(location, true);
 //        for (Location loc : previousDaysLocations) {
 //
@@ -806,7 +805,6 @@ public class AdviceJobService extends JobService {
                             convertSocialnessToRealmList(this, adviceJustification.getJustificationSocialness()), convertMoodToRealmList(this, adviceJustification.getJustificationMood()));
                     //if the user is in the NO_JUSTIFICATION group
                 } else if (noJustification(intelligent_agent)) {
-                    //todo give a date with which to go out for
                     text = getLocationAdvice(0, name, weather.getDateTime(), weather.getWeather(), weather.getFeels_like_day(), weather.getSunRise(), weather.getSunSet());
                     insertAdvice(this, currentTime, location, Util.changeDayEndOfDay(currentTime, 1), text, null, null, null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
                             convertSocialnessToRealmList(this, adviceJustification.getJustificationSocialness()), convertMoodToRealmList(this, adviceJustification.getJustificationMood()));
@@ -834,7 +832,6 @@ public class AdviceJobService extends JobService {
                             convertSocialnessToRealmList(this, adviceJustification.getJustificationSocialness()), convertMoodToRealmList(this, adviceJustification.getJustificationMood()));
                     //if the user is in the NO_JUSTIFICATION group
                 } else if (noJustification(intelligent_agent)) {
-                    //todo give a date with which to go out for
                     text = getLocationAdvice(0, weather.getDateTime(), weather.getWeather(), weather.getFeels_like_day(), weather.getSunRise(), weather.getSunSet());
                     insertAdvice(this, currentTime, location, Util.changeDayEndOfDay(currentTime, 1), text, null, null, null, null, Collections.singletonList(adviceJustification.getJustificationStep()), adviceJustification.getJustificationScreentime(), convertLocationToRealmList(this, adviceJustification.getJustificationLocation()),
                             convertSocialnessToRealmList(this, adviceJustification.getJustificationSocialness()), convertMoodToRealmList(this, adviceJustification.getJustificationMood()));

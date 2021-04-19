@@ -307,6 +307,7 @@
     <string name="no_Advice_Currently">No Advice has been given yet.</string>
     <string name="no_data_types_selected">No Advice Data Types have been selected.</string>
     <string name="no_data_types_selected_goto_data_activity">No Advice Data Types have been selected.\nPlease go to Data Used to activate Advice Data Types.</string>
+    <string name="location_enable">For Location to be stored 24/7, please go to App Info for Guidance and set the location permission to- "Allow all the time". Please note for Location to be stored the Location setting for the phone needs to be on.</string>
     <!--End of Application Strings-->
 
     <!--Start of Activity Name Strings-->
@@ -342,7 +343,7 @@
     <integer name="screentime">15</integer>
     <integer name="questionnaire">360</integer>
     <integer name="advice">180</integer>
-    <integer name="advice_followed">1440</integer>
+    <integer name="advice_followed">60</integer>
     <!--End of Periodic Job Times-->
 
     <!--Start of Daily Questions-->

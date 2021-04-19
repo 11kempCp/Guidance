@@ -89,8 +89,6 @@ public class ExportJobService extends JobService {
 
         if(currentTime.after(intelligent_agent.getEnd_Date()) && getSizeAllQuestionnaire(this) == 2 && !intelligent_agent.isStudyStatus() && intelligent_agent.getAccessToken()!=null){
 
-            //todo see if exportStudyData can return true
-            //todo display message to user that the study is over
             if( exportStudyData(this)){
                 updateIntelligentAgent(this, true);
 
@@ -240,7 +238,6 @@ public class ExportJobService extends JobService {
         } else {
             boolean isFileCreated = create(context, filename, jsonString);
             if (isFileCreated) {
-                //proceed with storing the first todo  or show ui
 
                 Log.d(TAG, "exportStudyData: isFileCreated" + true);
             } else {

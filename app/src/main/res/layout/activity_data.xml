@@ -78,7 +78,7 @@
                 app:layout_constraintEnd_toEndOf="@+id/switchLocation"
                 app:layout_constraintHorizontal_bias="0.385"
                 app:layout_constraintStart_toStartOf="@+id/switchLocation"
-                app:layout_constraintTop_toBottomOf="@+id/switchLocation" />
+                app:layout_constraintTop_toBottomOf="@+id/textView" />
 
             <Switch
                 android:id="@+id/switchScreentime"
@@ -160,6 +160,21 @@
                 app:layout_constraintEnd_toEndOf="@+id/switchSocialness"
                 app:layout_constraintStart_toStartOf="@+id/switchSocialness"
                 app:layout_constraintTop_toBottomOf="@+id/switchSocialness" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/location_enable"
+                android:gravity="center"
+
+
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/switchLocation" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <FrameLayout

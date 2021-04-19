@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.method.ScrollingMovementMethod;
@@ -25,6 +24,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.guidance.R;
 import com.example.guidance.ServiceReceiver.onPauseServiceReceiver;
+import com.example.guidance.Util.IA;
 import com.example.guidance.Util.Util;
 import com.example.guidance.gsonTemplates.AdviceUsageDataSerializer;
 import com.example.guidance.gsonTemplates.DataTypeSerializer;
@@ -71,7 +71,9 @@ import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
+import static com.example.guidance.Util.IA.Analysis;
 import static com.example.guidance.Util.IA.FEMALE;
+import static com.example.guidance.Util.IA.Gender;
 import static com.example.guidance.Util.IA.MALE;
 import static com.example.guidance.Util.Output.create;
 import static com.example.guidance.Util.Output.isFilePresent;
@@ -853,7 +855,7 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
                 }
             }
 
-            if(triggered ){
+            if (triggered) {
                 break;
             }
 
@@ -864,5 +866,32 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
         }
 
 //        return null;
+    }
+
+    public void generatePasscode(View view) {
+        ArrayList<String> passcodeList = new ArrayList<>();
+
+        StringBuilder passcode = new StringBuilder();
+        int i = 0;
+        for (String analysis : Analysis) {
+            for (String advice : IA.Advice) {
+                {
+                    i++;
+                    passcode.append(analysis);
+                    passcode.append(advice);
+                    passcodeList.add(String.valueOf(passcode));
+                    passcode.setLength(0);
+
+
+                }
+            }
+
+            if (i == (Analysis.size() * IA.Advice.size())) {
+                Log.d(TAG, "generatePasscodes: correct size " + i);
+            }
+
+            Log.d(TAG, "generatePasscodes: " + passcodeList);
+
+        }
     }
 }

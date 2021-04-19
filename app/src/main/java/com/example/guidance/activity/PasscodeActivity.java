@@ -173,6 +173,33 @@ public class PasscodeActivity extends AppCompatActivity implements AdapterView.O
 
     }
 
+    public void generatePasscodesAdjusted() {
+
+        StringBuilder passcode = new StringBuilder();
+        int i = 0;
+        for (String analysis : Analysis) {
+            for (String advice : Advice) {
+                for (String gender : Gender) {
+                            i++;
+                            passcode.append(analysis);
+                            passcode.append(advice);
+                            passcode.append(gender);
+                            passcodeList.add(String.valueOf(passcode));
+                            passcode.setLength(0);
+
+                }
+            }
+        }
+
+        if (i == (Analysis.size() * Advice.size() * Gender.size())) {
+            Log.d(TAG, "generatePasscodes: correct size " + i);
+        }
+
+        Log.d(TAG, "generatePasscodes: " + passcodeList);
+
+
+    }
+
 
     //Checks to see if the passcode entered is valid
     private boolean isValidPasscode(String passcode) {
