@@ -73,6 +73,7 @@
     <string name="uploadFile">Upload File</string>
     <string name="startExportJobService">exportJobService</string>
     <string name="adviceLocation">adviceLocation</string>
+    <string name="testLocation">testLocation</string>
 
     <!--End of Debug Strings-->
 

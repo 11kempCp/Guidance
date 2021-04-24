@@ -110,7 +110,7 @@ public class AdviceJobService extends JobService {
         Intelligent_Agent intelligent_agent = getIntelligentAgent(this);
 
         //todo delete
-//        determineAdvice(currentTime);
+        determineAdvice(currentTime);
 
 
         //validation to ensure that the starting day immediately causes a null advice to be given
@@ -404,8 +404,8 @@ public class AdviceJobService extends JobService {
 
         for (int i = 0; i < days; i++) {
             ArrayList<Location> list1 = new ArrayList<>();
-            arrayLists.add(dayNumber, list1);
-
+            arrayLists.add(i, list1);
+            Log.d(TAG, "adviceLocation: arrayLists " + arrayLists);
         }
 
 
@@ -414,16 +414,20 @@ public class AdviceJobService extends JobService {
 
             if (!first) {
                 if (!isSameDate(loc.getDateTime(), previous_loc.getDateTime())) {
+                    Log.d(TAG, "adviceLocation: " + loc.getDateTime());
                     dayNumber++;
                     amountPerDay = 1;
                 }
 
+                ArrayList<Location> list1;
+                Log.d(TAG, "adviceLocation: dayNumber " + dayNumber);
+                list1 = arrayLists.get(dayNumber);
+                list1.add(loc);
+                arrayLists.set(dayNumber, list1);
+            }else{
+                first = false;
             }
-            ArrayList<Location> list1;
-            list1 = arrayLists.get(dayNumber);
-            list1.add(loc);
-            arrayLists.set(dayNumber, list1);
-            first = false;
+
             previous_loc = loc;
 
         }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.guidance.R;
+import com.example.guidance.Util.Util;
 import com.example.guidance.realm.model.Location;
 
 import org.bson.types.ObjectId;
@@ -125,14 +126,19 @@ public class LocationDatabaseFunctions {
         Realm realm = Realm.getDefaultInstance();
 
 
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(currentTime);
-        int Day = -day;
-        cal.add(Calendar.DATE, Day);
-        Date to = cal.getTime();
+//        Calendar cal = Calendar.getInstance();
+//        cal.setTime(currentTime);
+//        int Day = -day;
+//        cal.add(Calendar.DATE, Day);
+//        Date to = cal.getTime();
+
+        Date start = Util.changeDayStartOfDay(currentTime, -day);
+        Date end = Util.changeDayEndOfDay(currentTime,0);
+
+
 
 //        RealmQuery<Location> query = realm.where(Location.class).lessThan("dateTime", currentTime);
-        RealmQuery<Location> query = realm.where(Location.class).between("dateTime", to, currentTime);
+        RealmQuery<Location> query = realm.where(Location.class).between("dateTime", start, end);
 
         return query.sort("dateTime", Sort.DESCENDING).findAll();
     }

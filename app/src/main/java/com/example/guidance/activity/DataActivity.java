@@ -152,7 +152,7 @@ public class DataActivity extends AppCompatActivity implements NavigationView.On
             SensorManager mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
 
-            //if there is no step counter sensor on the device then the viability of the
+            //if there is no step counter sensor on the device then the visibility of the
             //steps switch will be set to GONE
             if (isStepsSensor(mSensorManager)) {
                 steps.setVisibility(View.VISIBLE);

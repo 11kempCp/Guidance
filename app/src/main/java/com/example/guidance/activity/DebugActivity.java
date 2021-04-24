@@ -73,7 +73,6 @@ import io.realm.Sort;
 
 import static com.example.guidance.Util.IA.Analysis;
 import static com.example.guidance.Util.IA.FEMALE;
-import static com.example.guidance.Util.IA.Gender;
 import static com.example.guidance.Util.IA.MALE;
 import static com.example.guidance.Util.Output.create;
 import static com.example.guidance.Util.Output.isFilePresent;
@@ -99,6 +98,7 @@ import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatab
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.intelligentAgentSetGender;
 import static com.example.guidance.realm.databasefunctions.IntelligentAgentDatabaseFunctions.isIntelligentAgentInitialised;
 import static com.example.guidance.realm.databasefunctions.LocationDatabaseFunctions.getLocationOverPreviousDays;
+import static com.example.guidance.realm.databasefunctions.LocationDatabaseFunctions.insertLocation;
 import static com.example.guidance.realm.databasefunctions.QuestionnaireDatabaseFunctions.getAllQuestionnaire;
 import static com.example.guidance.realm.databasefunctions.RankingDatabaseFunctions.getRankingUsageData;
 import static com.example.guidance.realm.databasefunctions.UserInformationDatabaseFunctions.getUserInformation;
@@ -593,10 +593,15 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
             String DEFAULT = "DEFAULT";
             if (gender.equals(DEFAULT)) {
                 intelligentAgentSetGender(this, MALE);
+                Toast.makeText(this, "Set IA Gender MALE", Toast.LENGTH_SHORT).show();
             } else if (gender.equals(MALE)) {
                 intelligentAgentSetGender(this, FEMALE);
+                Toast.makeText(this, "Set IA Gender FEMALE", Toast.LENGTH_SHORT).show();
+
             } else {
                 intelligentAgentSetGender(this, "DEFAULT");
+                Toast.makeText(this, "Set IA Gender Neutral", Toast.LENGTH_SHORT).show();
+
             }
         }
 
@@ -893,5 +898,77 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
             Log.d(TAG, "generatePasscodes: " + passcodeList);
 
         }
+    }
+
+    public void displayDataType(View view) {
+
+
+        Data_Type temp = getDataType(this);
+        displayTextView.setText(temp.toString());
+
+    }
+
+    public void testLocation(View view) {
+
+        double lat = 51.4804;
+        double lon = -3.1725;
+        int value = 5;
+
+        for (int i = 0; i < value; i++) {
+            Date time = Calendar.getInstance().getTime();
+            insertLocation(this, time, lat, lon);
+        }
+
+        lat = 51.4824;
+        lon = -3.1725;
+
+        for (int i = 0; i < value; i++) {
+            Date time = Calendar.getInstance().getTime();
+//            insertLocation(this, Util.changeDayStartOfDay(time,0), lat, lon);
+            insertLocation(this, time, lat, lon);
+
+        }
+        lat = 51.4814;
+        lon = -3.1715;
+
+        for (int i = 0; i < value; i++) {
+            Date time = Calendar.getInstance().getTime();
+//            insertLocation(this, Util.changeDayStartOfDay(time,0), lat, lon);
+            insertLocation(this, time, lat, lon);
+
+        }
+
+        Toast.makeText(this, "Inserted Location", Toast.LENGTH_SHORT).show();
+        Log.d(TAG, "testLocation: ");
+
+
+//        double lat = 51.4804;
+//        double lon = -3.1725;
+//        int value = 5;
+//
+//        for (int i = 0; i < value; i++) {
+//            Date time = Calendar.getInstance().getTime();
+//            insertLocation(this, time, lat, lon);
+//        }
+
+//
+//        for (int i = 0; i < value; i++) {
+//            Date time = Calendar.getInstance().getTime();
+////            insertLocation(this, Util.changeDayStartOfDay(time,-1), lat, lon);
+//            insertLocation(this, time, lat, lon);
+//
+//        }
+//
+//        for (int i = 0; i < value; i++) {
+//            Date time = Calendar.getInstance().getTime();
+////            insertLocation(this, Util.changeDayStartOfDay(time,-2), lat, lon);
+//            insertLocation(this, time, lat, lon);
+//
+//        }
+//
+//        Toast.makeText(this, "Inserted Location", Toast.LENGTH_SHORT).show();
+//        Log.d(TAG, "testLocation: ");
+
+
     }
 }

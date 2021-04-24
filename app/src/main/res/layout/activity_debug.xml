@@ -80,8 +80,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:onClick="generatePasscode"
-                android:text="@string/passcode"
+                android:onClick="displaySocialness"
+                android:text="@string/display_socialness"
                 app:layout_constraintEnd_toStartOf="@+id/button10"
                 app:layout_constraintStart_toStartOf="@+id/deleteAmbientTemp2"
                 app:layout_constraintTop_toBottomOf="@+id/deleteAmbientTemp2" />
@@ -90,8 +90,8 @@
                 android:id="@+id/button10"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:onClick="uploadFileAc"
-                android:text="@string/uploadFile"
+                android:onClick="deleteLocation"
+                android:text="@string/delete_location"
                 app:layout_constraintEnd_toEndOf="@+id/button8"
                 app:layout_constraintTop_toTopOf="@+id/button9" />
 
@@ -134,8 +134,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:onClick="startLocationJobService"
-                android:text="@string/startLocationJobService"
+                android:onClick="displayMood"
+                android:text="@string/display_mood"
                 app:layout_constraintEnd_toStartOf="@+id/button3"
                 app:layout_constraintStart_toStartOf="@+id/button23"
                 app:layout_constraintTop_toBottomOf="@+id/button23" />
@@ -155,8 +155,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:onClick="startExportJobService"
-                android:text="@string/startExportJobService"
+                android:onClick="displayDataType"
+                android:text="@string/display_data_type"
                 app:layout_constraintEnd_toStartOf="@+id/button5"
                 app:layout_constraintStart_toStartOf="@+id/button2"
                 app:layout_constraintTop_toBottomOf="@+id/button2" />
