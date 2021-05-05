@@ -110,7 +110,7 @@ public class AdviceJobService extends JobService {
         Intelligent_Agent intelligent_agent = getIntelligentAgent(this);
 
         //todo delete
-        determineAdvice(currentTime);
+//        determineAdvice(currentTime);
 
 
         //validation to ensure that the starting day immediately causes a null advice to be given
@@ -209,6 +209,7 @@ public class AdviceJobService extends JobService {
         if (dataType.isScreentime()) {
 
             AppData[] temp = adviceScreentime();
+//            AppData[] temp = null;
             if (temp != null) {
                 adviceJustification.setJustificationScreentime(temp);
             } else {
@@ -376,6 +377,13 @@ public class AdviceJobService extends JobService {
 
         RealmResults<Location> previousDaysLocations = getLocationOverPreviousDays(this, currentTime, days);
 
+        int x = 0;
+        for(Location location: previousDaysLocations){
+            x++;
+            Log.d(TAG, "adviceLocation: " + x + " " + location);
+        }
+
+
         if (previousDaysLocations.isEmpty() || previousDaysLocations.size()<=3) {
             //insufficient data
             Log.d(TAG, "adviceLocation: insufficient data ");
@@ -402,7 +410,7 @@ public class AdviceJobService extends JobService {
         int amountPerDay = 0;
 
 
-        for (int i = 0; i < days; i++) {
+        for (int i = 0; i <= days; i++) {
             ArrayList<Location> list1 = new ArrayList<>();
             arrayLists.add(i, list1);
             Log.d(TAG, "adviceLocation: arrayLists " + arrayLists);

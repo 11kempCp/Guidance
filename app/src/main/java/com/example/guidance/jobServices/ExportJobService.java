@@ -87,7 +87,7 @@ public class ExportJobService extends JobService {
 //        exportStudyData(this);
 //        createNotification();
 
-        if(currentTime.after(intelligent_agent.getEnd_Date()) && getSizeAllQuestionnaire(this) == 2 && !intelligent_agent.isStudyStatus() && intelligent_agent.getAccessToken()!=null){
+        if(currentTime.after(intelligent_agent.getEnd_Date()) && getSizeAllQuestionnaire(this) == 2){
 
             if( exportStudyData(this)){
                 updateIntelligentAgent(this, true);

@@ -198,6 +198,35 @@ public class Util {
     }
 
     /**
+     * @param context      Context allows access to application-specific resources and classes
+     * @param serviceClass The jobClass being scheduled
+     * @param jobId        The jobId of the job to be scheduled
+     * @param networkType  the network type required for the job
+     * @return returns if the job has been scheduled or not
+     */
+    public static boolean scheduleJob(Context context, Class<?> serviceClass, int jobId, String blank ,int networkType) {
+
+        Date currentTime = Calendar.getInstance().getTime();
+
+        ComponentName componentName = new ComponentName(context, serviceClass);
+        JobInfo info = new JobInfo.Builder(jobId, componentName)
+                .setPersisted(true)
+                .setRequiredNetworkType(networkType)
+                .build();
+
+
+        JobScheduler jobScheduler = context.getSystemService(JobScheduler.class);
+        int resultCode = jobScheduler.schedule(info);
+        if (resultCode == JobScheduler.RESULT_SUCCESS) {
+            Log.d(TAG, "Job " + jobId + "  Scheduled " + currentTime);
+            return true;
+        } else {
+            Log.d(TAG, "Job " + jobId + " Scheduling Failed " + " resultCode: " + currentTime);
+            return false;
+        }
+    }
+
+    /**
      * Blanket call to request all permissions
      *
      * @param context  Context allows access to application-specific resources and classes
@@ -928,7 +957,8 @@ public class Util {
      * @return returns if the ExportJobService has been scheduled
      */
     public static boolean scheduleExport(Context context) {
-        return scheduleJob(context, ExportJobService.class, EXPORT);
+        return scheduleJob(context, ExportJobService.class, EXPORT, "", JobInfo.NETWORK_TYPE_UNMETERED);
+//        return scheduleJob(context, ExportJobService.class, EXPORT);
 
     }
 
