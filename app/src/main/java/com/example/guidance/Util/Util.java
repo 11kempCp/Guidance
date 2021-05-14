@@ -947,7 +947,8 @@ public class Util {
      * @return returns if the AdviceFollowedJobService has been scheduled
      */
     public static boolean scheduleAdviceFollowed(Context context) {
-        return scheduleJob(context, AdviceFollowedJobService.class, ADVICE_FOLLOWED, context.getResources().getInteger(R.integer.advice_followed), true);
+//        return scheduleJob(context, AdviceFollowedJobService.class, ADVICE_FOLLOWED, context.getResources().getInteger(R.integer.advice_followed), true);
+        return scheduleJob(context, AdviceFollowedJobService.class, ADVICE_FOLLOWED, context.getResources().getInteger(R.integer.advice_followed));
     }
 
     /**
@@ -957,6 +958,7 @@ public class Util {
      * @return returns if the ExportJobService has been scheduled
      */
     public static boolean scheduleExport(Context context) {
+        //Change to code after the study has ended
         return scheduleJob(context, ExportJobService.class, EXPORT, "", JobInfo.NETWORK_TYPE_UNMETERED);
 //        return scheduleJob(context, ExportJobService.class, EXPORT);
 

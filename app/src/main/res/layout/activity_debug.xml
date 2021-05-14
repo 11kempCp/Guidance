@@ -99,8 +99,8 @@
                 android:id="@+id/button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:onClick="startAdviceJobService"
-                android:text="@string/startAdviceJobService"
+                android:onClick="startExportJobService"
+                android:text="@string/exportStudyData"
                 app:layout_constraintEnd_toEndOf="@+id/button10"
                 app:layout_constraintTop_toTopOf="@+id/button23" />
 

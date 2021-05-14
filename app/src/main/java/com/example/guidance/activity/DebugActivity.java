@@ -750,6 +750,7 @@ public class DebugActivity extends AppCompatActivity implements NavigationView.O
 
     public void startExportJobService(View view) {
 //        scheduleExport(this);
+        scheduleExport(this);
 
     }
 

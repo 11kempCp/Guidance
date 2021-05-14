@@ -52,7 +52,7 @@ public class AdviceFollowedJobService extends JobService {
         Date currentTime = Calendar.getInstance().getTime();
 
         //if unresolvedAdvice is empty then stop the AdviceFollowedJobService
-        if(unresolvedAdvice.isEmpty()){
+        if (unresolvedAdvice.isEmpty()) {
             Log.d(TAG, "unresolvedAdvice.isEmpty(): true");
             stopSelf();
         }
@@ -65,8 +65,12 @@ public class AdviceFollowedJobService extends JobService {
             if (advice.getAdviceUsageData().getAdviceTaken() == null) {
                 if (currentTime.after(advice.getDateTimeAdviceFor())) {
                     Log.d(TAG, "currentTime is after advice.getDateTimeAdviceFor()");
-                    updateAdviceUsageData(this, wasAdviceFollowed(advice, advice.getDateTimeAdviceFor()), advice.get_id());
-                }else{
+
+//                    updateAdviceUsageData(this, wasAdviceFollowed(advice, advice.getDateTimeAdviceFor()), advice.getAdviceUsageData().get_id());
+
+                    //change to program after study. Advice was impossible to update due to the wrong ID being referenced
+                    updateAdviceUsageData(this, wasAdviceFollowed(advice, advice.getDateTimeAdviceFor()), advice.getAdviceUsageData().get_id());
+                } else {
                     Log.d(TAG, "currentTime is not after advice.getDateTimeAdviceFor()");
 
                 }
@@ -79,22 +83,42 @@ public class AdviceFollowedJobService extends JobService {
     private Boolean wasAdviceFollowed(Advice advice, Date dateTimeAdviceFor) {
         Log.d(TAG, "wasAdviceFollowed: adviceType " + advice.getAdviceType());
 
+        //Change to code after the study has ended
+        if (dateTimeAdviceFor == null) {
+            Log.d(TAG, "wasAdviceFollowed: dateTimeAdviceForNull");
+            return null;
+        }
+
+        if (advice == null) {
+            Log.d(TAG, "wasAdviceFollowed: advice");
+            return null;
+        }
+
         switch (advice.getAdviceType()) {
             case step:
-                return adviceFollowedSteps(dateTimeAdviceFor, advice.getSteps());
+                Float steps = advice.getSteps();
+                return adviceFollowedSteps(dateTimeAdviceFor, steps);
             case screentime:
+                if (advice.getScreentime() == null) {
+                    Log.d(TAG, "wasAdviceFollowed: adviceScreenTime is: " + advice.getScreentime());
 
-                return adviceFollowedScreentime(dateTimeAdviceFor, advice.getScreentime().getPackageName(), advice.getScreentime().getTotalTimeInForeground());
+                } else {
+                    Log.d(TAG, "wasAdviceFollowed: adviceScreenTime is: " + advice.getScreentime());
+
+                    String packageName = advice.getScreentime().getPackageName();
+                    Long totalTimeInForeground = advice.getScreentime().getTotalTimeInForeground();
+                    return adviceFollowedScreentime(dateTimeAdviceFor, packageName, totalTimeInForeground);
+                }
 
             case location:
 
                 return adviceFollowedLocation(dateTimeAdviceFor);
             case socialness:
-
-                return adviceFollowedSocialness(dateTimeAdviceFor, advice.getSocialness());
+                Float getSocialness = advice.getSocialness();
+                return adviceFollowedSocialness(dateTimeAdviceFor, getSocialness);
             case mood:
-
-                return adviceFollowedMood(dateTimeAdviceFor, advice.getMood());
+                Float getMood = advice.getMood();
+                return adviceFollowedMood(dateTimeAdviceFor, getMood);
         }
 
 
@@ -115,7 +139,10 @@ public class AdviceFollowedJobService extends JobService {
 
         Step stepEntryDate = getStepEntryDate(this, dateTimeAdviceFor);
 
-        if (stepEntryDate == null) {
+        //Change to code after the study has ended
+//        if (stepEntryDate == null || steps == null) {
+
+        if (stepEntryDate == null || steps == null) {
             //insufficient data
             Log.d(TAG, "adviceFollowedSteps: insufficient data ");
 
@@ -131,7 +158,8 @@ public class AdviceFollowedJobService extends JobService {
 
         Screentime screentimeDate = getScreentimeDate(this, dateTimeAdviceFor);
 
-        if (screentimeDate == null) {
+//        if (screentimeDate == null ) {
+        if (screentimeDate == null || totalTimeInForeground == null) {
             //insufficient data
             Log.d(TAG, "adviceFollowedScreentime: insufficient data ");
             return false;
@@ -192,8 +220,9 @@ public class AdviceFollowedJobService extends JobService {
 
     private boolean adviceFollowedSocialness(Date dateTimeAdviceFor, Float socialnessFromJustificationForAdvice) {
         Socialness socialnessOnDateTimeAdviceFor = getSocialnessEntryDate(this, dateTimeAdviceFor);
-
-        if (socialnessOnDateTimeAdviceFor == null) {
+//Change to code after the study has ended
+//        if (socialnessOnDateTimeAdviceFor == null) {
+        if (socialnessOnDateTimeAdviceFor == null || socialnessFromJustificationForAdvice == null) {
             Log.d(TAG, "adviceFollowedSocialness: insufficient data ");
             return false;
         }
@@ -204,8 +233,9 @@ public class AdviceFollowedJobService extends JobService {
 
     private boolean adviceFollowedMood(Date dateTimeAdviceFor, Float moodFromJustificationForAdvice) {
         Mood moodOnDateTimeAdviceFor = getMoodEntryDate(this, dateTimeAdviceFor);
-
-        if (moodOnDateTimeAdviceFor == null) {
+//Change to code after the study has ended
+//        if (moodOnDateTimeAdviceFor == null) {
+        if (moodOnDateTimeAdviceFor == null || moodFromJustificationForAdvice == null) {
             Log.d(TAG, "adviceFollowedMood: insufficient data ");
             return false;
         }

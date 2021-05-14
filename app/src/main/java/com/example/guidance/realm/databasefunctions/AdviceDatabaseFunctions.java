@@ -41,7 +41,7 @@ public class AdviceDatabaseFunctions {
 
     private static final String TAG = "AdviceDatabaseFunctions";
 
-    public static RealmResults<AdviceUsageData> getAllAdviceUsageData( Realm realm) {
+    public static RealmResults<AdviceUsageData> getAllAdviceUsageData(Realm realm) {
 
 
         RealmQuery<AdviceUsageData> query = realm.where(AdviceUsageData.class);
@@ -54,7 +54,7 @@ public class AdviceDatabaseFunctions {
 
     }
 
-    public static RealmResults<Advice> getAllAdvice( Realm realm, Date currentTime) {
+    public static RealmResults<Advice> getAllAdvice(Realm realm, Date currentTime) {
 
 
         Date yesterday = changeDayEndOfDay(currentTime, -1);
@@ -72,7 +72,7 @@ public class AdviceDatabaseFunctions {
 
     }
 
-    public static RealmResults<Advice> getAllValidAdviceNotToday( Realm realm, Date currentTime) {
+    public static RealmResults<Advice> getAllValidAdviceNotToday(Realm realm, Date currentTime) {
 //        Realm.init(context);
 //        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
 //        Realm.setDefaultConfiguration(realmConfiguration);
@@ -80,8 +80,6 @@ public class AdviceDatabaseFunctions {
 
         Date yesterday = changeDayEndOfDay(currentTime, -1);
         Date tomorrow = changeDayStartOfDay(currentTime, 1);
-
-
 
 
         RealmQuery<Advice> query = realm.where(Advice.class).notEqualTo("adviceType", noAdvice);
@@ -348,8 +346,11 @@ public class AdviceDatabaseFunctions {
 
 
         realm.executeTransactionAsync(r -> {
-            RealmQuery<AdviceUsageData> query = r.where(AdviceUsageData.class).equalTo("_id", objectId);
-            AdviceUsageData result = query.sort("dateTime", Sort.DESCENDING).findFirst();
+//            RealmQuery<AdviceUsageData> query = r.where(AdviceUsageData.class).equalTo("_id", objectId);
+//            AdviceUsageData result = query.sort("dateTimeAdviceFor", Sort.DESCENDING).findFirst();
+
+            AdviceUsageData result = r.where(AdviceUsageData.class).equalTo("_id", objectId).findFirst();
+
 
             if (result == null) {
                 Log.d(TAG, "updateAdviceUsageData: ERROR");
